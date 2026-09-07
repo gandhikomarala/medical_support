@@ -335,6 +335,136 @@
   .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
 
   .hidden { display: none !important; }
+
+  /* Catalog & Meet Room Styles */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 16px;
+  }
+  .catalog-card {
+    background: #fff;
+    border: 1px solid var(--sage-line);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+  }
+  .catalog-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  }
+  .catalog-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #e6f7ec;
+    color: #14793a;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #b4e3c3;
+  }
+  .catalog-price {
+    font-size: 26px;
+    font-weight: 700;
+    color: #14793a;
+    margin: 12px 0 6px;
+  }
+  .catalog-features {
+    list-style: none;
+    padding: 0;
+    margin: 14px 0 18px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .catalog-features li {
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .catalog-features li::before {
+    content: '✓';
+    color: #14793a;
+    font-weight: bold;
+  }
+  .meet-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #14793a;
+    color: #fff !important;
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: background 0.15s ease;
+  }
+  .meet-btn:hover {
+    background: #0e5b2b;
+  }
+  .btn-accept {
+    background: #2563eb !important;
+    color: #fff !important;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12.5px;
+    transition: background 0.15s ease;
+  }
+  .btn-accept:hover {
+    background: #1d4ed8 !important;
+  }
+  .pill-tabs {
+    display: inline-flex;
+    background: #eef2ed;
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    gap: 4px;
+  }
+  .pill-tab {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .pill-tab.active {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  .pulse-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    margin-right: 6px;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+  }
+
 </style>
 </head>
 <body>
@@ -475,19 +605,83 @@
     </div>
   </div>
 
+
+    <!-- Mediated Video Consultations & Private Meeting Generator -->
+    <div class="card-table" style="border-top: 3px solid #2563eb;">
+      <div class="table-header-bar">
+        <div>
+          <h2>Mediated Video Consultations & Private Meet Generator</h2>
+          <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">
+            Generate secure private meeting rooms and dispatch links to patient & doctor WhatsApp with zero direct contact exposure.
+          </p>
+        </div>
+        <button class="btn-sm-outline" onclick="loadAdminData()">Refresh</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient</th>
+              <th>Assigned Doctor</th>
+              <th>Service & Fee</th>
+              <th>Status</th>
+              <th>Private Meeting Link</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminMeetTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= DOCTOR DASHBOARD ================= -->
   <div id="doctorDashboard" class="hidden">
     <div class="dashboard-header">
       <div>
         <h1 id="docWelcome">Doctor Consultation Portal</h1>
-        <p style="color:var(--ink-soft); font-size:14px;">Review assigned home visit patients and prescribe medicines/tests.</p>
+        <p style="color:var(--ink-soft); font-size:14px;">Claim available patient requests and conduct mediated consultations.</p>
       </div>
       <button class="btn-sm-outline" onclick="loadDoctorData()">Refresh</button>
     </div>
 
+    <!-- Available Stream Section -->
+    <div class="card-table" style="border: 2px solid #93c5fd; margin-bottom: 24px;">
+      <div class="table-header-bar" style="background: #eff6ff;">
+        <div>
+          <h2 style="color: #1d4ed8; display:flex; align-items:center;">
+            <span class="pulse-indicator"></span>
+            Available Patient Request Stream (First-Come, First-Served)
+          </h2>
+          <p style="font-size:12.5px; color:#3b82f6; margin:4px 0 0;">
+            Patients currently waiting for consultation. Click Accept to claim the patient. Direct contact is mediated through the portal.
+          </p>
+        </div>
+        <button class="btn-sm-outline" onclick="loadAvailableRequests()">Refresh Stream</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Service</th>
+              <th>Fee</th>
+              <th>Patient Area</th>
+              <th>Symptoms & Notes</th>
+              <th>Preferred Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="availableRequestsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Assigned Patients Section -->
     <div class="card-table">
       <div class="table-header-bar">
-        <h2>My Assigned Patients</h2>
+        <h2>My Assigned Patients & Consultations</h2>
       </div>
       <div style="overflow-x:auto;">
         <table>
@@ -495,10 +689,10 @@
             <tr>
               <th>ID</th>
               <th>Patient Name</th>
-              <th>Phone</th>
               <th>Address</th>
-              <th>Patient Notes</th>
+              <th>Notes</th>
               <th>Status</th>
+              <th>Private Video Room</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -545,39 +739,56 @@
   <div id="patientDashboard" class="hidden">
     <div class="dashboard-header">
       <div>
-        <h1 id="patWelcome">My Healthcare Requests</h1>
-        <p style="color:var(--ink-soft); font-size:14px;">Track your doctor visits, prescriptions, and lab test reports.</p>
+        <h1 id="patWelcome">Patient Healthcare Portal</h1>
+        <p style="color:var(--ink-soft); font-size:14px;">Select from verified medical services, track doctor assignments, and join private video consults.</p>
       </div>
-      <button class="btn-sm" onclick="window.location.href='/'">+ Book New Care</button>
+      <button class="btn-sm" onclick="switchPatientTab('catalog')">+ Book New Care</button>
     </div>
 
-    <div class="card-table">
-      <div class="table-header-bar">
-        <h2>Booking History</h2>
+    <div class="pill-tabs">
+      <button class="pill-tab active" id="tabBtnCatalog" onclick="switchPatientTab('catalog')">Explore Services Catalog</button>
+      <button class="pill-tab" id="tabBtnBookings" onclick="switchPatientTab('bookings')">My Active Consultations & Bookings</button>
+    </div>
+
+    <!-- Catalog View -->
+    <div id="patientCatalogView">
+      <div style="margin-bottom:12px;">
+        <h2 style="font-size:20px; font-weight:600;">Available Healthcare Services</h2>
+        <p style="font-size:13.5px; color:var(--ink-soft);">Select a healthcare service to request immediate doctor consultation or doorstep clinical care.</p>
       </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Service</th>
-              <th>Assigned Doctor</th>
-              <th>Prescription</th>
-              <th>Lab Report</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="patientBookingsTable"></tbody>
-        </table>
+      <div class="catalog-grid" id="servicesCatalogGrid">
+        <p style="color:var(--ink-soft);">Loading catalog...</p>
+      </div>
+    </div>
+
+    <!-- Bookings View -->
+    <div id="patientBookingsView" class="hidden">
+      <div class="card-table">
+        <div class="table-header-bar">
+          <h2>My Bookings & Telehealth Consultations</h2>
+          <button class="btn-sm-outline" onclick="loadPatientData()">Refresh</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Service</th>
+                <th>Fee</th>
+                <th>Assigned Doctor</th>
+                <th>Preferred Time</th>
+                <th>Status</th>
+                <th>Private Consultation Room</th>
+              </tr>
+            </thead>
+            <tbody id="patientBookingsTable"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 
-</main>
-
-<!-- ================= MODALS ================= -->
-
-<!-- Doctor Prescription Modal -->
+  <!-- Doctor Prescription Modal -->
 <div class="modal-overlay" id="prescribeModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('prescribeModal')">&times;</button>
@@ -824,9 +1035,12 @@
 
       const reqRes = await fetch('/api/requests');
       const data = await reqRes.json();
+      const requests = data.requests || [];
+
+      // 1. Live requests table
       const tbody = document.getElementById('adminRequestsTable');
       tbody.innerHTML = '';
-      (data.requests || []).forEach(r => {
+      requests.forEach(r => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>#${r.id}</strong></td>
@@ -841,34 +1055,125 @@
         `;
         tbody.appendChild(tr);
       });
+
+      // 2. Telehealth Meet Management Table
+      const meetTbody = document.getElementById('adminMeetTable');
+      if (meetTbody) {
+        meetTbody.innerHTML = '';
+        const doctorRequests = requests.filter(r => r.service_type === 'doctor' || r.assigned_doctor_id);
+        if (doctorRequests.length === 0) {
+          meetTbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">No telehealth consult requests active currently.</td></tr>';
+        } else {
+          doctorRequests.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><strong>#${r.id}</strong></td>
+              <td>${r.patient_name}<br><small>${r.patient_phone}</small></td>
+              <td>${r.doctor_name ? 'Dr. ' + r.doctor_name : '<span style="color:#d97706; font-weight:600;">Unassigned</span>'}</td>
+              <td>${r.service_type} (${r.amount ? '₹' + r.amount : 'Standard'})</td>
+              <td>${statusBadge(r.status)}</td>
+              <td>
+                ${r.meet_link ? `
+                  <a href="${r.meet_link}" target="_blank" class="meet-btn" style="padding:4px 10px; font-size:12px;">Join Video</a>
+                  <button class="btn-sm-outline btn-sm" style="padding:3px 8px; font-size:11px; margin-left:4px;" onclick="navigator.clipboard.writeText('${r.meet_link}'); alert('Link copied to clipboard!');">Copy</button>
+                ` : '<span style="color:#999; font-size:12px;">Link not generated</span>'}
+              </td>
+              <td>
+                <button class="btn-sm" onclick="openMeetModal(${r.id}, '${r.patient_name}')">${r.meet_link ? 'Regenerate Link' : 'Generate & Send Link'}</button>
+              </td>
+            `;
+            meetTbody.appendChild(tr);
+          });
+        }
+      }
     } catch (e) { console.error(e); }
   }
 
   // Doctor Data Loader
   async function loadDoctorData() {
+    loadAvailableRequests();
     try {
       const res = await fetch(`/api/doctor/my-requests/${currentUser.phone}`);
       const data = await res.json();
       const tbody = document.getElementById('doctorRequestsTable');
       tbody.innerHTML = '';
-      (data.requests || []).forEach(r => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>#${r.id}</strong></td>
-          <td>${r.patient_name}</td>
-          <td><a href="tel:${r.patient_phone}">${r.patient_phone}</a></td>
-          <td>${r.patient_address}</td>
-          <td>${r.notes || 'None'}</td>
-          <td>${statusBadge(r.status)}</td>
-          <td>
-            ${r.status === 'doctor_assigned' ? 
-              `<button class="btn-sm" onclick="openPrescribeModal(${r.id})">Write Prescription</button>` : 
-              `<span style="font-size:12px; color:var(--ink-soft);">Prescribed</span>`}
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
+      const list = data.requests || [];
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">You have no assigned patients yet. Check the Available Patient Stream above!</td></tr>';
+      } else {
+        list.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>#${r.id}</strong></td>
+            <td>${r.patient_name}</td>
+            <td>${r.patient_address}</td>
+            <td>${r.notes || 'None'}</td>
+            <td>${statusBadge(r.status)}</td>
+            <td>
+              ${r.meet_link ? `
+                <a href="${r.meet_link}" target="_blank" class="meet-btn">🎥 Join Consultation Room</a>
+              ` : '<span style="color:var(--ink-soft); font-size:12px;">Waiting for coordinator meet link</span>'}
+            </td>
+            <td>
+              ${r.status === 'doctor_assigned' ? 
+                `<button class="btn-sm" onclick="openPrescribeModal(${r.id})">Write Rx Pad</button>` : 
+                `<span style="font-size:12px; color:var(--ink-soft);">Prescribed</span>`}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
     } catch (e) { console.error(e); }
+  }
+
+  // Available Patient Requests Stream (First-Come, First-Served)
+  async function loadAvailableRequests() {
+    try {
+      const res = await fetch('/api/doctor/available-requests');
+      const data = await res.json();
+      const tbody = document.getElementById('availableRequestsTable');
+      tbody.innerHTML = '';
+      const list = data.requests || [];
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">No unassigned requests in stream right now. New requests will appear automatically.</td></tr>';
+      } else {
+        list.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>#${r.id}</strong></td>
+            <td>${r.service_type}</td>
+            <td>${r.amount ? '<strong style="color:#14793a;">₹' + r.amount + '</strong>' : '₹699'}</td>
+            <td>${r.patient_address || 'Patient Home'}</td>
+            <td>${r.notes || '<em style="color:#999;">General Checkup</em>'}</td>
+            <td>${r.preferred_time || 'Immediate'}</td>
+            <td>
+              <button class="btn-accept" onclick="acceptPatientRequest(${r.id})">⚡ Accept Patient</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function acceptPatientRequest(requestId) {
+    if (!currentUser || !currentUser.phone) return alert('Please log in again.');
+    try {
+      const res = await fetch('/api/doctor/accept-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ doctor_phone: currentUser.phone, request_id: requestId })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Could not accept request.');
+      } else {
+        alert(data.message || 'Request accepted successfully! You are assigned to this patient.');
+      }
+      loadDoctorData();
+    } catch (e) {
+      alert('Error accepting request: ' + e.message);
+    }
   }
 
   // Technician Data Loader
@@ -899,26 +1204,182 @@
     } catch (e) { console.error(e); }
   }
 
+  // Patient Tabs & Catalog
+  let globalServices = [];
+
+  function switchPatientTab(tab) {
+    const isCatalog = tab === 'catalog';
+    document.getElementById('patientCatalogView').classList.toggle('hidden', !isCatalog);
+    document.getElementById('patientBookingsView').classList.toggle('hidden', isCatalog);
+    document.getElementById('tabBtnCatalog').classList.toggle('active', isCatalog);
+    document.getElementById('tabBtnBookings').classList.toggle('active', !isCatalog);
+    if (!isCatalog) {
+      loadPatientData();
+    } else {
+      loadServicesCatalog();
+    }
+  }
+
+  async function loadServicesCatalog() {
+    try {
+      const res = await fetch('/api/services');
+      const data = await res.json();
+      globalServices = data.services || [];
+      const grid = document.getElementById('servicesCatalogGrid');
+      grid.innerHTML = '';
+      globalServices.forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'catalog-card';
+        card.innerHTML = `
+          <div>
+            ${s.badge ? `<span class="catalog-badge">${s.badge}</span>` : ''}
+            <div style="font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase;">${s.category}</div>
+            <h3 style="font-size:18px; margin:6px 0;">${s.title}</h3>
+            <div class="catalog-price">₹${s.price}</div>
+            <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:10px;">⏱ ${s.duration}</div>
+            <p style="font-size:13px; color:var(--ink); margin-bottom:12px;">${s.description}</p>
+            <ul class="catalog-features">
+              ${(s.features || []).map(f => `<li>${f}</li>`).join('')}
+            </ul>
+          </div>
+          <button class="btn-primary" style="margin-top:12px; width:100%;" onclick="openBookCatalogModal('${s.id}')">Book Service</button>
+        `;
+        grid.appendChild(card);
+      });
+    } catch (e) { console.error(e); }
+  }
+
+  function openBookCatalogModal(serviceId) {
+    const s = globalServices.find(item => item.id === serviceId);
+    if (!s) return;
+    document.getElementById('bookModalTitle').textContent = `Book ${s.title}`;
+    document.getElementById('bookModalPrice').textContent = `₹${s.price}`;
+    document.getElementById('bookServiceType').value = s.type;
+    document.getElementById('bookServiceAmount').value = s.price;
+    document.getElementById('bookSubmitBtn').textContent = `Confirm & Request Care (₹${s.price})`;
+
+    if (currentUser) {
+      if (currentUser.name && currentUser.name !== 'Ramesh Patient') {
+        document.getElementById('bookPatientName').value = currentUser.name;
+      }
+      if (currentUser.phone && currentUser.phone.length >= 10) {
+        document.getElementById('bookPatientPhone').value = currentUser.phone;
+      }
+    }
+    document.getElementById('bookCatalogModal').classList.add('active');
+  }
+
+  async function submitCatalogBooking(e) {
+    e.preventDefault();
+    const btn = document.getElementById('bookSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting Request...';
+
+    const payload = {
+      patient_name: document.getElementById('bookPatientName').value.trim(),
+      patient_phone: document.getElementById('bookPatientPhone').value.trim(),
+      patient_address: document.getElementById('bookPatientAddress').value.trim(),
+      service_type: document.getElementById('bookServiceType').value,
+      amount: document.getElementById('bookServiceAmount').value,
+      preferred_time: document.getElementById('bookPreferredTime').value.trim(),
+      notes: document.getElementById('bookNotes').value.trim()
+    };
+
+    try {
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to submit booking');
+
+      closeModal('bookCatalogModal');
+      alert(`Care Request #${data.id} created! All available doctors are notified in their stream.`);
+      
+      // Update current user phone if needed
+      if (currentUser && (!currentUser.phone || currentUser.phone.length < 10)) {
+        currentUser.phone = payload.patient_phone;
+      }
+      switchPatientTab('bookings');
+    } catch (err) {
+      alert('Error: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Confirm & Request Care';
+    }
+  }
+
   // Patient Data Loader
   async function loadPatientData() {
+    loadServicesCatalog();
+    if (!currentUser || !currentUser.phone) return;
     try {
       const res = await fetch(`/api/patient/bookings/${currentUser.phone}`);
       const data = await res.json();
       const tbody = document.getElementById('patientBookingsTable');
       tbody.innerHTML = '';
-      (data.bookings || []).forEach(r => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>#${r.id}</strong></td>
-          <td>${r.service_type}</td>
-          <td>${r.doctor_name || 'Coordinator Assigning...'}</td>
-          <td>${r.prescription_text || '<em style="color:#999;">Awaiting consultation</em>'}</td>
-          <td>${r.report_file_url ? `<a href="${r.report_file_url}" target="_blank" style="color:var(--wa-dark); font-weight:600;">View Report (PDF)</a>` : '<em style="color:#999;">Pending</em>'}</td>
-          <td>${statusBadge(r.status)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      const list = data.bookings || [];
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">No bookings found. Click Explore Services Catalog to book your first doctor visit!</td></tr>';
+      } else {
+        list.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>#${r.id}</strong></td>
+            <td>${r.service_type}</td>
+            <td>${r.amount ? '<strong style="color:#14793a;">₹' + r.amount + '</strong>' : '₹699'}</td>
+            <td>${r.doctor_name ? 'Dr. ' + r.doctor_name : '<span style="color:#d97706;">Coordinator Assigning...</span>'}</td>
+            <td>${r.preferred_time || 'Standard'}</td>
+            <td>${statusBadge(r.status)}</td>
+            <td>
+              ${r.meet_link ? `
+                <a href="${r.meet_link}" target="_blank" class="meet-btn">🎥 Join Secure Video Call</a>
+                <small style="display:block; color:#14793a; font-size:11px; margin-top:2px;">Private & Encrypted</small>
+              ` : (r.doctor_name ? '<span style="color:var(--ink-soft); font-size:12px;">Doctor Assigned • Awaiting Meet Link</span>' : '<span style="color:#999; font-size:12px;">Awaiting Doctor</span>')}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
     } catch (e) { console.error(e); }
+  }
+
+  // Admin Meet Modal
+  function openMeetModal(reqId, patientName) {
+    document.getElementById('meetReqId').value = reqId;
+    document.getElementById('meetReqIdDisplay').textContent = reqId;
+    document.getElementById('meetPatientDisplay').textContent = patientName || 'Patient';
+    document.getElementById('customMeetUrl').value = '';
+    document.getElementById('adminMeetModal').classList.add('active');
+  }
+
+  async function submitAdminMeetLink(e) {
+    e.preventDefault();
+    const reqId = document.getElementById('meetReqId').value;
+    const customUrl = document.getElementById('customMeetUrl').value.trim();
+    const btn = document.getElementById('meetSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Generating & Dispatching...';
+
+    try {
+      const res = await fetch('/api/admin/generate-meet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: reqId, custom_meet_link: customUrl })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to generate meet link');
+
+      closeModal('adminMeetModal');
+      alert('Private consultation link generated and sent to doctor & patient WhatsApp!');
+      loadAdminData();
+    } catch (err) {
+      alert('Error: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Generate & Dispatch to Patient and Doctor';
+    }
   }
 
   // Prescription Submission
@@ -950,7 +1411,7 @@
     }
   }
 
-  // Schedule Modal
+  // Schedule Submission
   function openScheduleModal(reqId) {
     document.getElementById('scheduleReqId').value = reqId;
     document.getElementById('scheduleModal').classList.add('active');
@@ -959,16 +1420,19 @@
     e.preventDefault();
     const reqId = document.getElementById('scheduleReqId').value;
     const time = document.getElementById('scheduleTime').value.trim();
-    await fetch('/api/technician/set-time', {
+
+    const res = await fetch('/api/technician/set-time', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ request_id: reqId, technician_phone: currentUser.phone, visit_time: time })
+      body: JSON.stringify({ request_id: reqId, visit_time: time })
     });
-    closeModal('scheduleModal');
-    loadTechnicianData();
+    if (res.ok) {
+      closeModal('scheduleModal');
+      loadTechnicianData();
+    }
   }
 
-  // Upload Modal
+  // Upload Report Submission
   function openUploadModal(reqId) {
     document.getElementById('uploadReqId').value = reqId;
     document.getElementById('uploadModal').classList.add('active');
@@ -976,49 +1440,59 @@
   async function submitReportUpload(e) {
     e.preventDefault();
     const reqId = document.getElementById('uploadReqId').value;
-    const file = document.getElementById('reportFile').files[0];
+    const fileInput = document.getElementById('reportFile');
+    if (!fileInput.files[0]) return alert('Please select a file to upload');
+
     const formData = new FormData();
     formData.append('request_id', reqId);
-    formData.append('report_file', file);
+    formData.append('report', fileInput.files[0]);
 
     const btn = document.getElementById('uploadBtn');
     btn.disabled = true;
-    btn.textContent = 'Uploading Report...';
+    btn.textContent = 'Uploading...';
+
     try {
-      await fetch('/api/technician/upload-report', { method: 'POST', body: formData });
-      closeModal('uploadModal');
-      loadTechnicianData();
+      const res = await fetch('/api/technician/upload-report', {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        closeModal('uploadModal');
+        loadTechnicianData();
+      }
     } finally {
       btn.disabled = false;
       btn.textContent = 'Upload & Complete Request';
     }
   }
 
-  // Add Staff Modal
+  // Add Staff Submission
   function openAddStaffModal() {
     document.getElementById('addStaffModal').classList.add('active');
   }
   async function submitAddStaff(e) {
     e.preventDefault();
-    const body = {
-      role: document.getElementById('staffRole').value,
-      name: document.getElementById('staffName').value.trim(),
-      phone: document.getElementById('staffPhone').value.trim(),
-      specialty: document.getElementById('staffSpecialty').value.trim(),
-      password: document.getElementById('staffPassword').value.trim()
-    };
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (res.ok) {
-      alert('Staff registered successfully!');
-      closeModal('addStaffModal');
-      loadAdminData();
-    } else {
-      const data = await res.json();
-      alert(data.error || 'Failed to register staff');
+    const role = document.getElementById('staffRole').value;
+    const name = document.getElementById('staffName').value.trim();
+    const phone = document.getElementById('staffPhone').value.trim();
+    const specialty = document.getElementById('staffSpecialty')?.value.trim() || 'General';
+
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, password: role === 'doctor' ? 'doctor123' : 'tech123', role, specialty })
+      });
+      if (res.ok) {
+        closeModal('addStaffModal');
+        alert(`Staff ${name} added successfully!`);
+        loadAdminData();
+      } else {
+        const d = await res.json();
+        alert(d.error || 'Could not register staff');
+      }
+    } catch (err) {
+      alert('Error: ' + err.message);
     }
   }
 
@@ -1026,6 +1500,5 @@
     document.getElementById(id).classList.remove('active');
   }
 </script>
-
 </body>
 </html>

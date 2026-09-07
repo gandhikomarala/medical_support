@@ -21,21 +21,25 @@ async function notifyOwner(text) {
 }
 
 // --- 1. Patient submits the website form ---
-async function createRequest({ patient_name, patient_phone, patient_address, service_type, notes }) {
+async function createRequest({ patient_name, patient_phone, patient_address, service_type, notes, amount = 0, preferred_time = '' }) {
   const { rows } = await db.query(
-    `INSERT INTO requests (patient_name, patient_phone, patient_address, service_type, notes)
-     VALUES ($1,$2,$3,$4,$5) RETURNING *`,
-    [patient_name, patient_phone, patient_address, service_type, notes || '']
+    `INSERT INTO requests (patient_name, patient_phone, patient_address, service_type, notes, amount, preferred_time)
+     VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+    [patient_name, patient_phone, patient_address, service_type, notes || '', parseInt(amount, 10) || 0, preferred_time || '']
   );
   const request = rows[0];
 
+  const priceDisplay = request.amount > 0 ? `\nPrice: ₹${request.amount}` : '';
+  const timeDisplay = request.preferred_time ? `\nPreferred Time: ${request.preferred_time}` : '';
   const summary =
     `New ${serviceLabel(service_type)} request #${request.id}\n` +
     `Patient: ${patient_name}\n` +
     `Phone: ${patient_phone}\n` +
-    `Address: ${patient_address}\n` +
-    (notes ? `Notes: ${notes}\n` : '') +
-    `\nReply ACCEPT ${request.id} to take this patient.`;
+    `Address: ${patient_address}` +
+    priceDisplay +
+    timeDisplay +
+    (notes ? `\nNotes: ${notes}` : '') +
+    `\n\nReply ACCEPT ${request.id} or accept via Doctor Portal to take this patient.`;
 
   await notifyOwner(`📩 ${summary}`);
 

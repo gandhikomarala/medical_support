@@ -27,12 +27,86 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ==========================================
-// 1. GENERAL / PATIENT REQUESTS
+// 1. SERVICES CATALOG & PATIENT REQUESTS
 // ==========================================
 
-// Create request from website form
+const SERVICES_CATALOG = [
+  {
+    id: 'gp_home',
+    type: 'doctor',
+    title: 'General Physician Home Consult',
+    category: 'Doctor at Home',
+    price: 699,
+    duration: '30-45 mins',
+    badge: 'Most Popular',
+    description: 'MBBS Doctor visits your home for physical examination, symptom diagnosis, and digital Rx.',
+    features: ['In-person clinical checkup', 'Vitals & BP monitoring', 'Instant digital Rx & lab orders', 'Zero travel stress']
+  },
+  {
+    id: 'specialist_video',
+    type: 'doctor',
+    title: 'Specialist Telehealth Consultation',
+    category: 'Video Tele-Consult',
+    price: 899,
+    duration: '20-30 mins',
+    badge: 'Instant Connect',
+    description: 'Private 1-on-1 video call with senior specialist doctors (Cardiology, Pediatrics, General Medicine).',
+    features: ['Direct video consultation', 'Encrypted private meeting room', 'Digital prescription delivery', 'Follow-up chat support']
+  },
+  {
+    id: 'nurse_care',
+    type: 'nurse',
+    title: 'Home Nursing & Injection / IV Saline',
+    category: 'Nursing Services',
+    price: 499,
+    duration: '30 mins',
+    badge: 'Clinical Care',
+    description: 'Certified nurse for IV drip cannula, intramuscular injections, wound dressing, and post-hospital care.',
+    features: ['Certified clinical nurse', 'Sterile disposable equipment', 'Post-surgical dressing', 'IV/IM medication administration']
+  },
+  {
+    id: 'full_body_lab',
+    type: 'lab_test',
+    title: 'Comprehensive Full-Body Health Checkup',
+    category: 'Diagnostics & Lab',
+    price: 1299,
+    duration: 'Home sample pickup',
+    badge: 'Best Value',
+    description: '72+ vital parameters: Complete Hemogram (CBC), Lipid profile, Liver (LFT), Kidney (KFT), Thyroid (TSH), Blood Sugar.',
+    features: ['Doorstep blood/urine sample collection', 'Certified phlebotomist visit', 'NABL accredited lab processing', 'Digital PDF report in portal']
+  },
+  {
+    id: 'elderly_care',
+    type: 'nurse',
+    title: 'Senior Citizen Health & Vitals Monitoring',
+    category: 'Elderly Support',
+    price: 799,
+    duration: '60 mins',
+    badge: 'Senior Support',
+    description: 'Comprehensive routine vitals, mobility check, blood sugar, ECG/pulse tracking, and medicine organization.',
+    features: ['Blood pressure & SPO2 check', 'Random blood sugar test', 'Medication schedule review', 'Compassionate elder care']
+  },
+  {
+    id: 'express_pharmacy',
+    type: 'pharmacy',
+    title: 'Doorstep Medicine & Pharmacy Delivery',
+    category: 'Pharmacy',
+    price: 199,
+    duration: 'Within 2 hours',
+    badge: 'Fast Delivery',
+    description: 'Upload your doctor prescription; our licensed pharmacy dispenses and delivers original medicines right to your home.',
+    features: ['Genuine 100% verified medicines', 'Express 2-hour delivery', 'Temperature-controlled pack', 'Direct billing assistance']
+  }
+];
+
+// Get services catalog
+router.get('/services', (req, res) => {
+  res.json({ services: SERVICES_CATALOG });
+});
+
+// Create request from website form or patient catalog
 router.post('/requests', async (req, res) => {
-  const { patient_name, patient_phone, patient_address, service_type, notes } = req.body;
+  const { patient_name, patient_phone, patient_address, service_type, notes, amount, preferred_time } = req.body;
 
   if (!patient_name || !patient_phone || !patient_address || !service_type) {
     return res.status(400).json({ error: 'patient_name, patient_phone, patient_address and service_type are required.' });
@@ -43,12 +117,21 @@ router.post('/requests', async (req, res) => {
   }
 
   try {
-    const request = await requestService.createRequest({ patient_name, patient_phone, patient_address, service_type, notes });
+    const request = await requestService.createRequest({
+      patient_name,
+      patient_phone,
+      patient_address,
+      service_type,
+      notes,
+      amount: parseInt(amount, 10) || 0,
+      preferred_time: preferred_time || ''
+    });
     res.status(201).json({ 
       success: true,
       id: request.id, 
       status: request.status,
-      message: 'Your healthcare request has been submitted. A coordinator and verified healthcare provider will contact you shortly!'
+      amount: request.amount,
+      message: 'Your healthcare request has been submitted. A verified doctor will be notified immediately!'
     });
   } catch (err) {
     console.error('Error creating request:', err);
@@ -174,9 +257,147 @@ router.post('/admin/assign', async (req, res) => {
   }
 });
 
+// Admin generate and dispatch private consultation video meet link
+router.post('/admin/generate-meet', async (req, res) => {
+  const { request_id, custom_meet_link } = req.body;
+  if (!request_id) {
+    return res.status(400).json({ error: 'request_id is required.' });
+  }
+
+  try {
+    const crypto = require('crypto');
+    const roomId = 'ayans-telehealth-' + request_id + '-' + crypto.randomBytes(3).toString('hex');
+    const meetUrl = custom_meet_link && custom_meet_link.trim().startsWith('http')
+      ? custom_meet_link.trim()
+      : `https://meet.jit.si/${roomId}#config.prejoinPageEnabled=false`;
+
+    const { rows } = await db.query(
+      `UPDATE requests 
+       SET meet_link = $1, updated_at = now() 
+       WHERE id = $2 
+       RETURNING *`,
+      [meetUrl, request_id]
+    );
+
+    const reqData = rows[0];
+    if (!reqData) {
+      return res.status(404).json({ error: 'Request not found.' });
+    }
+
+    // Fetch doctor info for notifications
+    let doctorName = 'Assigned Doctor';
+    let doctorPhone = null;
+    if (reqData.assigned_doctor_id) {
+      const docRes = await db.query('SELECT name, phone FROM doctors WHERE id = $1', [reqData.assigned_doctor_id]);
+      if (docRes.rows[0]) {
+        doctorName = docRes.rows[0].name;
+        doctorPhone = docRes.rows[0].phone;
+      }
+    }
+
+    // Mediated Dispatch: Send WhatsApp notification with the private meet link to both parties
+    const wa = require('../services/whatsapp');
+    if (doctorPhone) {
+      await wa.sendText(
+        doctorPhone,
+        `Ayans Medicare Telehealth Consultation Ready!\nPatient: ${reqData.patient_name}\nAddress: ${reqData.patient_address}\nJoin Secure Room: ${meetUrl}`
+      );
+    }
+    if (reqData.patient_phone) {
+      await wa.sendText(
+        reqData.patient_phone,
+        `Ayans Medicare: Your private consultation room with Dr. ${doctorName} is ready!\nJoin Video Call: ${meetUrl}\nPlease do not share this private link.`
+      );
+    }
+
+    res.json({
+      success: true,
+      message: 'Private consultation meet link generated and dispatched to patient & doctor!',
+      meet_link: meetUrl,
+      request: reqData
+    });
+  } catch (err) {
+    console.error('Generate meet link error:', err);
+    res.status(500).json({ error: 'Failed to generate meet link' });
+  }
+});
+
 // ==========================================
 // 3. DOCTOR PORTAL ENDPOINTS
 // ==========================================
+
+// Stream of available unassigned requests for doctors (First-Accept-Wins pool)
+router.get('/doctor/available-requests', async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      `SELECT id, patient_name, patient_address, service_type, notes, amount, preferred_time, status, created_at
+       FROM requests
+       WHERE status = 'new' AND (service_type = 'doctor' OR service_type = 'nurse')
+       ORDER BY id DESC LIMIT 50`
+    );
+    res.json({ requests: rows });
+  } catch (err) {
+    console.error('Available requests error:', err);
+    res.status(500).json({ error: 'Failed to fetch available requests' });
+  }
+});
+
+// Atomic acceptance: First doctor to accept claims the patient
+router.post('/doctor/accept-request', async (req, res) => {
+  const { doctor_phone, request_id } = req.body;
+  if (!doctor_phone || !request_id) {
+    return res.status(400).json({ error: 'doctor_phone and request_id are required.' });
+  }
+
+  try {
+    const cleanPhone = doctor_phone.replace(/[^0-9]/g, '');
+    const { rows: docRows } = await db.query(
+      'SELECT id, name FROM doctors WHERE phone LIKE $1',
+      [`%${cleanPhone}%`]
+    );
+    const doctor = docRows[0];
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor profile not found.' });
+    }
+
+    // Atomic first-come-first-served update
+    const { rows } = await db.query(
+      `UPDATE requests 
+       SET status = 'doctor_assigned', assigned_doctor_id = $1, updated_at = now()
+       WHERE id = $2 AND status = 'new'
+       RETURNING *`,
+      [doctor.id, request_id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(409).json({ 
+        error: `Request #${request_id} has already been accepted by another doctor. Thank you for your prompt response!` 
+      });
+    }
+
+    const request = rows[0];
+
+    // Notify Patient and Doctor via WhatsApp
+    const wa = require('../services/whatsapp');
+    await wa.sendText(
+      request.patient_phone,
+      `Good news! Dr. ${doctor.name} has accepted your consult request (#${request.id}). Our coordinator will share your private meeting link shortly.`
+    );
+    await wa.sendText(
+      doctor_phone,
+      `You're assigned to request #${request.id} for ${request.patient_name}. A secure private meet link will be generated by the coordinator.`
+    );
+
+    res.json({
+      success: true,
+      message: `Request #${request.id} accepted successfully! It is now assigned to you.`,
+      request
+    });
+  } catch (err) {
+    console.error('Doctor accept error:', err);
+    res.status(500).json({ error: 'Failed to accept request' });
+  }
+});
 
 router.get('/doctor/my-requests/:phone', async (req, res) => {
   try {

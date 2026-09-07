@@ -69,6 +69,9 @@ function initSqlite() {
       lab_tests_needed TEXT,
       technician_visit_time TEXT,
       report_file_url TEXT,
+      amount INTEGER DEFAULT 0,
+      meet_link TEXT,
+      preferred_time TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
