@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const express = require('express');
 const cors = require('cors');
@@ -15,17 +16,23 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static frontend files from /public
+// Serve static frontend files from /public if directory exists
 const publicPath = path.join(__dirname, '..', 'public');
-app.use(express.static(publicPath));
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
+}
 
 // Serve uploaded patient reports from /uploads
 const uploadsPath = path.join(__dirname, '..', 'uploads');
-app.use('/uploads', express.static(uploadsPath));
+if (fs.existsSync(uploadsPath)) {
+  app.use('/uploads', express.static(uploadsPath));
+}
 
-// API and Auth routes
+// API and Auth routes (support with and without /api prefix)
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
+app.use(apiRoutes);
 app.use('/webhook', webhookRoutes);
 
 app.get('/health', (req, res) => {
@@ -37,28 +44,37 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Fallback to index.html for root or SPA navigation
+// Fallback for SPA or direct navigation without crashing
 app.get('*', (req, res) => {
-  if (req.path.startsWith('/portal')) {
-    return res.sendFile(path.join(publicPath, 'portal.html'));
+  if (req.path.startsWith('/api') || req.path.startsWith('/webhook')) {
+    return res.status(404).json({ error: 'Endpoint not found' });
   }
-  res.sendFile(path.join(publicPath, 'index.html'));
+  const file = req.path.startsWith('/portal') ? 'portal.html' : 'index.html';
+  const filePath = path.join(publicPath, file);
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath);
+  }
+  // If static file is served by Vercel Edge directly:
+  res.redirect('/');
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log('======================================================');
-  console.log(` Ayans Medicare server is running on http://localhost:${PORT}`);
-  console.log(` Website Frontend: http://localhost:${PORT}/`);
-  console.log(` Management Portal: http://localhost:${PORT}/portal.html`);
-  console.log(` API Health check: http://localhost:${PORT}/health`);
-  console.log(` Database Engine: ${db.isSqlite ? 'SQLite (local file)' : 'PostgreSQL'}`);
-  console.log('======================================================');
-});
+// Only bind port and start recurring timers when run directly in Node (not serverless)
+if (require.main === module && !process.env.VERCEL) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log('======================================================');
+    console.log(` Ayans Medicare server is running on http://localhost:${PORT}`);
+    console.log(` Website Frontend: http://localhost:${PORT}/`);
+    console.log(` Management Portal: http://localhost:${PORT}/portal.html`);
+    console.log(` API Health check: http://localhost:${PORT}/health`);
+    console.log(` Database Engine: ${db.isSqlite ? 'SQLite (local file)' : 'PostgreSQL'}`);
+    console.log('======================================================');
+  });
 
-// Periodic stale escalation check
-setInterval(() => {
-  requestService.escalateStaleRequests().catch((err) => console.error('Escalation check failed:', err.message));
-}, 2 * 60 * 1000);
+  // Periodic stale escalation check
+  setInterval(() => {
+    requestService.escalateStaleRequests().catch((err) => console.error('Escalation check failed:', err.message));
+  }, 2 * 60 * 1000);
+}
 
 module.exports = app;

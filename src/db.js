@@ -6,7 +6,8 @@ let pgPool = null;
 let sqliteDb = null;
 let useSqlite = false;
 
-const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.NEON_DATABASE_URL;
+const DEFAULT_NEON_URL = 'postgresql://neondb_owner:npg_XQ89nabrAypx@ep-wild-cherry-ae1aitnt-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
+const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.NEON_DATABASE_URL || DEFAULT_NEON_URL;
 
 // Attempt Postgres if dbUrl is set
 if (dbUrl && dbUrl.startsWith('postgres')) {
@@ -26,13 +27,15 @@ if (dbUrl && dbUrl.startsWith('postgres')) {
 
 function initSqlite() {
   if (sqliteDb) return sqliteDb;
-  const { DatabaseSync } = require('node:sqlite');
-  const dataDir = path.join(__dirname, '..', 'data');
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-  const dbPath = path.join(dataDir, 'ayans_medicare.db');
-  sqliteDb = new DatabaseSync(dbPath);
+  try {
+    const { DatabaseSync } = require('node:sqlite');
+    const isVercel = Boolean(process.env.VERCEL);
+    const dataDir = isVercel ? '/tmp' : path.join(__dirname, '..', 'data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    const dbPath = path.join(dataDir, 'ayans_medicare.db');
+    sqliteDb = new DatabaseSync(dbPath);
   
   sqliteDb.exec(`
     CREATE TABLE IF NOT EXISTS doctors (
@@ -115,6 +118,10 @@ function initSqlite() {
   }
 
   return sqliteDb;
+  } catch (err) {
+    console.warn('SQLite initialization skipped/failed:', err.message);
+    return null;
+  }
 }
 
 async function query(text, params = []) {
@@ -129,6 +136,10 @@ async function query(text, params = []) {
 
   // SQLite execution
   const db = initSqlite();
+  if (!db) {
+    console.warn('No active database connection available.');
+    return { rows: [], rowCount: 0 };
+  }
   
   let sqliteQuery = text.replace(/now\(\)\s*-\s*\(\$([0-9]+)\s*\|\|\s*' minutes'\)::interval/gi, "datetime('now', '-' || ?$1 || ' minutes')");
   sqliteQuery = sqliteQuery.replace(/\$([0-9]+)/g, '?');

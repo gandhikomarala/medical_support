@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayans Medicare — Healthcare, one message away</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  :root{
+    --ink: #16302B;
+    --ink-soft: #3E5C55;
+    --paper: #FCFBF8;
+    --sage: #E6EEE7;
+    --sage-line: #CDDBD0;
+    --wa: #25D366;
+    --wa-dark: #1DA851;
+    --clay: #C96A4E;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.55;
+  }
+  h1,h2,h3{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    margin: 0;
+    color: var(--ink);
+  }
+  a{ color: inherit; }
+  img,svg{ display:block; max-width:100%; }
+  .wrap{ max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid var(--clay);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+
+  /* Header */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(252,251,248,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--sage-line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 0;
+  }
+  .brand{
+    font-family:'Fraunces', serif; font-size: 22px; font-weight:600;
+    letter-spacing: 0.2px;
+  }
+  .brand span{ color: var(--wa-dark); }
+  nav ul{
+    list-style:none; display:flex; gap: 28px; margin:0; padding:0;
+    font-size: 15px; color: var(--ink-soft);
+  }
+  nav ul a{ text-decoration:none; }
+  nav ul a:hover{ color: var(--ink); }
+  .nav-actions{ display:flex; align-items:center; gap: 18px; }
+  .menu-toggle{ display:none; background:none; border:none; font-size:24px; cursor:pointer; color: var(--ink); }
+
+  .btn-wa{
+    display:inline-flex; align-items:center; gap:9px;
+    background: var(--wa); color:#fff; text-decoration:none;
+    padding: 11px 20px; border-radius: 8px; font-weight:600; font-size:15px;
+    border:none; cursor:pointer;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .btn-wa:hover{ background: var(--wa-dark); transform: translateY(-1px); }
+  .btn-wa svg{ width:18px; height:18px; flex-shrink:0; }
+
+  .btn-ghost{
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid var(--sage-line); color:var(--ink);
+    text-decoration:none; padding:10px 18px; border-radius:8px; font-size:15px;
+  }
+
+  /* Hero */
+  .hero{
+    padding: 72px 0 64px;
+    display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items:center;
+  }
+  .hero h1{
+    font-size: 44px; line-height:1.15; max-width: 15ch;
+  }
+  .hero p.lead{
+    margin-top:18px; font-size:18px; color: var(--ink-soft); max-width: 46ch;
+  }
+  .hero-ctas{ margin-top: 30px; display:flex; gap:14px; flex-wrap:wrap; }
+  .hero-note{ margin-top:16px; font-size:13.5px; color: var(--ink-soft); }
+
+  /* Phone mock */
+  .phone{
+    background: #101B18; border-radius: 34px; padding: 14px;
+    box-shadow: 0 30px 60px -25px rgba(16,27,24,0.45);
+    max-width: 320px; margin: 0 auto;
+  }
+  .phone-screen{
+    background: #E9EDE6; border-radius: 22px; overflow:hidden;
+    display:flex; flex-direction:column; height: 480px;
+  }
+  .chat-head{
+    background: var(--wa-dark); color:#fff; padding: 14px 16px;
+    display:flex; align-items:center; gap:10px; font-size:14px;
+  }
+  .chat-avatar{
+    width:32px; height:32px; border-radius:50%; background:#fff;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--wa-dark); font-family:'Fraunces',serif; font-weight:600; font-size:15px;
+  }
+  .chat-body{ flex:1; padding: 16px; overflow:hidden; display:flex; flex-direction:column; gap:10px; }
+  .bubble{
+    max-width: 78%; padding: 9px 13px; border-radius: 12px; font-size: 13px;
+  }
+  .bubble.in{ background:#fff; align-self:flex-start; border-top-left-radius:2px; }
+  .bubble.out{ background:#DCF8C6; align-self:flex-end; border-top-right-radius:2px; }
+  .chat-time{ font-size:10px; color:#88938c; margin-top:4px; display:block; }
+
+  /* Section shell */
+  section{ padding: 64px 0; }
+  .section-head{ max-width: 56ch; margin-bottom: 40px; }
+  .section-head h2{ font-size: 30px; line-height:1.2; }
+  .section-head p{ margin-top: 12px; color: var(--ink-soft); font-size: 16.5px; }
+
+  /* How it works */
+  .steps{
+    display:grid; grid-template-columns: repeat(3,1fr); gap: 28px;
+  }
+  .step{
+    border-top: 2px solid var(--ink); padding-top: 16px;
+  }
+  .step .num{ font-family:'Fraunces',serif; font-size: 26px; color: var(--wa-dark); }
+  .step h3{ font-size: 19px; margin-top: 8px; }
+  .step p{ color: var(--ink-soft); margin-top: 8px; font-size: 15px; }
+
+  /* Services */
+  .services-grid{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+  }
+  .service-card{
+    background: var(--sage); border-radius: 14px; padding: 24px 20px;
+    display:flex; flex-direction:column; gap: 12px; min-height: 210px;
+  }
+  .service-card h3{ font-size: 19px; }
+  .service-card p{ color: var(--ink-soft); font-size: 14.5px; margin:0; flex:1; }
+  .service-card .btn-wa{ align-self:flex-start; padding: 9px 15px; font-size: 13.5px; }
+
+  /* Why */
+  .why-grid{
+    display:grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items:start;
+  }
+  .why-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap: 18px; }
+  .why-list li{ display:flex; gap:14px; align-items:flex-start; }
+  .why-list .mark{
+    width: 26px; height:26px; border-radius:50%; background: var(--ink);
+    color: var(--paper); flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-size: 13px; margin-top:2px;
+  }
+  .why-list h3{ font-size:16.5px; margin-bottom:3px; }
+  .why-list p{ margin:0; color:var(--ink-soft); font-size:14.5px; }
+
+  .quote-card{
+    background: var(--ink); color: var(--paper); border-radius: 16px; padding: 32px;
+  }
+  .quote-card p.big{ font-family:'Fraunces',serif; font-size: 22px; line-height:1.4; }
+  .quote-card .who{ margin-top: 18px; font-size:14px; color: #B9CCC4; }
+
+  /* Coverage */
+  .coverage{
+    background: var(--sage); border-radius:16px; padding: 32px;
+    display:grid; grid-template-columns: 1fr auto; gap: 24px; align-items:center;
+  }
+  .coverage p{ color: var(--ink-soft); margin-top:8px; }
+
+  /* Final CTA */
+  .cta-band{
+    background: var(--ink); color: var(--paper); text-align:center; padding: 72px 0;
+  }
+  .cta-band h2{ color:#fff; font-size: 32px; max-width: 20ch; margin: 0 auto; }
+  .cta-band p{ color: #B9CCC4; margin-top: 12px; }
+  .cta-band .btn-wa{ margin-top: 26px; padding: 14px 28px; font-size: 16px; }
+
+  /* Footer */
+  footer{ padding: 48px 0 32px; border-top: 1px solid var(--sage-line); font-size: 14px; color: var(--ink-soft); }
+  .foot-grid{ display:flex; justify-content:space-between; flex-wrap:wrap; gap: 24px; }
+  footer a{ text-decoration:none; }
+  footer a:hover{ color: var(--ink); }
+  .foot-links{ display:flex; gap: 20px; flex-wrap:wrap; }
+
+  @media (max-width: 860px){
+    .hero{ grid-template-columns: 1fr; padding-top: 44px; }
+    .hero h1{ font-size: 34px; }
+    nav ul{ display:none; }
+    .menu-toggle{ display:block; }
+    .steps{ grid-template-columns: 1fr; }
+    .services-grid{ grid-template-columns: 1fr 1fr; }
+    .why-grid{ grid-template-columns: 1fr; }
+    .coverage{ grid-template-columns: 1fr; text-align:left; }
+    .phone{ max-width: 260px; }
+  }
+  @media (max-width: 520px){
+    .services-grid{ grid-template-columns: 1fr; }
+  }
+
+  /* Booking Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(16, 27, 24, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal-card {
+    background: #ffffff;
+    border-radius: 16px;
+    max-width: 520px;
+    width: 100%;
+    padding: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-close {
+    position: absolute;
+    top: 18px; right: 18px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    line-height: 1;
+  }
+  .modal-card h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .modal-card p.subtitle {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 16px;
+    text-align: left;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--sage-line);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14.5px;
+    background: #fff;
+    color: var(--ink);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: 2px solid var(--wa);
+    border-color: var(--wa);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .btn-submit {
+    width: 100%;
+    background: var(--wa-dark);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.15s ease;
+  }
+  .btn-submit:hover {
+    background: #14793a;
+  }
+  .btn-submit:disabled {
+    background: #a3c2b0;
+    cursor: not-allowed;
+  }
+  .booking-alert {
+    padding: 14px;
+    border-radius: 8px;
+    margin-top: 16px;
+    font-size: 14px;
+    display: none;
+  }
+  .booking-alert.success {
+    background: #e6f7ec;
+    color: #0d5f2c;
+    border: 1px solid #b4e3c3;
+    display: block;
+  }
+  .booking-alert.error {
+    background: #fdf2f2;
+    color: #9b1c1c;
+    border: 1px solid #f8b4b4;
+    display: block;
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand">Ayans <span>Medicare</span></div>
+    <nav><ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#coverage">Coverage</a></li>
+    </ul></nav>
+    <div class="nav-actions">
+      <a href="/portal.html" class="btn-ghost" style="cursor:pointer; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">Staff &amp; Patient Portal</a><button class="btn-ghost" onclick="openBookingModal()" style="cursor:pointer; font-weight:600; background:var(--sage); margin-left:8px;">Book Online</button>
+      <a class="btn-wa" id="hdrWaBtn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 8.1 8.11c0 4.47-3.63 8.1-8.1 8.1a8.06 8.06 0 0 1-4.11-1.12l-.3-.17-3.13.82.84-3.05-.19-.32a8.08 8.08 0 0 1-1.23-4.27 8.1 8.1 0 0 1 8.12-8.1m-4.42 4.13c-.17 0-.44.06-.67.32-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.16 1.75 2.79 4.32 3.8 2.13.85 2.57.68 3.03.64.47-.04 1.5-.61 1.72-1.2.21-.6.21-1.11.15-1.21-.06-.11-.23-.17-.47-.3-.25-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.17.25-.65.82-.8 1-.15.17-.29.19-.54.06-.25-.13-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.4-.79-1.91-.2-.5-.41-.43-.57-.44z"/></svg>
+        WhatsApp
+      </a>
+      <button class="menu-toggle" aria-label="menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap" style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:56px; align-items:center;">
+    <div>
+      <h1>Healthcare at home, sorted in one WhatsApp chat.</h1>
+      <p class="lead">No app to install, no forms to fill. Message Ayans Medicare, tell us what you need, and a verified nurse, doctor, or lab technician is on the way. Every update, every report, every reminder — right there in your chat.</p>
+      <div class="hero-ctas">
+        <a class="btn-wa" id="heroWaBtn" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 8.1 8.11c0 4.47-3.63 8.1-8.1 8.1a8.06 8.06 0 0 1-4.11-1.12l-.3-.17-3.13.82.84-3.05-.19-.32a8.08 8.08 0 0 1-1.23-4.27 8.1 8.1 0 0 1 8.12-8.1m-4.42 4.13c-.17 0-.44.06-.67.32-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.16 1.75 2.79 4.32 3.8 2.13.85 2.57.68 3.03.64.47-.04 1.5-.61 1.72-1.2.21-.6.21-1.11.15-1.21-.06-.11-.23-.17-.47-.3-.25-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.17.25-.65.82-.8 1-.15.17-.29.19-.54.06-.25-.13-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.4-.79-1.91-.2-.5-.41-.43-.57-.44z"/></svg>
+          Book on WhatsApp
+        </a>
+        <a class="btn-ghost" href="#services">See services</a>
+      </div>
+      <p class="hero-note">Reply reaches a real coordinator within minutes, 7am – 10pm daily.</p>
+    </div>
+
+    <div class="phone" aria-hidden="true">
+      <div class="phone-screen">
+        <div class="chat-head">
+          <div class="chat-avatar">A</div>
+          <div>
+            <div style="font-weight:600;">Ayans Medicare</div>
+            <div style="font-size:11px; opacity:.85;">online</div>
+          </div>
+        </div>
+        <div class="chat-body">
+          <div class="bubble out">Hi, I need a nurse at home tomorrow morning for wound dressing.<span class="chat-time">9:12 AM</span></div>
+          <div class="bubble in">Sure! Please share the patient's name, age, and address.<span class="chat-time">9:12 AM</span></div>
+          <div class="bubble out">Lakshmi, 68, Governorpet, Vijayawada.<span class="chat-time">9:13 AM</span></div>
+          <div class="bubble in">Got it. A nurse is confirmed for 8:00 AM. You'll get her name and photo here before she leaves.<span class="chat-time">9:14 AM</span></div>
+          <div class="bubble in">📍 Nurse Priya is on her way. ETA 12 mins.<span class="chat-time">7:48 AM</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Everything happens inside one chat</h2>
+      <p>No separate account, no app storage taken up, no lost passwords. Your WhatsApp thread is your booking history, your reports folder, and your support line.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">01</div>
+        <h3>Message us</h3>
+        <p>Tap "Book on WhatsApp" or save our number and say what care you need — a doctor visit, a blood test, medicines, or a nurse.</p>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <h3>Confirm the details</h3>
+        <p>Share the patient's name, address, and preferred time in the chat. A coordinator confirms your provider and cost, no app forms required.</p>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <h3>Care arrives, updates land in chat</h3>
+        <p>You get the provider's name and live arrival updates. Lab and pharmacy orders send reports and delivery confirmations the same way.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services" style="background:var(--paper);">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Four ways to get care without leaving home</h2>
+      <p>Pick a service below — it opens WhatsApp with your request already started.</p>
+    </div>
+    <div class="services-grid" id="servicesGrid"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap why-grid">
+    <div>
+      <h2 style="font-size:30px; margin-bottom:24px;">Why families choose WhatsApp over an app</h2>
+      <ul class="why-list">
+        <li>
+          <div class="mark">✓</div>
+          <div><h3>Nothing to download</h3><p>Works on the phone your family already uses, even on a basic smartphone with limited storage.</p></div>
+        </li>
+        <li>
+          <div class="mark">✓</div>
+          <div><h3>One thread, full history</h3><p>Every past booking, prescription photo, and lab report stays searchable in the same chat.</p></div>
+        </li>
+        <li>
+          <div class="mark">✓</div>
+          <div><h3>A person replies, not just a bot</h3><p>Coordinators pick up your message directly — helpful when a parent or grandparent needs to book care.</p></div>
+        </li>
+        <li>
+          <div class="mark">✓</div>
+          <div><h3>Verified professionals only</h3><p>Every doctor, nurse, and technician is background-checked before being sent to your door.</p></div>
+        </li>
+      </ul>
+    </div>
+    <div class="quote-card">
+      <p class="big">"My mother needed a phlebotomist for a fasting blood test. I messaged at 7am, and the technician was at her door by 7:40 — I never had to open an app."</p>
+      <div class="who">— A patient's family member, Vijayawada</div>
+    </div>
+  </div>
+</section>
+
+<section id="coverage">
+  <div class="wrap">
+    <div class="coverage">
+      <div>
+        <h2 style="font-size:24px;">Currently serving Vijayawada, Bapatla, and Guntur districts</h2>
+        <p>Message us your pincode on WhatsApp and we'll confirm same-day availability for your area.</p>
+      </div>
+      <a class="btn-wa" id="coverageWaBtn" href="#" target="_blank" rel="noopener">Check my area</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>Your next appointment is one message away.</h2>
+    <p>Save the number, or tap below to start now.</p>
+    <a class="btn-wa" id="finalWaBtn" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 8.1 8.11c0 4.47-3.63 8.1-8.1 8.1a8.06 8.06 0 0 1-4.11-1.12l-.3-.17-3.13.82.84-3.05-.19-.32a8.08 8.08 0 0 1-1.23-4.27 8.1 8.1 0 0 1 8.12-8.1m-4.42 4.13c-.17 0-.44.06-.67.32-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.16 1.75 2.79 4.32 3.8 2.13.85 2.57.68 3.03.64.47-.04 1.5-.61 1.72-1.2.21-.6.21-1.11.15-1.21-.06-.11-.23-.17-.47-.3-.25-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.17.25-.65.82-.8 1-.15.17-.29.19-.54.06-.25-.13-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.4-.79-1.91-.2-.5-.41-.43-.57-.44z"/></svg>
+      Message Ayans Medicare
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <div class="brand" style="margin-bottom:8px;">Ayans <span>Medicare</span></div>
+      <p style="max-width:32ch;">Home healthcare bookings, updates, and reports — all through WhatsApp.</p>
+    </div>
+    <div class="foot-links">
+      <a href="#services">Services</a>
+      <a href="#how">How it works</a>
+      <a href="#coverage">Coverage</a>
+      <a id="footWaLink" href="#" target="_blank" rel="noopener">WhatsApp: +91 99594 61095</a>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:24px; font-size:13px;">© 2026 Ayans Medicare. This platform provides non-emergency home healthcare services only. For emergencies, visit the nearest hospital.</div>
+</footer>
+
+<script>
+  const WA_NUMBER = "919959461095"; // Ayans Medicare WhatsApp Business number
+
+  function waLink(message){
+    return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+  }
+
+  // Generic buttons
+  document.getElementById('hdrWaBtn').href = waLink("Hi Ayans Medicare, I'd like to book a home healthcare service.");
+  document.getElementById('heroWaBtn').href = waLink("Hi Ayans Medicare, I'd like to book a home healthcare service.");
+  document.getElementById('finalWaBtn').href = waLink("Hi Ayans Medicare, I'd like to book a home healthcare service.");
+  document.getElementById('coverageWaBtn').href = waLink("Hi Ayans Medicare, my pincode is ___. Is home healthcare available in my area?");
+  document.getElementById('footWaLink').href = waLink("Hi Ayans Medicare, I'd like to know more about your services.");
+
+  // Services
+  const services = [
+    {
+      name: "Doctor at Home",
+      desc: "A licensed physician visits for consultations, check-ups, and follow-ups.",
+      message: "Hi Ayans Medicare, I'd like to book a Doctor at Home visit. Patient name: ___, Address: ___, Preferred time: ___."
+    },
+    {
+      name: "Nurse",
+      desc: "Wound care, injections, post-surgical support, and elder care, at home.",
+      message: "Hi Ayans Medicare, I'd like to book a Nurse visit. Patient name: ___, Address: ___, Care needed: ___, Preferred time: ___."
+    },
+    {
+      name: "Lab Tests",
+      desc: "A phlebotomist collects your sample; reports are shared in this same chat.",
+      message: "Hi Ayans Medicare, I'd like to book a Lab Test at home. Patient name: ___, Address: ___, Test(s) needed: ___, Preferred time: ___."
+    },
+    {
+      name: "Pharmacy",
+      desc: "Send a photo of your prescription and get medicines delivered to your door.",
+      message: "Hi Ayans Medicare, I'd like to order medicines. I'll send a photo of the prescription. Delivery address: ___."
+    }
+  ];
+
+  const grid = document.getElementById('servicesGrid');
+  services.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'service-card';
+    card.innerHTML = `
+      <h3>${s.name}</h3>
+      <p>${s.desc}</p>
+      <a class="btn-wa" href="${waLink(s.message)}" target="_blank" rel="noopener">Book on WhatsApp</a>
+    `;
+    grid.appendChild(card);
+  });
+
+  function openBookingModal(service = 'doctor') {
+    document.getElementById('serviceType').value = service;
+    document.getElementById('bookingModal').classList.add('active');
+    document.getElementById('bookingAlert').style.display = 'none';
+  }
+
+  function closeBookingModal() {
+    document.getElementById('bookingModal').classList.remove('active');
+  }
+
+  async function submitBooking(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const alertBox = document.getElementById('bookingAlert');
+    
+    const payload = {
+      patient_name: document.getElementById('patientName').value.trim(),
+      patient_phone: document.getElementById('patientPhone').value.trim(),
+      patient_address: document.getElementById('patientAddress').value.trim(),
+      service_type: document.getElementById('serviceType').value,
+      notes: document.getElementById('bookingNotes').value.trim()
+    };
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting Request...';
+    alertBox.style.display = 'none';
+
+    try {
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        alertBox.className = 'booking-alert success';
+        alertBox.innerHTML = `
+          <strong>🎉 Request Submitted! (ID: #${data.id})</strong><br>
+          A healthcare coordinator has been assigned. You will receive an automated confirmation message on WhatsApp at <strong>${payload.patient_phone}</strong>.
+        `;
+        alertBox.style.display = 'block';
+        document.getElementById('bookingForm').reset();
+      } else {
+        alertBox.className = 'booking-alert error';
+        alertBox.textContent = data.error || 'Failed to submit request. Please try again or WhatsApp us.';
+        alertBox.style.display = 'block';
+      }
+    } catch (err) {
+      alertBox.className = 'booking-alert error';
+      alertBox.textContent = 'Network error connecting to backend server. You can also chat directly on WhatsApp.';
+      alertBox.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Confirm Booking';
+    }
+  }
+
+  // Allow clicking services cards to open modal directly or WhatsApp
+  const heroBtn = document.getElementById('heroWaBtn');
+  if (heroBtn) {
+    heroBtn.addEventListener('click', (e) => {
+      // open modal if requested or continue
+    });
+  }
+
+</script>
+
+
+<!-- Booking Modal -->
+<div class="modal-overlay" id="bookingModal" onclick="if(event.target===this) closeBookingModal()">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeBookingModal()" aria-label="Close">&times;</button>
+    <h2>Book Home Healthcare</h2>
+    <p class="subtitle">Enter your details and our verified healthcare coordinator will confirm within minutes.</p>
+    
+    <form id="bookingForm" onsubmit="submitBooking(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="patientName">Patient Name *</label>
+          <input type="text" id="patientName" required placeholder="e.g. Lakshmi Devi">
+        </div>
+        <div class="form-group">
+          <label for="patientPhone">WhatsApp Phone *</label>
+          <input type="tel" id="patientPhone" required placeholder="e.g. 919959461095">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="serviceType">Service Needed *</label>
+        <select id="serviceType" required>
+          <option value="doctor">Doctor at Home</option>
+          <option value="nurse">Nurse Care</option>
+          <option value="lab_test">Lab Test / Blood Sample</option>
+          <option value="pharmacy">Pharmacy / Medicine Delivery</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="patientAddress">Home Address / Location *</label>
+        <input type="text" id="patientAddress" required placeholder="e.g. Flat 302, Governorpet, Vijayawada">
+      </div>
+
+      <div class="form-group">
+        <label for="bookingNotes">Symptoms / Notes (Optional)</label>
+        <textarea id="bookingNotes" rows="2" placeholder="e.g. Mild fever for 2 days, morning fasting test needed..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">Confirm Booking</button>
+
+      <div id="bookingAlert" class="booking-alert"></div>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
