@@ -5,6 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const apiRoutes = require('./routes/api');
+const authRoutes = require('./routes/auth');
 const webhookRoutes = require('./routes/webhook');
 const requestService = require('./services/requestService');
 const db = require('./db');
@@ -18,7 +19,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const publicPath = path.join(__dirname, '..', 'public');
 app.use(express.static(publicPath));
 
-// API and Webhook routes
+// Serve uploaded patient reports from /uploads
+const uploadsPath = path.join(__dirname, '..', 'uploads');
+app.use('/uploads', express.static(uploadsPath));
+
+// API and Auth routes
+app.use('/api/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/webhook', webhookRoutes);
 
@@ -33,6 +39,9 @@ app.get('/health', (req, res) => {
 
 // Fallback to index.html for root or SPA navigation
 app.get('*', (req, res) => {
+  if (req.path.startsWith('/portal')) {
+    return res.sendFile(path.join(publicPath, 'portal.html'));
+  }
   res.sendFile(path.join(publicPath, 'index.html'));
 });
 
@@ -41,6 +50,7 @@ app.listen(PORT, () => {
   console.log('======================================================');
   console.log(` Ayans Medicare server is running on http://localhost:${PORT}`);
   console.log(` Website Frontend: http://localhost:${PORT}/`);
+  console.log(` Management Portal: http://localhost:${PORT}/portal.html`);
   console.log(` API Health check: http://localhost:${PORT}/health`);
   console.log(` Database Engine: ${db.isSqlite ? 'SQLite (local file)' : 'PostgreSQL'}`);
   console.log('======================================================');

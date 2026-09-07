@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayans Medicare — Staff & Patient Management Portal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --ink: #16302B;
+    --ink-soft: #3E5C55;
+    --paper: #FCFBF8;
+    --sage: #E6EEE7;
+    --sage-line: #CDDBD0;
+    --wa: #25D366;
+    --wa-dark: #1DA851;
+    --clay: #C96A4E;
+    --card-bg: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  header {
+    background: #fff;
+    border-bottom: 1px solid var(--sage-line);
+    padding: 14px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .brand span { color: var(--wa-dark); }
+  .user-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .user-pill {
+    background: var(--sage);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .btn-logout {
+    background: none;
+    border: 1px solid var(--sage-line);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--clay);
+    font-weight: 600;
+  }
+  .btn-logout:hover { background: #fdf2f2; }
+
+  /* Main Container */
+  main {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+
+  /* Auth Box */
+  .auth-card {
+    max-width: 480px;
+    margin: 40px auto;
+    background: #fff;
+    border: 1px solid var(--sage-line);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+  }
+  .auth-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--sage);
+    margin-bottom: 24px;
+  }
+  .auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+  }
+  .auth-tab.active {
+    color: var(--wa-dark);
+    border-bottom-color: var(--wa-dark);
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--sage-line);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14.5px;
+    background: #fff;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: 2px solid var(--wa);
+    border-color: var(--wa);
+  }
+  .btn-primary {
+    width: 100%;
+    background: var(--wa-dark);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #14793a; }
+
+  /* Quick Demo Chips */
+  .demo-chips {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--sage-line);
+    font-size: 12px;
+  }
+  .demo-chips span { font-weight: 600; color: var(--ink-soft); }
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .chip {
+    background: var(--sage);
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11.5px;
+    color: var(--ink);
+  }
+  .chip:hover { background: #d7e4d8; }
+
+  /* Dashboard Styles */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .dashboard-header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: #fff;
+    border: 1px solid var(--sage-line);
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+  }
+  .stat-card .val {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--wa-dark);
+    line-height: 1.2;
+  }
+  .stat-card .lbl {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* Tables */
+  .card-table {
+    background: #fff;
+    border: 1px solid var(--sage-line);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .table-header-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--sage-line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .table-header-bar h2 { font-size: 18px; font-weight: 600; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    text-align: left;
+  }
+  th {
+    background: #f8fafc;
+    padding: 10px 16px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--sage-line);
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--sage-line);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafcfa; }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .badge-new { background: #fef3c7; color: #92400e; }
+  .badge-doctor { background: #dbeafe; color: #1e40af; }
+  .badge-lab { background: #e0e7ff; color: #3730a3; }
+  .badge-tech { background: #f3e8ff; color: #6b21a8; }
+  .badge-done { background: #dcfce7; color: #166534; }
+
+  /* Buttons */
+  .btn-sm {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: var(--wa-dark);
+    color: #fff;
+  }
+  .btn-sm:hover { background: #14793a; }
+  .btn-sm-outline {
+    background: none;
+    border: 1px solid var(--sage-line);
+    color: var(--ink);
+  }
+  .btn-sm-outline:hover { background: var(--sage); }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(16, 27, 24, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 520px;
+    width: 100%;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+
+  .alert {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 13.5px;
+    display: none;
+  }
+  .alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+  .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-container">
+    <a href="/" class="brand">Ayans <span>Medicare</span> Portal</a>
+    <div id="userNav" class="user-badge hidden">
+      <span class="user-pill" id="userPill"></span>
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+    <div id="guestNav">
+      <a href="/" style="font-size:14px; text-decoration:none; color:var(--ink-soft); font-weight:500;">&larr; Back to Website</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= AUTH CONTAINER ================= -->
+  <div id="authSection" class="auth-card">
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
+      <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+    </div>
+
+    <div id="authAlert" class="alert"></div>
+
+    <!-- Login Form -->
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Portal Role</label>
+        <select id="loginRole" required>
+          <option value="admin">Administrator / Coordinator</option>
+          <option value="doctor">Doctor</option>
+          <option value="technician">Lab Technician</option>
+          <option value="patient">Patient</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Phone Number or Username</label>
+        <input type="text" id="loginIdentifier" required placeholder="e.g. 919959461095 or admin">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" required placeholder="Enter password">
+      </div>
+
+      <button type="submit" class="btn-primary" id="loginBtn">Log In</button>
+
+      <div class="demo-chips">
+        <span>Quick Test Accounts:</span>
+        <div class="chip-group">
+          <div class="chip" onclick="fillDemo('admin', 'admin', 'admin123')">Admin (admin / admin123)</div>
+          <div class="chip" onclick="fillDemo('doctor', '919959461095', 'doctor123')">Doctor (Dr. Rao)</div>
+          <div class="chip" onclick="fillDemo('technician', '919876543211', 'tech123')">Tech (Priya)</div>
+          <div class="chip" onclick="fillDemo('patient', '919959461095', 'patient123')">Patient</div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Register Form -->
+    <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label>Register As</label>
+        <select id="regRole" required onchange="toggleSpecialty()">
+          <option value="doctor">Doctor</option>
+          <option value="technician">Lab Technician</option>
+          <option value="patient">Patient</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="regName" required placeholder="e.g. Dr. Rajesh Verma">
+      </div>
+
+      <div class="form-group">
+        <label>WhatsApp Phone (with Country Code)</label>
+        <input type="tel" id="regPhone" required placeholder="e.g. 919959461095">
+      </div>
+
+      <div class="form-group" id="specialtyGroup">
+        <label>Medical Specialty / Qualification</label>
+        <input type="text" id="regSpecialty" placeholder="e.g. Cardiologist / General Physician">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="regPassword" required placeholder="Create secure password">
+      </div>
+
+      <button type="submit" class="btn-primary" id="regBtn">Create Account</button>
+    </form>
+  </div>
+
+  <!-- ================= ADMIN DASHBOARD ================= -->
+  <div id="adminDashboard" class="hidden">
+    <div class="dashboard-header">
+      <div>
+        <h1>Healthcare Operations Dashboard</h1>
+        <p style="color:var(--ink-soft); font-size:14px;">Real-time management of home healthcare dispatches and staff.</p>
+      </div>
+      <button class="btn-sm" onclick="openAddStaffModal()">+ Register Doctor / Tech</button>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="val" id="statTotal">0</div><div class="lbl">Total Requests</div></div>
+      <div class="stat-card"><div class="val" id="statNew" style="color:#d97706;">0</div><div class="lbl">Unassigned</div></div>
+      <div class="stat-card"><div class="val" id="statActiveDoc" style="color:#2563eb;">0</div><div class="lbl">Doctor Visits</div></div>
+      <div class="stat-card"><div class="val" id="statActiveLab" style="color:#7c3aed;">0</div><div class="lbl">Lab Pickups</div></div>
+      <div class="stat-card"><div class="val" id="statDone" style="color:#16a34a;">0</div><div class="lbl">Completed</div></div>
+    </div>
+
+    <div class="card-table">
+      <div class="table-header-bar">
+        <h2>Live Patient Requests</h2>
+        <button class="btn-sm-outline" onclick="loadAdminData()">Refresh</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient</th>
+              <th>Service</th>
+              <th>Address</th>
+              <th>Assigned Doctor</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminRequestsTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DOCTOR DASHBOARD ================= -->
+  <div id="doctorDashboard" class="hidden">
+    <div class="dashboard-header">
+      <div>
+        <h1 id="docWelcome">Doctor Consultation Portal</h1>
+        <p style="color:var(--ink-soft); font-size:14px;">Review assigned home visit patients and prescribe medicines/tests.</p>
+      </div>
+      <button class="btn-sm-outline" onclick="loadDoctorData()">Refresh</button>
+    </div>
+
+    <div class="card-table">
+      <div class="table-header-bar">
+        <h2>My Assigned Patients</h2>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Patient Notes</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="doctorRequestsTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TECHNICIAN DASHBOARD ================= -->
+  <div id="technicianDashboard" class="hidden">
+    <div class="dashboard-header">
+      <div>
+        <h1 id="techWelcome">Diagnostics & Lab Technician Portal</h1>
+        <p style="color:var(--ink-soft); font-size:14px;">Manage sample pickups, schedule arrival times, and upload reports.</p>
+      </div>
+      <button class="btn-sm-outline" onclick="loadTechnicianData()">Refresh</button>
+    </div>
+
+    <div class="card-table">
+      <div class="table-header-bar">
+        <h2>Lab Tests & Sample Collection Tasks</h2>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient</th>
+              <th>Address</th>
+              <th>Tests Needed</th>
+              <th>Visit Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="techTasksTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PATIENT DASHBOARD ================= -->
+  <div id="patientDashboard" class="hidden">
+    <div class="dashboard-header">
+      <div>
+        <h1 id="patWelcome">My Healthcare Requests</h1>
+        <p style="color:var(--ink-soft); font-size:14px;">Track your doctor visits, prescriptions, and lab test reports.</p>
+      </div>
+      <button class="btn-sm" onclick="window.location.href='/'">+ Book New Care</button>
+    </div>
+
+    <div class="card-table">
+      <div class="table-header-bar">
+        <h2>Booking History</h2>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Service</th>
+              <th>Assigned Doctor</th>
+              <th>Prescription</th>
+              <th>Lab Report</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="patientBookingsTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ================= MODALS ================= -->
+
+<!-- Doctor Prescription Modal -->
+<div class="modal-overlay" id="prescribeModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('prescribeModal')">&times;</button>
+    <h2 style="font-size:20px; margin-bottom:8px;">Submit Prescription & Lab Order</h2>
+    <p style="font-size:13.5px; color:var(--ink-soft); margin-bottom:16px;">
+      Type your consultation notes below. Groq AI will automatically extract medicine schedules and ordered tests.
+    </p>
+    <form onsubmit="submitPrescription(event)">
+      <input type="hidden" id="prescribeReqId">
+      <div class="form-group">
+        <label>Consultation Notes & Medicines *</label>
+        <textarea id="prescribeNotes" rows="4" required placeholder="e.g. Paracetamol 500mg twice daily for 3 days. Ordered Complete Blood Count (CBC) and Thyroid profile."></textarea>
+      </div>
+      <button type="submit" class="btn-primary" id="prescribeBtn">Submit Prescription</button>
+    </form>
+  </div>
+</div>
+
+<!-- Technician Schedule Modal -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('scheduleModal')">&times;</button>
+    <h2 style="font-size:20px; margin-bottom:8px;">Schedule Sample Pickup Time</h2>
+    <form onsubmit="submitSchedule(event)">
+      <input type="hidden" id="scheduleReqId">
+      <div class="form-group">
+        <label>Expected Arrival Time *</label>
+        <input type="text" id="scheduleTime" required placeholder="e.g. Today, 5:30 PM or Tomorrow 8:00 AM">
+      </div>
+      <button type="submit" class="btn-primary">Confirm Visit Time</button>
+    </form>
+  </div>
+</div>
+
+<!-- Technician Upload Report Modal -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('uploadModal')">&times;</button>
+    <h2 style="font-size:20px; margin-bottom:8px;">Upload Patient Test Report</h2>
+    <form onsubmit="submitReportUpload(event)">
+      <input type="hidden" id="uploadReqId">
+      <div class="form-group">
+        <label>Select Report File (PDF or Image) *</label>
+        <input type="file" id="reportFile" required accept=".pdf,image/*">
+      </div>
+      <button type="submit" class="btn-primary" id="uploadBtn">Upload & Complete Request</button>
+    </form>
+  </div>
+</div>
+
+<!-- Add Staff Modal (Admin) -->
+<div class="modal-overlay" id="addStaffModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('addStaffModal')">&times;</button>
+    <h2 style="font-size:20px; margin-bottom:8px;">Register New Doctor or Technician</h2>
+    <form onsubmit="submitAddStaff(event)">
+      <div class="form-group">
+        <label>Staff Role *</label>
+        <select id="staffRole" required>
+          <option value="doctor">Doctor</option>
+          <option value="technician">Lab Technician</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="staffName" required placeholder="e.g. Dr. Ramesh Babu">
+      </div>
+      <div class="form-group">
+        <label>WhatsApp Phone (e.g. 919959461095) *</label>
+        <input type="tel" id="staffPhone" required placeholder="919959461095">
+      </div>
+      <div class="form-group">
+        <label>Specialty / Skill</label>
+        <input type="text" id="staffSpecialty" placeholder="e.g. Consultant Physician / Phlebotomist">
+      </div>
+      <div class="form-group">
+        <label>Password *</label>
+        <input type="password" id="staffPassword" required placeholder="Assign temporary password">
+      </div>
+      <button type="submit" class="btn-primary">Register Staff Member</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  let currentUser = JSON.parse(localStorage.getItem('ayans_user') || 'null');
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (currentUser) {
+      showDashboard(currentUser);
+    }
+  });
+
+  function switchAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(el => el.classList.remove('active'));
+    if (tab === 'login') {
+      document.querySelectorAll('.auth-tab')[0].classList.add('active');
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('registerForm').classList.add('hidden');
+    } else {
+      document.querySelectorAll('.auth-tab')[1].classList.add('active');
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('registerForm').classList.remove('hidden');
+    }
+    document.getElementById('authAlert').style.display = 'none';
+  }
+
+  function toggleSpecialty() {
+    const role = document.getElementById('regRole').value;
+    document.getElementById('specialtyGroup').style.display = (role === 'doctor') ? 'block' : 'none';
+  }
+
+  function fillDemo(role, identifier, pwd) {
+    document.getElementById('loginRole').value = role;
+    document.getElementById('loginIdentifier').value = identifier;
+    document.getElementById('loginPassword').value = pwd;
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const alert = document.getElementById('authAlert');
+    alert.style.display = 'none';
+
+    const body = {
+      role: document.getElementById('loginRole').value,
+      identifier: document.getElementById('loginIdentifier').value.trim(),
+      password: document.getElementById('loginPassword').value.trim()
+    };
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login failed');
+
+      currentUser = data.user;
+      localStorage.setItem('ayans_user', JSON.stringify(currentUser));
+      showDashboard(currentUser);
+    } catch (err) {
+      alert.className = 'alert alert-error';
+      alert.textContent = err.message;
+      alert.style.display = 'block';
+    }
+  }
+
+  async function handleRegister(e) {
+    e.preventDefault();
+    const alert = document.getElementById('authAlert');
+    alert.style.display = 'none';
+
+    const body = {
+      role: document.getElementById('regRole').value,
+      name: document.getElementById('regName').value.trim(),
+      phone: document.getElementById('regPhone').value.trim(),
+      specialty: document.getElementById('regSpecialty').value.trim(),
+      password: document.getElementById('regPassword').value.trim()
+    };
+
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Registration failed');
+
+      alert.className = 'alert alert-success';
+      alert.textContent = 'Account registered successfully! Please log in above.';
+      alert.style.display = 'block';
+      document.getElementById('registerForm').reset();
+      switchAuthTab('login');
+    } catch (err) {
+      alert.className = 'alert alert-error';
+      alert.textContent = err.message;
+      alert.style.display = 'block';
+    }
+  }
+
+  function showDashboard(user) {
+    document.getElementById('authSection').classList.add('hidden');
+    document.getElementById('userNav').classList.remove('hidden');
+    document.getElementById('userPill').textContent = `${user.name} (${user.role.toUpperCase()})`;
+
+    document.getElementById('adminDashboard').classList.add('hidden');
+    document.getElementById('doctorDashboard').classList.add('hidden');
+    document.getElementById('technicianDashboard').classList.add('hidden');
+    document.getElementById('patientDashboard').classList.add('hidden');
+
+    if (user.role === 'admin') {
+      document.getElementById('adminDashboard').classList.remove('hidden');
+      loadAdminData();
+    } else if (user.role === 'doctor') {
+      document.getElementById('doctorDashboard').classList.remove('hidden');
+      document.getElementById('docWelcome').textContent = `Welcome, ${user.name}`;
+      loadDoctorData();
+    } else if (user.role === 'technician') {
+      document.getElementById('technicianDashboard').classList.remove('hidden');
+      document.getElementById('techWelcome').textContent = `Welcome, ${user.name}`;
+      loadTechnicianData();
+    } else {
+      document.getElementById('patientDashboard').classList.remove('hidden');
+      document.getElementById('patWelcome').textContent = `Welcome, ${user.name}`;
+      loadPatientData();
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('ayans_user');
+    currentUser = null;
+    document.getElementById('authSection').classList.remove('hidden');
+    document.getElementById('userNav').classList.add('hidden');
+    document.getElementById('adminDashboard').classList.add('hidden');
+    document.getElementById('doctorDashboard').classList.add('hidden');
+    document.getElementById('technicianDashboard').classList.add('hidden');
+    document.getElementById('patientDashboard').classList.add('hidden');
+  }
+
+  function statusBadge(s) {
+    const map = {
+      new: '<span class="badge badge-new">New / Unassigned</span>',
+      doctor_assigned: '<span class="badge badge-doctor">Doctor Assigned</span>',
+      prescribed: '<span class="badge badge-doctor">Prescription Written</span>',
+      lab_requested: '<span class="badge badge-lab">Lab Requested</span>',
+      technician_assigned: '<span class="badge badge-tech">Technician Assigned</span>',
+      completed: '<span class="badge badge-done">Completed</span>'
+    };
+    return map[s] || `<span class="badge">${s}</span>`;
+  }
+
+  // Admin Data Loader
+  async function loadAdminData() {
+    try {
+      const statsRes = await fetch('/api/admin/stats');
+      const stats = await statsRes.json();
+      document.getElementById('statTotal').textContent = stats.total_requests || 0;
+      document.getElementById('statNew').textContent = stats.unassigned_requests || 0;
+      document.getElementById('statActiveDoc').textContent = stats.active_doctor_visits || 0;
+      document.getElementById('statActiveLab').textContent = stats.pending_lab_pickups || 0;
+      document.getElementById('statDone').textContent = stats.completed_requests || 0;
+
+      const reqRes = await fetch('/api/requests');
+      const data = await reqRes.json();
+      const tbody = document.getElementById('adminRequestsTable');
+      tbody.innerHTML = '';
+      (data.requests || []).forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>#${r.id}</strong></td>
+          <td>${r.patient_name}<br><small style="color:var(--ink-soft);">${r.patient_phone}</small></td>
+          <td>${r.service_type}</td>
+          <td>${r.patient_address}</td>
+          <td>${r.doctor_name || '<em style="color:#999;">Unassigned</em>'}</td>
+          <td>${statusBadge(r.status)}</td>
+          <td>
+            <a href="https://wa.me/${r.patient_phone}" target="_blank" class="btn-sm-outline btn-sm" style="text-decoration:none;">WhatsApp</a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (e) { console.error(e); }
+  }
+
+  // Doctor Data Loader
+  async function loadDoctorData() {
+    try {
+      const res = await fetch(`/api/doctor/my-requests/${currentUser.phone}`);
+      const data = await res.json();
+      const tbody = document.getElementById('doctorRequestsTable');
+      tbody.innerHTML = '';
+      (data.requests || []).forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>#${r.id}</strong></td>
+          <td>${r.patient_name}</td>
+          <td><a href="tel:${r.patient_phone}">${r.patient_phone}</a></td>
+          <td>${r.patient_address}</td>
+          <td>${r.notes || 'None'}</td>
+          <td>${statusBadge(r.status)}</td>
+          <td>
+            ${r.status === 'doctor_assigned' ? 
+              `<button class="btn-sm" onclick="openPrescribeModal(${r.id})">Write Prescription</button>` : 
+              `<span style="font-size:12px; color:var(--ink-soft);">Prescribed</span>`}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (e) { console.error(e); }
+  }
+
+  // Technician Data Loader
+  async function loadTechnicianData() {
+    try {
+      const res = await fetch(`/api/technician/my-tasks/${currentUser.phone}`);
+      const data = await res.json();
+      const tbody = document.getElementById('techTasksTable');
+      tbody.innerHTML = '';
+      (data.tasks || []).forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>#${r.id}</strong></td>
+          <td>${r.patient_name}<br><small>${r.patient_phone}</small></td>
+          <td>${r.patient_address}</td>
+          <td><strong>${r.lab_tests_needed || 'Blood / Diagnostic Tests'}</strong></td>
+          <td>${r.technician_visit_time || '<em style="color:#999;">Not Set</em>'}</td>
+          <td>${statusBadge(r.status)}</td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-sm-outline btn-sm" onclick="openScheduleModal(${r.id})">Set Time</button>
+              <button class="btn-sm" onclick="openUploadModal(${r.id})">Upload Report</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (e) { console.error(e); }
+  }
+
+  // Patient Data Loader
+  async function loadPatientData() {
+    try {
+      const res = await fetch(`/api/patient/bookings/${currentUser.phone}`);
+      const data = await res.json();
+      const tbody = document.getElementById('patientBookingsTable');
+      tbody.innerHTML = '';
+      (data.bookings || []).forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>#${r.id}</strong></td>
+          <td>${r.service_type}</td>
+          <td>${r.doctor_name || 'Coordinator Assigning...'}</td>
+          <td>${r.prescription_text || '<em style="color:#999;">Awaiting consultation</em>'}</td>
+          <td>${r.report_file_url ? `<a href="${r.report_file_url}" target="_blank" style="color:var(--wa-dark); font-weight:600;">View Report (PDF)</a>` : '<em style="color:#999;">Pending</em>'}</td>
+          <td>${statusBadge(r.status)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (e) { console.error(e); }
+  }
+
+  // Prescription Submission
+  function openPrescribeModal(reqId) {
+    document.getElementById('prescribeReqId').value = reqId;
+    document.getElementById('prescribeModal').classList.add('active');
+  }
+  async function submitPrescription(e) {
+    e.preventDefault();
+    const reqId = document.getElementById('prescribeReqId').value;
+    const text = document.getElementById('prescribeNotes').value.trim();
+    const btn = document.getElementById('prescribeBtn');
+    btn.disabled = true;
+    btn.textContent = 'Processing with Groq AI...';
+
+    try {
+      const res = await fetch('/api/doctor/submit-prescription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: reqId, prescription_text: text })
+      });
+      if (res.ok) {
+        closeModal('prescribeModal');
+        loadDoctorData();
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit Prescription';
+    }
+  }
+
+  // Schedule Modal
+  function openScheduleModal(reqId) {
+    document.getElementById('scheduleReqId').value = reqId;
+    document.getElementById('scheduleModal').classList.add('active');
+  }
+  async function submitSchedule(e) {
+    e.preventDefault();
+    const reqId = document.getElementById('scheduleReqId').value;
+    const time = document.getElementById('scheduleTime').value.trim();
+    await fetch('/api/technician/set-time', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ request_id: reqId, technician_phone: currentUser.phone, visit_time: time })
+    });
+    closeModal('scheduleModal');
+    loadTechnicianData();
+  }
+
+  // Upload Modal
+  function openUploadModal(reqId) {
+    document.getElementById('uploadReqId').value = reqId;
+    document.getElementById('uploadModal').classList.add('active');
+  }
+  async function submitReportUpload(e) {
+    e.preventDefault();
+    const reqId = document.getElementById('uploadReqId').value;
+    const file = document.getElementById('reportFile').files[0];
+    const formData = new FormData();
+    formData.append('request_id', reqId);
+    formData.append('report_file', file);
+
+    const btn = document.getElementById('uploadBtn');
+    btn.disabled = true;
+    btn.textContent = 'Uploading Report...';
+    try {
+      await fetch('/api/technician/upload-report', { method: 'POST', body: formData });
+      closeModal('uploadModal');
+      loadTechnicianData();
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Upload & Complete Request';
+    }
+  }
+
+  // Add Staff Modal
+  function openAddStaffModal() {
+    document.getElementById('addStaffModal').classList.add('active');
+  }
+  async function submitAddStaff(e) {
+    e.preventDefault();
+    const body = {
+      role: document.getElementById('staffRole').value,
+      name: document.getElementById('staffName').value.trim(),
+      phone: document.getElementById('staffPhone').value.trim(),
+      specialty: document.getElementById('staffSpecialty').value.trim(),
+      password: document.getElementById('staffPassword').value.trim()
+    };
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      alert('Staff registered successfully!');
+      closeModal('addStaffModal');
+      loadAdminData();
+    } else {
+      const data = await res.json();
+      alert(data.error || 'Failed to register staff');
+    }
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+</script>
+
+</body>
+</html>

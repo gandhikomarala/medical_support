@@ -70,6 +70,17 @@ function initSqlite() {
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
+        CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      phone TEXT UNIQUE NOT NULL,
+      email TEXT,
+      password TEXT NOT NULL,
+      role TEXT NOT NULL,
+      specialty TEXT,
+      active INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
     CREATE TABLE IF NOT EXISTS message_log (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       request_id INTEGER REFERENCES requests(id),
@@ -91,6 +102,16 @@ function initSqlite() {
     sqliteDb.prepare('INSERT INTO doctors (name, phone, specialty) VALUES (?, ?, ?)').run('Dr. Ananya Sharma', '919876543210', 'Consultant Physician');
     sqliteDb.prepare('INSERT INTO technicians (name, phone) VALUES (?, ?)').run('Priya', '919876543211');
     sqliteDb.prepare('INSERT INTO technicians (name, phone) VALUES (?, ?)').run('Kiran Kumar', '919876543212');
+  }
+
+  // Seed default users if empty
+  const userCount = sqliteDb.prepare('SELECT COUNT(*) as count FROM users').get().count;
+  if (userCount === 0) {
+    sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Admin Coordinator', 'admin', 'admin123', 'admin', 'Operations Lead');
+    sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Dr. Rao', '919959461095', 'doctor123', 'doctor', 'General Physician');
+    sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Dr. Ananya Sharma', '919876543210', 'doctor123', 'doctor', 'Consultant Physician');
+    sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Priya', '919876543211', 'tech123', 'technician', 'Senior Phlebotomist');
+    sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Kiran Kumar', '919876543212', 'tech123', 'technician', 'Diagnostics Tech');
   }
 
   return sqliteDb;
