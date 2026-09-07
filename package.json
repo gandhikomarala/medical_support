@@ -1,0 +1,21 @@
+{
+  "name": "ayans-medicare-backend",
+  "version": "1.0.0",
+  "description": "WhatsApp-automated backend for Ayans Medicare: patient requests from the website, first-accept-wins routing to doctors, prescription + lab test handoff to technicians, and report delivery — all orchestrated over WhatsApp.",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:init": "node src/scripts/initDb.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.13.1"
+  }
+}
