@@ -2,16 +2,16 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api"
+      "source": "/api/:path*",
+      "destination": "/api/server"
     },
     {
-      "source": "/webhook/(.*)",
-      "destination": "/api"
+      "source": "/webhook/:path*",
+      "destination": "/api/server"
     },
     {
       "source": "/health",
-      "destination": "/api"
+      "destination": "/api/server"
     }
   ]
 }
