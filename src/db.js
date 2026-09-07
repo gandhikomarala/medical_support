@@ -6,13 +6,15 @@ let pgPool = null;
 let sqliteDb = null;
 let useSqlite = false;
 
-// Attempt Postgres if DATABASE_URL is set
-if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres')) {
+const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.NEON_DATABASE_URL;
+
+// Attempt Postgres if dbUrl is set
+if (dbUrl && dbUrl.startsWith('postgres')) {
   try {
     const { Pool } = require('pg');
-    const isCloud = process.env.DATABASE_URL.includes('neon.tech') || process.env.DATABASE_URL.includes('sslmode=require');
+    const isCloud = dbUrl.includes('neon.tech') || dbUrl.includes('sslmode=require');
     pgPool = new Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: dbUrl,
       ssl: isCloud ? { rejectUnauthorized: false } : undefined,
       connectionTimeoutMillis: 30000,
     });

@@ -50,3 +50,5 @@ app.listen(PORT, () => {
 setInterval(() => {
   requestService.escalateStaleRequests().catch((err) => console.error('Escalation check failed:', err.message));
 }, 2 * 60 * 1000);
+
+module.exports = app;
