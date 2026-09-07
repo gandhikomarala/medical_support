@@ -45,6 +45,11 @@ async function ensureUsersTable() {
       'INSERT INTO users (name, phone, password, role, specialty) VALUES ($1, $2, $3, $4, $5)',
       ['Kiran Kumar', '919876543212', 'tech123', 'technician', 'Lab & Diagnostics Tech']
     );
+    // Patient
+    await db.query(
+      'INSERT INTO users (name, phone, password, role, specialty) VALUES ($1, $2, $3, $4, $5)',
+      ['Ramesh Patient', '919876500000', 'patient123', 'patient', 'General']
+    );
     console.log('Default users seeded successfully.');
   }
 }
@@ -60,25 +65,25 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    const { rows } = await db.query(
-      'SELECT id, name, phone, email, role, specialty, active FROM users WHERE (phone = $1 OR email = $1) AND password = $2',
-      [identifier.trim(), password.trim()]
+    const userCheck = await db.query(
+      'SELECT id, name, phone, email, role, specialty, active, password FROM users WHERE phone = $1 OR email = $1',
+      [identifier.trim()]
     );
-
-    const user = rows[0];
+    const user = userCheck.rows[0];
     if (!user) {
-      return res.status(401).json({ error: 'Invalid phone/username or password.' });
+      return res.status(401).json({ error: 'No account found with this phone/username. Please register or check your number.' });
+    }
+
+    if (user.password !== password.trim()) {
+      const hint = user.role === 'doctor' ? 'doctor123' : user.role === 'technician' ? 'tech123' : user.role === 'admin' ? 'admin123' : 'patient123';
+      return res.status(401).json({ error: `Incorrect password for ${user.name} (${user.role}). For demo accounts, password is '${hint}'.` });
     }
 
     if (!user.active) {
       return res.status(403).json({ error: 'Your account is deactivated. Please contact the administrator.' });
     }
 
-    if (role && user.role !== role && user.role !== 'admin') {
-      return res.status(401).json({ error: `Account found, but role is '${user.role}', not '${role}'.` });
-    }
-
-    // In production we'd sign a JWT; here we return user session data
+    // Successfully authenticated - use their registered role
     res.json({
       success: true,
       user: {
