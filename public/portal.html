@@ -501,6 +501,7 @@
           <option value="admin">Administrator / Coordinator</option>
           <option value="doctor">Doctor</option>
           <option value="technician">Lab Technician</option>
+          <option value="employee">HR / Onboarding Specialist (Employee)</option>
           <option value="patient">Patient</option>
         </select>
       </div>
@@ -523,6 +524,7 @@
           <div class="chip" onclick="fillDemo('admin', 'admin', 'admin123')">Admin (admin)</div>
           <div class="chip" onclick="fillDemo('doctor', '919959461095', 'doctor123')">Doctor (Dr. Rao)</div>
           <div class="chip" onclick="fillDemo('technician', '919876543211', 'tech123')">Tech (Priya)</div>
+          <div class="chip" onclick="fillDemo('employee', '919876543200', 'staff123')">HR (Sneha HR)</div>
           <div class="chip" onclick="fillDemo('patient', '919876500000', 'patient123')">Patient (Ramesh)</div>
         </div>
       </div>
@@ -579,6 +581,7 @@
       <div class="stat-card"><div class="val" id="statActiveDoc" style="color:#2563eb;">0</div><div class="lbl">Doctor Visits</div></div>
       <div class="stat-card"><div class="val" id="statActiveLab" style="color:#7c3aed;">0</div><div class="lbl">Lab Pickups</div></div>
       <div class="stat-card"><div class="val" id="statDone" style="color:#16a34a;">0</div><div class="lbl">Completed</div></div>
+      <div class="stat-card" style="border-top:3px solid #e11d48;"><div class="val" id="statOnboarding" style="color:#e11d48;">0</div><div class="lbl">Staff Onboarding Queue</div></div>
     </div>
 
     <div class="card-table">
@@ -634,6 +637,36 @@
         </table>
       </div>
     </div>
+
+    <!-- Staff Onboarding & Recruiter Attribution Queue -->
+    <div class="card-table" style="border-top: 3px solid #7c3aed; margin-top: 24px;">
+      <div class="table-header-bar">
+        <div>
+          <h2>Staff Onboarding & Recruiter Attribution Queue</h2>
+          <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">
+            Review medical credentials submitted by HR Specialists before activating staff into portal & WhatsApp dispatch.
+          </p>
+        </div>
+        <button class="btn-sm-outline" onclick="loadAdminOnboarding()">Refresh Queue</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Candidate Name</th>
+              <th>Role & Specialty</th>
+              <th>Medical License & Exp</th>
+              <th>Hired / Onboarded By (Employee)</th>
+              <th>Verification Notes</th>
+              <th>Status</th>
+              <th>Admin Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminOnboardingTable"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
   <!-- ================= DOCTOR DASHBOARD ================= -->
@@ -730,6 +763,117 @@
             </tr>
           </thead>
           <tbody id="techTasksTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- ================= EMPLOYEE / HR ONBOARDING DASHBOARD ================= -->
+  <div id="employeeDashboard" class="hidden">
+    <div class="dashboard-header">
+      <div>
+        <h1 id="empWelcome">HR Staff Onboarding Portal</h1>
+        <p style="color:var(--ink-soft); font-size:14px;">
+          Perform document verification and submit doctors, nurses, and technicians for Admin approval.
+        </p>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="background:#f1f5f9; padding:6px 14px; border-radius:8px; font-size:13px; font-weight:600; color:#334155; border:1px solid #e2e8f0;">
+          👤 Onboarding Specialist: <span id="empBadgeName" style="color:#0284c7;">Sneha HR</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Onboard Candidate Form -->
+    <div class="form-card" style="max-width: 100%; margin-bottom: 24px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 24px;">
+      <div style="margin-bottom:18px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
+        <h3 style="margin:0; font-size:18px; color:var(--ink);">Onboard New Medical Professional</h3>
+        <p style="margin:4px 0 0; font-size:13px; color:var(--ink-soft);">
+          Your name and phone will be recorded as the recruiting employee so Admin can review your submission.
+        </p>
+      </div>
+
+      <div id="onboardingAlert" class="alert" style="display:none;"></div>
+
+      <form id="employeeOnboardForm" onsubmit="handleEmployeeOnboard(event)">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+          <div class="form-group">
+            <label>Candidate Full Name *</label>
+            <input type="text" id="candName" required placeholder="e.g. Dr. Rajesh Kulkarni">
+          </div>
+          <div class="form-group">
+            <label>Candidate WhatsApp Phone (with 91) *</label>
+            <input type="tel" id="candPhone" required placeholder="e.g. 919988776655">
+          </div>
+          <div class="form-group">
+            <label>Candidate Email</label>
+            <input type="email" id="candEmail" placeholder="e.g. rajesh.k@hospital.org">
+          </div>
+          <div class="form-group">
+            <label>Role to Assign *</label>
+            <select id="candRole" required>
+              <option value="doctor">Doctor (Consultant / Specialist)</option>
+              <option value="technician">Lab Technician / Phlebotomist</option>
+              <option value="nurse">Home Care Nurse / Attendant</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Specialty / Qualification *</label>
+            <input type="text" id="candSpecialty" required placeholder="e.g. Cardiologist / MD General Medicine">
+          </div>
+          <div class="form-group">
+            <label>Medical Council License No *</label>
+            <input type="text" id="candLicense" required placeholder="e.g. MCI-2024-8841 / TSMC-10928">
+          </div>
+          <div class="form-group">
+            <label>Years of Clinical Experience *</label>
+            <input type="number" id="candExp" min="0" max="60" required placeholder="e.g. 8">
+          </div>
+          <div class="form-group">
+            <label>HR Verification Notes *</label>
+            <input type="text" id="candNotes" required placeholder="e.g. MCI online verification confirmed, MBBS/MD degrees verified">
+          </div>
+        </div>
+
+        <div style="margin:18px 0; background:#f8fafc; border:1px solid #cbd5e1; padding:14px 18px; border-radius:8px;">
+          <label style="display:flex; align-items:flex-start; gap:12px; cursor:pointer; font-size:13.5px; font-weight:600; color:#1e293b; margin:0;">
+            <input type="checkbox" id="candDocsVerified" required style="width:18px; height:18px; margin-top:2px; accent-color:var(--brand);">
+            <span>I, <strong id="empCheckName">Sneha HR</strong>, certify that I have thoroughly verified all medical council licenses, background checks, and identity documents for this applicant.</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary" id="onboardSubmitBtn" style="padding:12px 28px; font-size:15px; font-weight:600;">
+          Submit to Admin for Approval
+        </button>
+      </form>
+    </div>
+
+    <!-- My Recruited Candidates List -->
+    <div class="card-table">
+      <div class="table-header-bar">
+        <div>
+          <h2>My Recruited Candidates & Status</h2>
+          <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">
+            Real-time status of candidates you submitted to the Admin approval queue.
+          </p>
+        </div>
+        <button class="btn-sm-outline" onclick="loadEmployeeData()">Refresh List</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>Role & Specialty</th>
+              <th>License No</th>
+              <th>Experience</th>
+              <th>Submitted Date</th>
+              <th>Status</th>
+              <th>Admin Feedback</th>
+            </tr>
+          </thead>
+          <tbody id="empCandidatesTable"></tbody>
         </table>
       </div>
     </div>
@@ -979,11 +1123,24 @@
     document.getElementById('adminDashboard').classList.add('hidden');
     document.getElementById('doctorDashboard').classList.add('hidden');
     document.getElementById('technicianDashboard').classList.add('hidden');
+    const empDash = document.getElementById('employeeDashboard');
+    if (empDash) empDash.classList.add('hidden');
     document.getElementById('patientDashboard').classList.add('hidden');
+    const empDash = document.getElementById('employeeDashboard'); if (empDash) empDash.classList.add('hidden');
 
     if (user.role === 'admin') {
       document.getElementById('adminDashboard').classList.remove('hidden');
       loadAdminData();
+      loadAdminOnboarding();
+    } else if (user.role === 'employee') {
+      if (empDash) empDash.classList.remove('hidden');
+      const empWelcome = document.getElementById('empWelcome');
+      if (empWelcome) empWelcome.textContent = `Welcome, ${user.name}`;
+      const badge = document.getElementById('empBadgeName');
+      if (badge) badge.textContent = user.name;
+      const check = document.getElementById('empCheckName');
+      if (check) check.textContent = user.name;
+      loadEmployeeData();
     } else if (user.role === 'doctor') {
       document.getElementById('doctorDashboard').classList.remove('hidden');
       document.getElementById('docWelcome').textContent = `Welcome, ${user.name}`;
@@ -1032,6 +1189,7 @@
       document.getElementById('statActiveDoc').textContent = stats.active_doctor_visits || 0;
       document.getElementById('statActiveLab').textContent = stats.pending_lab_pickups || 0;
       document.getElementById('statDone').textContent = stats.completed_requests || 0;
+      const statOnb = document.getElementById('statOnboarding'); if (statOnb) statOnb.textContent = stats.pending_onboarding || 0;
 
       const reqRes = await fetch('/api/requests');
       const data = await reqRes.json();

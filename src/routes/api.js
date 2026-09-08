@@ -207,6 +207,7 @@ router.get('/admin/stats', async (req, res) => {
     const completedRes = await db.query("SELECT COUNT(*) as count FROM requests WHERE status = 'completed'");
     const docCountRes = await db.query('SELECT COUNT(*) as count FROM doctors WHERE active = TRUE');
     const techCountRes = await db.query('SELECT COUNT(*) as count FROM technicians WHERE active = TRUE');
+    const pendingOnboardingRes = await db.query("SELECT COUNT(*) as count FROM staff_onboarding WHERE status = 'pending'");
 
     res.json({
       total_requests: parseInt(totalRes.rows[0]?.count || 0, 10),
@@ -216,6 +217,7 @@ router.get('/admin/stats', async (req, res) => {
       completed_requests: parseInt(completedRes.rows[0]?.count || 0, 10),
       registered_doctors: parseInt(docCountRes.rows[0]?.count || 0, 10),
       registered_technicians: parseInt(techCountRes.rows[0]?.count || 0, 10),
+      pending_onboarding: parseInt(pendingOnboardingRes.rows[0]?.count || 0, 10),
     });
   } catch (err) {
     console.error('Stats error:', err);
@@ -529,6 +531,199 @@ router.post('/technician/upload-report', upload.single('report_file'), async (re
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to upload report' });
+  }
+});
+
+// ==========================================
+// 5. EMPLOYEE ONBOARDING & ADMIN APPROVAL
+// ==========================================
+
+// Employee submits onboarding application for Doctor, Nurse, or Technician
+router.post('/onboarding/submit', async (req, res) => {
+  const {
+    candidate_name,
+    candidate_phone,
+    candidate_email,
+    role,
+    specialty,
+    license_number,
+    experience_years,
+    verification_notes,
+    submitted_by_name,
+    submitted_by_phone
+  } = req.body;
+
+  if (!candidate_name || !candidate_phone || !role || !submitted_by_name) {
+    return res.status(400).json({ error: 'Candidate name, phone, role, and recruiter name are required.' });
+  }
+
+  const cleanPhone = candidate_phone.replace(/[^0-9]/g, '');
+  if (cleanPhone.length < 10) {
+    return res.status(400).json({ error: 'Please enter a valid candidate phone number with country code (e.g. 919959461095).' });
+  }
+
+  try {
+    // Check if phone already exists in active users
+    const existingUser = await db.query('SELECT id, role FROM users WHERE phone = $1', [cleanPhone]);
+    if (existingUser.rows.length > 0) {
+      return res.status(409).json({ error: `An active account with phone ${cleanPhone} already exists as '${existingUser.rows[0].role}'.` });
+    }
+
+    // Insert or update in staff_onboarding
+    const { rows } = await db.query(
+      `INSERT INTO staff_onboarding 
+       (candidate_name, candidate_phone, candidate_email, role, specialty, license_number, experience_years, verification_notes, submitted_by_name, submitted_by_phone, status, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending', now())
+       ON CONFLICT (candidate_phone) DO UPDATE 
+       SET candidate_name = $1, candidate_email = $3, role = $4, specialty = $5, license_number = $6, experience_years = $7, verification_notes = $8, submitted_by_name = $9, submitted_by_phone = $10, status = 'pending', reviewed_at = null
+       RETURNING *`,
+      [
+        candidate_name.trim(),
+        cleanPhone,
+        candidate_email ? candidate_email.trim() : null,
+        role.toLowerCase(),
+        specialty ? specialty.trim() : 'General',
+        license_number ? license_number.trim() : null,
+        parseInt(experience_years, 10) || 0,
+        verification_notes ? verification_notes.trim() : 'Documents verified by HR employee',
+        submitted_by_name.trim(),
+        submitted_by_phone ? submitted_by_phone.trim() : ''
+      ]
+    );
+
+    // Notify owner / admin via WhatsApp
+    const wa = require('../services/whatsapp');
+    const ownerPhone = process.env.OWNER_WHATSAPP_NUMBER;
+    if (ownerPhone) {
+      await wa.sendText(
+        ownerPhone,
+        `📋 New Staff Onboarding Submitted!\nCandidate: ${candidate_name} (${role.toUpperCase()} - ${specialty || 'General'})\nRegistration/License: ${license_number || 'N/A'}\nHired & Verified by: ${submitted_by_name} (${submitted_by_phone})\nPlease review and approve in Admin Portal.`
+      );
+    }
+
+    res.status(201).json({
+      success: true,
+      message: `Onboarding application for ${candidate_name} submitted successfully! Awaiting Admin verification and approval.`,
+      onboarding_id: rows[0].id,
+      onboarding: rows[0]
+    });
+  } catch (err) {
+    console.error('Onboarding submit error:', err);
+    res.status(500).json({ error: 'Failed to submit onboarding application.' });
+  }
+});
+
+// List onboarding requests (for employee tracker or admin review)
+router.get('/onboarding/list', async (req, res) => {
+  const { submitted_by_phone, status } = req.query;
+  try {
+    let sql = 'SELECT * FROM staff_onboarding';
+    const params = [];
+
+    if (submitted_by_phone) {
+      params.push(`%${submitted_by_phone.trim()}%`);
+      sql += ` WHERE submitted_by_phone LIKE $${params.length}`;
+    } else if (status && status !== 'all') {
+      params.push(status.trim());
+      sql += ` WHERE status = $${params.length}`;
+    }
+
+    sql += ' ORDER BY id DESC LIMIT 100';
+    const { rows } = await db.query(sql, params);
+    res.json({ requests: rows, candidates: rows });
+  } catch (err) {
+    console.error('Onboarding list error:', err);
+    res.status(500).json({ error: 'Failed to fetch onboarding requests.' });
+  }
+});
+
+// Admin Review: Approve or Reject
+router.post('/onboarding/review', async (req, res) => {
+  const { onboarding_id, action, admin_notes } = req.body;
+  if (!onboarding_id || !action) {
+    return res.status(400).json({ error: 'onboarding_id and action (approve/reject) are required.' });
+  }
+
+  try {
+    const { rows: reqRows } = await db.query('SELECT * FROM staff_onboarding WHERE id = $1', [onboarding_id]);
+    const record = reqRows[0];
+    if (!record) {
+      return res.status(404).json({ error: 'Onboarding request not found.' });
+    }
+
+    if (action === 'approve') {
+      // 1. Update onboarding request
+      await db.query(
+        `UPDATE staff_onboarding SET status = 'approved', admin_notes = $1, reviewed_at = now() WHERE id = $2`,
+        [admin_notes || 'Approved by Admin', onboarding_id]
+      );
+
+      // 2. Create / activate account in users table
+      const defaultPass = record.role === 'doctor' || record.role === 'nurse' ? 'doctor123' : 'tech123';
+      await db.query(
+        `INSERT INTO users (name, phone, email, password, role, specialty, active)
+         VALUES ($1, $2, $3, $4, $5, $6, TRUE)
+         ON CONFLICT (phone) DO UPDATE SET active = TRUE, role = $5, specialty = $6`,
+        [record.candidate_name, record.candidate_phone, record.candidate_email, defaultPass, record.role, record.specialty]
+      );
+
+      // 3. Synchronize to doctors or technicians table for WhatsApp dispatching
+      if (record.role === 'doctor' || record.role === 'nurse') {
+        await db.query(
+          `INSERT INTO doctors (name, phone, specialty, active) VALUES ($1, $2, $3, TRUE)
+           ON CONFLICT (phone) DO UPDATE SET active = TRUE, specialty = $3`,
+          [record.candidate_name, record.candidate_phone, record.specialty]
+        );
+      } else if (record.role === 'technician') {
+        await db.query(
+          `INSERT INTO technicians (name, phone, active) VALUES ($1, $2, TRUE)
+           ON CONFLICT (phone) DO UPDATE SET active = TRUE`,
+          [record.candidate_name, record.candidate_phone]
+        );
+      }
+
+      // 4. WhatsApp notifications
+      const wa = require('../services/whatsapp');
+      await wa.sendText(
+        record.candidate_phone,
+        `🎉 Congratulations ${record.candidate_name}! Your Ayans Medicare staff onboarding (submitted by ${record.submitted_by_name}) has been verified and APPROVED by the Admin.\n\nYou can now log into your portal at https://medicalsupport-sable.vercel.app/portal.html using your phone (${record.candidate_phone}) and default password '${defaultPass}'. Welcome to our healthcare network!`
+      );
+      if (record.submitted_by_phone) {
+        await wa.sendText(
+          record.submitted_by_phone,
+          `✅ Great news ${record.submitted_by_name}! Your candidate ${record.candidate_name} (${record.role} - ${record.specialty}) has been verified and APPROVED by the Admin.`
+        );
+      }
+
+      res.json({
+        success: true,
+        message: `${record.candidate_name} has been approved and activated into the portal as ${record.role}!`,
+        candidate: record
+      });
+    } else {
+      // Action === 'reject'
+      await db.query(
+        `UPDATE staff_onboarding SET status = 'rejected', admin_notes = $1, reviewed_at = now() WHERE id = $2`,
+        [admin_notes || 'Verification requirements not satisfied', onboarding_id]
+      );
+
+      const wa = require('../services/whatsapp');
+      if (record.submitted_by_phone) {
+        await wa.sendText(
+          record.submitted_by_phone,
+          `⚠️ Onboarding Update: Candidate ${record.candidate_name} (${record.role}) was rejected by the Admin. Reason: ${admin_notes || 'Documentation requirements not met'}.`
+        );
+      }
+
+      res.json({
+        success: true,
+        message: `Onboarding request for ${record.candidate_name} has been marked as rejected.`,
+        candidate: record
+      });
+    }
+  } catch (err) {
+    console.error('Onboarding review error:', err);
+    res.status(500).json({ error: 'Failed to process onboarding review.' });
   }
 });
 

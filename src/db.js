@@ -87,6 +87,25 @@ function initSqlite() {
       active INTEGER NOT NULL DEFAULT 1,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS staff_onboarding (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      candidate_name TEXT NOT NULL,
+      candidate_phone TEXT UNIQUE NOT NULL,
+      candidate_email TEXT,
+      role TEXT NOT NULL,
+      specialty TEXT,
+      license_number TEXT,
+      experience_years INTEGER,
+      documents_verified INTEGER DEFAULT 1,
+      verification_notes TEXT,
+      submitted_by_name TEXT NOT NULL,
+      submitted_by_phone TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      admin_notes TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      reviewed_at TEXT
+    );
     CREATE TABLE IF NOT EXISTS message_log (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       request_id INTEGER REFERENCES requests(id),
@@ -118,6 +137,8 @@ function initSqlite() {
     sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Dr. Ananya Sharma', '919876543210', 'doctor123', 'doctor', 'Consultant Physician');
     sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Priya', '919876543211', 'tech123', 'technician', 'Senior Phlebotomist');
     sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Kiran Kumar', '919876543212', 'tech123', 'technician', 'Diagnostics Tech');
+    sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Sneha HR (Onboarding Specialist)', '919876543200', 'staff123', 'employee', 'Talent Acquisition & Compliance');
+    sqliteDb.prepare('INSERT INTO users (name, phone, password, role, specialty) VALUES (?, ?, ?, ?, ?)').run('Ramesh Patient', '919876500000', 'patient123', 'patient', 'General');
   }
 
   return sqliteDb;

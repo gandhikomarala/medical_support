@@ -72,3 +72,23 @@ CREATE TABLE IF NOT EXISTS users (
   active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS staff_onboarding (
+  id SERIAL PRIMARY KEY,
+  candidate_name TEXT NOT NULL,
+  candidate_phone TEXT UNIQUE NOT NULL,
+  candidate_email TEXT,
+  role TEXT NOT NULL,                  -- 'doctor' | 'nurse' | 'technician'
+  specialty TEXT,                     -- e.g. 'Cardiology', 'Senior Phlebotomist'
+  license_number TEXT,                -- Medical registration / license number
+  experience_years INTEGER,
+  documents_verified BOOLEAN DEFAULT TRUE,
+  verification_notes TEXT,            -- Recruiter verification notes
+  submitted_by_name TEXT NOT NULL,    -- Name of hiring employee
+  submitted_by_phone TEXT NOT NULL,   -- Phone of hiring employee
+  status TEXT NOT NULL DEFAULT 'pending', -- 'pending' | 'approved' | 'rejected'
+  admin_notes TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  reviewed_at TIMESTAMPTZ
+);
+
