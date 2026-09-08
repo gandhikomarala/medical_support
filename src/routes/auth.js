@@ -65,10 +65,22 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    const userCheck = await db.query(
-      'SELECT id, name, phone, email, role, specialty, active, password FROM users WHERE phone = $1 OR email = $1',
-      [identifier.trim()]
-    );
+    const trimmedId = identifier.trim();
+    const digitsOnly = trimmedId.replace(/[^0-9]/g, '');
+
+    let userCheck;
+    if (digitsOnly.length >= 10) {
+      userCheck = await db.query(
+        'SELECT id, name, phone, email, role, specialty, active, password FROM users WHERE phone LIKE $1 OR phone = $2 OR email = $2',
+        [`%${digitsOnly.slice(-10)}`, trimmedId]
+      );
+    } else {
+      userCheck = await db.query(
+        'SELECT id, name, phone, email, role, specialty, active, password FROM users WHERE LOWER(phone) = LOWER($1) OR LOWER(email) = LOWER($1)',
+        [trimmedId]
+      );
+    }
+
     const user = userCheck.rows[0];
     if (!user) {
       return res.status(401).json({ error: 'No account found with this phone/username. Please register or check your number.' });

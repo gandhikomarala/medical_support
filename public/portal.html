@@ -589,7 +589,7 @@
       <div class="demo-chips" style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:10px; padding:12px 14px; margin-top:20px;">
         <div style="font-size:12px; font-weight:700; color:#475569; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
           <span>⚡ One-Click Demo Logins:</span>
-          <span style="font-size:11px; color:#64748b;">(Click to auto-fill)</span>
+          <span style="font-size:11px; color:#059669; font-weight:600;">(Click any role to log in instantly)</span>
         </div>
         <div class="chip-group" style="gap:6px;">
           <div class="chip" style="background:#e0f2fe; color:#0369a1; font-weight:600;" onclick="fillDemo('patient', '919876500000', 'patient123')">👤 Patient (Ramesh)</div>
@@ -1301,9 +1301,41 @@
   }
 
   function fillDemo(role, identifier, pwd) {
+    quickLogin(role, identifier, pwd);
+  }
+
+  async function quickLogin(role, identifier, pwd) {
     document.getElementById('loginRole').value = role;
     document.getElementById('loginIdentifier').value = identifier;
     document.getElementById('loginPassword').value = pwd;
+
+    const alertBox = document.getElementById('authAlert');
+    alertBox.style.display = 'none';
+
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.textContent = `Logging in as ${role.toUpperCase()}...`;
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role, identifier, password: pwd })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login failed');
+
+      currentUser = data.user;
+      localStorage.setItem('ayans_user', JSON.stringify(currentUser));
+      showDashboard(currentUser);
+    } catch (err) {
+      alertBox.className = 'alert alert-error';
+      alertBox.textContent = err.message;
+      alertBox.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Log In';
+    }
   }
 
   async function handleLogin(e) {
@@ -1381,7 +1413,6 @@
     const empDash = document.getElementById('employeeDashboard');
     if (empDash) empDash.classList.add('hidden');
     document.getElementById('patientDashboard').classList.add('hidden');
-    const empDash = document.getElementById('employeeDashboard'); if (empDash) empDash.classList.add('hidden');
 
     if (user.role === 'admin') {
       document.getElementById('adminDashboard').classList.remove('hidden');
