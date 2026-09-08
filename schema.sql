@@ -92,3 +92,29 @@ CREATE TABLE IF NOT EXISTS staff_onboarding (
   reviewed_at TIMESTAMPTZ
 );
 
+CREATE TABLE IF NOT EXISTS patient_vitals (
+  id SERIAL PRIMARY KEY,
+  patient_phone TEXT NOT NULL,
+  systolic INTEGER,
+  diastolic INTEGER,
+  blood_sugar_fasting NUMERIC(6, 2),
+  blood_sugar_pp NUMERIC(6, 2),
+  pulse INTEGER,
+  height_cm NUMERIC(6, 2),
+  weight_kg NUMERIC(6, 2),
+  bmi NUMERIC(6, 2),
+  notes TEXT,
+  recorded_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS pharmacy_orders (
+  id SERIAL PRIMARY KEY,
+  request_id INTEGER,
+  patient_name TEXT NOT NULL,
+  patient_phone TEXT NOT NULL,
+  delivery_address TEXT NOT NULL,
+  medicine_details TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+

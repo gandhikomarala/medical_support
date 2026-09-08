@@ -465,6 +465,64 @@
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
   }
 
+
+  /* Zero-Fee and MFine Inspired Enhancements */
+  .symptom-chip {
+    background: #f1f5f9;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .symptom-chip:hover {
+    background: #e2e8f0;
+    border-color: var(--brand);
+    color: var(--brand);
+    transform: translateY(-1px);
+  }
+  .vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .vital-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .vital-val {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 4px 0 2px;
+  }
+  .vital-unit {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: normal;
+  }
+  .vital-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .status-normal { background: #dcfce7; color: #166534; }
+  .status-warning { background: #fef3c7; color: #92400e; }
+  .status-alert { background: #fee2e2; color: #991b1b; }
+
 </style>
 </head>
 <body>
@@ -890,18 +948,124 @@
     </div>
 
     <div class="pill-tabs">
-      <button class="pill-tab active" id="tabBtnCatalog" onclick="switchPatientTab('catalog')">Explore Services Catalog</button>
-      <button class="pill-tab" id="tabBtnBookings" onclick="switchPatientTab('bookings')">My Active Consultations & Bookings</button>
+      <button class="pill-tab active" id="tabBtnCatalog" onclick="switchPatientTab('catalog')">🩺 Doctor Consults & Health Packages</button>
+      <button class="pill-tab" id="tabBtnBookings" onclick="switchPatientTab('bookings')">📅 My Consultations & Orders</button>
+      <button class="pill-tab" id="tabBtnVitals" onclick="switchPatientTab('vitals')">📊 My Health Vitals (BP, Sugar, BMI)</button>
     </div>
 
     <!-- Catalog View -->
     <div id="patientCatalogView">
+
+      <!-- Zero-Fee Doctor Consultation Banner -->
+      <div style="background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 20px 24px; border-radius: 14px; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);">
+        <div>
+          <span style="background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;">Community Health Mission</span>
+          <h2 style="margin: 6px 0 3px; font-size: 22px; font-weight: 700; color:#ffffff;">Zero Consultation Fee (₹0) for All Patients</h2>
+          <p style="margin: 0; font-size: 13.5px; opacity: 0.95; max-width: 650px;">
+            Consult with certified MBBS General Physicians and Specialists at <strong>₹0 Doctor Fee</strong>. Get accurate diagnosis, digital Rx, and follow-up guidance without financial barrier.
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 26px; font-weight: 800; color: #fef08a;">₹0 FREE</div>
+          <div style="font-size: 12px; opacity: 0.9;">Consultation Charges</div>
+        </div>
+      </div>
+
+      <!-- Symptom & Health Concern Quick Finder (Inspired by MFine) -->
+      <div style="margin-bottom: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:8px;">
+          <div>
+            <h3 style="margin:0; font-size: 16px; font-weight:700; color:var(--ink);">Quick Consult by Symptom / Concern</h3>
+            <p style="margin:2px 0 0; font-size: 12.5px; color:var(--ink-soft);">Tap a symptom below for instant 1-click doctor connection at <strong>₹0 Consultation Fee</strong>:</p>
+          </div>
+          <span style="font-size:12px; font-weight:600; color:#059669; background:#dcfce7; padding:4px 10px; border-radius:12px;">⚡ First Available Doctor Responds</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button type="button" class="symptom-chip" onclick="quickSymptomBooking('Fever, Cold, Chills & Viral Infection', 'General Physician')">🤒 Fever & Cold</button>
+          <button type="button" class="symptom-chip" onclick="quickSymptomBooking('Chest Heaviness, Palpitations & High BP', 'Cardiologist')">❤️ Chest & Heart</button>
+          <button type="button" class="symptom-chip" onclick="quickSymptomBooking('High Blood Sugar, Fatigue & Diabetes Review', 'Diabetologist / Physician')">🩺 Diabetes & Sugar</button>
+          <button type="button" class="symptom-chip" onclick="quickSymptomBooking('Child Health, High Fever & Pediatric Care', 'Pediatrician')">👶 Child Health</button>
+          <button type="button" class="symptom-chip" onclick="quickSymptomBooking('Skin Rashes, Acne, Itching & Hair Fall', 'Dermatologist')">🧴 Skin & Hair</button>
+          <button type="button" class="symptom-chip" onclick="quickSymptomBooking('Joint Stiffness, Knee Pain & Backache', 'Orthopedic')">🦴 Bone & Joint Pain</button>
+          <button type="button" class="symptom-chip" onclick="quickSymptomBooking('Severe Acidity, Indigestion & Stomach Pain', 'General Physician')">🍃 Digestion & Acidity</button>
+          <button type="button" class="symptom-chip" onclick="quickSymptomBooking('Anxiety, Insomnia & Mental Stress', 'Psychiatrist / Counselor')">🧠 Stress & Sleep</button>
+          <button type="button" class="symptom-chip" onclick="quickSymptomBooking('Women Health, Period Cramps & Pregnancy', 'Gynecologist')">🤰 Women's Health</button>
+        </div>
+      </div>
+
       <div style="margin-bottom:12px;">
         <h2 style="font-size:20px; font-weight:600;">Available Healthcare Services</h2>
         <p style="font-size:13.5px; color:var(--ink-soft);">Select a healthcare service to request immediate doctor consultation or doorstep clinical care.</p>
       </div>
       <div class="catalog-grid" id="servicesCatalogGrid">
         <p style="color:var(--ink-soft);">Loading catalog...</p>
+      </div>
+    </div>
+
+    
+    <!-- Patient Health Vitals View (MFine Inspired) -->
+    <div id="patientVitalsView" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 18px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:20px; font-weight:700; margin:0 0 4px;">My Health Vitals & Wellness Monitor</h2>
+          <p style="font-size:13.5px; color:var(--ink-soft); margin:0;">
+            Track your Blood Pressure, Blood Glucose, Pulse, and BMI. Consulting doctors can review your trends in real time.
+          </p>
+        </div>
+        <button class="btn-primary" onclick="document.getElementById('recordVitalsModal').classList.add('active')">+ Record New Vitals</button>
+      </div>
+
+      <!-- Current Vitals Summary Cards -->
+      <div class="vitals-grid">
+        <div class="vital-card">
+          <div style="font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase;">Blood Pressure</div>
+          <div class="vital-val" id="vitalBpVal">--/-- <span class="vital-unit">mmHg</span></div>
+          <span class="vital-status status-normal" id="vitalBpStatus">No data yet</span>
+        </div>
+        <div class="vital-card">
+          <div style="font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase;">Fasting Sugar</div>
+          <div class="vital-val" id="vitalSugarFastingVal">-- <span class="vital-unit">mg/dL</span></div>
+          <span class="vital-status status-normal" id="vitalSugarFastingStatus">No data yet</span>
+        </div>
+        <div class="vital-card">
+          <div style="font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase;">Post-Meal Sugar</div>
+          <div class="vital-val" id="vitalSugarPpVal">-- <span class="vital-unit">mg/dL</span></div>
+          <span class="vital-status status-normal" id="vitalSugarPpStatus">No data yet</span>
+        </div>
+        <div class="vital-card">
+          <div style="font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase;">Heart Rate / Pulse</div>
+          <div class="vital-val" id="vitalPulseVal">-- <span class="vital-unit">bpm</span></div>
+          <span class="vital-status status-normal" id="vitalPulseStatus">No data yet</span>
+        </div>
+        <div class="vital-card">
+          <div style="font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase;">Body Mass Index (BMI)</div>
+          <div class="vital-val" id="vitalBmiVal">-- <span class="vital-unit">kg/m²</span></div>
+          <span class="vital-status status-normal" id="vitalBmiStatus">No data yet</span>
+        </div>
+      </div>
+
+      <!-- Vitals History Table -->
+      <div class="card-table">
+        <div class="table-header-bar">
+          <h2>Vitals History & Clinical Logs</h2>
+          <button class="btn-sm-outline" onclick="loadPatientVitals()">Refresh History</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Blood Pressure (mmHg)</th>
+                <th>Blood Sugar (Fasting / PP)</th>
+                <th>Pulse Rate</th>
+                <th>Height / Weight</th>
+                <th>BMI</th>
+                <th>Patient Notes</th>
+              </tr>
+            </thead>
+            <tbody id="patientVitalsHistoryTable"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -929,6 +1093,86 @@
           </table>
         </div>
       </div>
+    </div>
+  </div>
+
+  
+  <!-- Record Vitals Modal -->
+  <div class="modal-overlay" id="recordVitalsModal">
+    <div class="modal-box" style="max-width:550px;">
+      <button class="modal-close" onclick="closeModal('recordVitalsModal')">&times;</button>
+      <h2 style="font-size:20px; margin-bottom:6px;">Record Health Vitals</h2>
+      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:16px;">
+        Enter your latest health measurements to maintain your personal health record and assist consulting doctors.
+      </p>
+      <form onsubmit="submitPatientVitals(event)">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label>Systolic BP (Upper, mmHg)</label>
+            <input type="number" id="vitalsSystolic" placeholder="e.g. 120" min="60" max="260">
+          </div>
+          <div class="form-group">
+            <label>Diastolic BP (Lower, mmHg)</label>
+            <input type="number" id="vitalsDiastolic" placeholder="e.g. 80" min="40" max="180">
+          </div>
+          <div class="form-group">
+            <label>Fasting Sugar (mg/dL)</label>
+            <input type="number" step="0.1" id="vitalsSugarFast" placeholder="e.g. 95">
+          </div>
+          <div class="form-group">
+            <label>Post-Meal Sugar (mg/dL)</label>
+            <input type="number" step="0.1" id="vitalsSugarPp" placeholder="e.g. 130">
+          </div>
+          <div class="form-group">
+            <label>Pulse / Heart Rate (bpm)</label>
+            <input type="number" id="vitalsPulse" placeholder="e.g. 72" min="30" max="220">
+          </div>
+          <div class="form-group">
+            <label>Height (cm)</label>
+            <input type="number" id="vitalsHeight" placeholder="e.g. 172" oninput="calculateBmiPreview()">
+          </div>
+          <div class="form-group">
+            <label>Weight (kg)</label>
+            <input type="number" step="0.1" id="vitalsWeight" placeholder="e.g. 68" oninput="calculateBmiPreview()">
+          </div>
+          <div class="form-group">
+            <label>Calculated BMI</label>
+            <input type="text" id="vitalsBmiPreview" readonly placeholder="Auto-calculated" style="background:#f8fafc;">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:10px;">
+          <label>Notes / Symptoms Observed</label>
+          <input type="text" id="vitalsNotes" placeholder="e.g. Checked before breakfast, mild headache">
+        </div>
+        <button type="submit" class="btn-primary" id="saveVitalsBtn" style="margin-top:10px; width:100%;">Save Vitals</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Medicine Doorstep Delivery Modal -->
+  <div class="modal-overlay" id="orderPharmacyModal">
+    <div class="modal-box" style="max-width:550px;">
+      <button class="modal-close" onclick="closeModal('orderPharmacyModal')">&times;</button>
+      <h2 style="font-size:20px; margin-bottom:6px;">📦 Request Doorstep Medicine Delivery</h2>
+      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:16px;">
+        Get your prescribed medicines delivered directly to your home via our licensed partner pharmacies. <strong>Free Delivery!</strong>
+      </p>
+      <form onsubmit="submitPharmacyOrder(event)">
+        <input type="hidden" id="pharmacyReqId">
+        <div class="form-group">
+          <label>Delivery Address *</label>
+          <input type="text" id="pharmacyAddress" required placeholder="Full residential delivery address">
+        </div>
+        <div class="form-group">
+          <label>Medicines to Order / Prescription Details *</label>
+          <textarea id="pharmacyMedicines" rows="3" required placeholder="e.g. Paracetamol 500mg, Azithromycin 500mg, Cough Syrup"></textarea>
+        </div>
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:10px 14px; border-radius:8px; font-size:12.5px; color:#166534; margin-bottom:14px;">
+          ✓ 100% Genuine & Verified Pharmacy Products<br>
+          ✓ Delivered within 2-4 hours with temperature control
+        </div>
+        <button type="submit" class="btn-primary" id="orderPharmacyBtn" style="width:100%;">Confirm Medicine Delivery Request</button>
+      </form>
     </div>
   </div>
 
@@ -1367,14 +1611,25 @@
 
   function switchPatientTab(tab) {
     const isCatalog = tab === 'catalog';
+    const isBookings = tab === 'bookings';
+    const isVitals = tab === 'vitals';
+
     document.getElementById('patientCatalogView').classList.toggle('hidden', !isCatalog);
-    document.getElementById('patientBookingsView').classList.toggle('hidden', isCatalog);
+    document.getElementById('patientBookingsView').classList.toggle('hidden', !isBookings);
+    const vitalsView = document.getElementById('patientVitalsView');
+    if (vitalsView) vitalsView.classList.toggle('hidden', !isVitals);
+
     document.getElementById('tabBtnCatalog').classList.toggle('active', isCatalog);
-    document.getElementById('tabBtnBookings').classList.toggle('active', !isCatalog);
-    if (!isCatalog) {
-      loadPatientData();
-    } else {
+    document.getElementById('tabBtnBookings').classList.toggle('active', isBookings);
+    const tabVitals = document.getElementById('tabBtnVitals');
+    if (tabVitals) tabVitals.classList.toggle('active', isVitals);
+
+    if (isCatalog) {
       loadServicesCatalog();
+    } else if (isBookings) {
+      loadPatientData();
+    } else if (isVitals) {
+      loadPatientVitals();
     }
   }
 
@@ -1393,7 +1648,7 @@
             ${s.badge ? `<span class="catalog-badge">${s.badge}</span>` : ''}
             <div style="font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase;">${s.category}</div>
             <h3 style="font-size:18px; margin:6px 0;">${s.title}</h3>
-            <div class="catalog-price">₹${s.price}</div>
+            <div class="catalog-price">${s.price === 0 ? "<span style=\"color:#059669; font-weight:800;\">₹0 FREE (Zero Fee)</span>" : "₹" + s.price}</div>
             <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:10px;">⏱ ${s.duration}</div>
             <p style="font-size:13px; color:var(--ink); margin-bottom:12px;">${s.description}</p>
             <ul class="catalog-features">

@@ -106,6 +106,32 @@ function initSqlite() {
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       reviewed_at TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS patient_vitals (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      patient_phone TEXT NOT NULL,
+      systolic INTEGER,
+      diastolic INTEGER,
+      blood_sugar_fasting REAL,
+      blood_sugar_pp REAL,
+      pulse INTEGER,
+      height_cm REAL,
+      weight_kg REAL,
+      bmi REAL,
+      notes TEXT,
+      recorded_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS pharmacy_orders (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      request_id INTEGER,
+      patient_name TEXT NOT NULL,
+      patient_phone TEXT NOT NULL,
+      delivery_address TEXT NOT NULL,
+      medicine_details TEXT NOT NULL,
+      status TEXT DEFAULT 'pending',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
     CREATE TABLE IF NOT EXISTS message_log (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       request_id INTEGER REFERENCES requests(id),

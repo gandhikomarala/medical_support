@@ -34,68 +34,90 @@ const SERVICES_CATALOG = [
   {
     id: 'gp_home',
     type: 'doctor',
-    title: 'General Physician Home Consult',
-    category: 'Doctor at Home',
-    price: 699,
-    duration: '30-45 mins',
-    badge: 'Most Popular',
-    description: 'MBBS Doctor visits your home for physical examination, symptom diagnosis, and digital Rx.',
-    features: ['In-person clinical checkup', 'Vitals & BP monitoring', 'Instant digital Rx & lab orders', 'Zero travel stress']
+    title: 'General Physician Consultation',
+    category: 'Doctor Consult',
+    price: 0,
+    duration: '20-30 mins',
+    badge: '₹0 Free Consult',
+    description: 'Zero-fee consultation with certified MBBS doctor for fever, cough, viral infection, and routine health complaints.',
+    features: ['100% Free Consultation (₹0)', 'Physical & Symptom Diagnosis', 'Instant Digital Prescription & Rx Pad', 'Follow-up Care Guidance']
   },
   {
     id: 'specialist_video',
     type: 'doctor',
-    title: 'Specialist Telehealth Consultation',
-    category: 'Video Tele-Consult',
-    price: 899,
+    title: 'Specialist Telehealth Video Consult',
+    category: 'Tele-Consult',
+    price: 0,
     duration: '20-30 mins',
-    badge: 'Instant Connect',
-    description: 'Private 1-on-1 video call with senior specialist doctors (Cardiology, Pediatrics, General Medicine).',
-    features: ['Direct video consultation', 'Encrypted private meeting room', 'Digital prescription delivery', 'Follow-up chat support']
+    badge: '₹0 Free Video Call',
+    description: 'Instant private video consultation with senior medical specialists (Cardiology, Pediatrics, Dermatology, Internal Medicine).',
+    features: ['100% Free Video Consult (₹0)', 'Secure Encrypted Private Meeting Room', 'Doctor Clinical Diagnosis & Advice', 'Zero Patient Contact Leak']
   },
   {
     id: 'nurse_care',
     type: 'nurse',
-    title: 'Home Nursing & Injection / IV Saline',
+    title: 'Home Nursing & Clinical Vitals Care',
     category: 'Nursing Services',
-    price: 499,
+    price: 0,
     duration: '30 mins',
-    badge: 'Clinical Care',
-    description: 'Certified nurse for IV drip cannula, intramuscular injections, wound dressing, and post-hospital care.',
-    features: ['Certified clinical nurse', 'Sterile disposable equipment', 'Post-surgical dressing', 'IV/IM medication administration']
+    badge: '₹0 Free Care Assist',
+    description: 'Doorstep nurse support for vitals monitoring, blood pressure screening, pulse tracking, and clinical guidance.',
+    features: ['100% Free Health Guidance (₹0)', 'Vitals & Blood Pressure Check', 'Injection / IV Assistance', 'Post-Op Recovery Support']
   },
   {
     id: 'full_body_lab',
     type: 'lab_test',
     title: 'Comprehensive Full-Body Health Checkup',
     category: 'Diagnostics & Lab',
-    price: 1299,
+    price: 999,
     duration: 'Home sample pickup',
-    badge: 'Best Value',
-    description: '72+ vital parameters: Complete Hemogram (CBC), Lipid profile, Liver (LFT), Kidney (KFT), Thyroid (TSH), Blood Sugar.',
-    features: ['Doorstep blood/urine sample collection', 'Certified phlebotomist visit', 'NABL accredited lab processing', 'Digital PDF report in portal']
+    badge: '65+ Parameters',
+    description: 'Complete health check: Complete Hemogram (CBC), Lipid Profile, Liver Function (LFT), Kidney Function (KFT), Thyroid (TSH), and Blood Sugar.',
+    features: ['Doorstep blood & urine collection', '65+ vital health parameters tested', 'NABL Accredited Laboratory Processing', 'Free Follow-up Doctor Review (₹0)']
   },
   {
-    id: 'elderly_care',
-    type: 'nurse',
-    title: 'Senior Citizen Health & Vitals Monitoring',
-    category: 'Elderly Support',
+    id: 'diabetes_care_profile',
+    type: 'lab_test',
+    title: 'Diabetes & Metabolic Screening Profile',
+    category: 'Diagnostics & Lab',
+    price: 499,
+    duration: 'Home sample pickup',
+    badge: 'Diabetes Profile',
+    description: 'Essential diabetes monitoring: HbA1c 3-Month Average Glucose, Fasting Blood Sugar (FBS), and Urine Microalbumin.',
+    features: ['Doorstep painless sample collection', 'Gold standard HbA1c Glycated Hemoglobin', 'Fasting Blood Glucose Analysis', 'Dietary & Lifestyle Health Plan']
+  },
+  {
+    id: 'cardiac_heart_profile',
+    type: 'lab_test',
+    title: 'Cardiac Risk & Heart Health Profile',
+    category: 'Diagnostics & Lab',
     price: 799,
-    duration: '60 mins',
-    badge: 'Senior Support',
-    description: 'Comprehensive routine vitals, mobility check, blood sugar, ECG/pulse tracking, and medicine organization.',
-    features: ['Blood pressure & SPO2 check', 'Random blood sugar test', 'Medication schedule review', 'Compassionate elder care']
+    duration: 'Home sample pickup',
+    badge: 'Heart Health Profile',
+    description: 'Comprehensive lipid and cardiovascular risk analysis: Total Cholesterol, HDL, LDL, Triglycerides, and hs-CRP inflammation marker.',
+    features: ['Comprehensive Lipid Panel', 'Atherogenic risk index calculation', 'Certified Phlebotomist Home Visit', 'Digital PDF Report in Portal']
+  },
+  {
+    id: 'thyroid_screening',
+    type: 'lab_test',
+    title: 'Thyroid Care & Hormone Profile',
+    category: 'Diagnostics & Lab',
+    price: 399,
+    duration: 'Home sample pickup',
+    badge: 'Thyroid Profile',
+    description: 'Complete thyroid hormone panel: Total T3, Total T4, and ultrasensitive TSH for metabolic and weight evaluation.',
+    features: ['T3, T4 and TSH hormones tested', 'Early hypothyroidism detection', 'Same-day NABL certified report', 'Digital report delivery to phone']
   },
   {
     id: 'express_pharmacy',
     type: 'pharmacy',
-    title: 'Doorstep Medicine & Pharmacy Delivery',
+    title: 'Prescription Medicine Doorstep Delivery',
     category: 'Pharmacy',
-    price: 199,
+    price: 0,
     duration: 'Within 2 hours',
-    badge: 'Fast Delivery',
-    description: 'Upload your doctor prescription; our licensed pharmacy dispenses and delivers original medicines right to your home.',
-    features: ['Genuine 100% verified medicines', 'Express 2-hour delivery', 'Temperature-controlled pack', 'Direct billing assistance']
+    badge: 'Free Delivery',
+    description: 'Submit your doctor prescription; our licensed partner pharmacies dispense 100% genuine medicines with free delivery.',
+    features: ['100% genuine verified medicines', 'Express doorstep delivery', 'Direct bill payment at doorstep', 'Medication guidance & reminders']
   }
 ];
 
@@ -345,7 +367,7 @@ router.get('/doctor/available-requests', async (req, res) => {
 });
 
 // Atomic acceptance: First doctor to accept claims the patient
-router.post('/doctor/accept-request', async (req, res) => {
+router.post(['/doctor/accept-request', '/doctor/accept'], async (req, res) => {
   const { doctor_phone, request_id } = req.body;
   if (!doctor_phone || !request_id) {
     return res.status(400).json({ error: 'doctor_phone and request_id are required.' });
@@ -727,4 +749,142 @@ router.post('/onboarding/review', async (req, res) => {
   }
 });
 
+// ==========================================
+// 8. PATIENT HEALTH VITALS (MFine Inspired)
+// ==========================================
+
+// Record patient vitals (BP, Blood Sugar, Pulse, BMI)
+router.post('/vitals', async (req, res) => {
+  const {
+    patient_phone,
+    systolic,
+    diastolic,
+    blood_sugar_fasting,
+    blood_sugar_pp,
+    pulse,
+    height_cm,
+    weight_kg,
+    notes
+  } = req.body;
+
+  if (!patient_phone) {
+    return res.status(400).json({ error: 'patient_phone is required.' });
+  }
+
+  let bmi = null;
+  if (height_cm && weight_kg && parseFloat(height_cm) > 0) {
+    const hM = parseFloat(height_cm) / 100;
+    bmi = (parseFloat(weight_kg) / (hM * hM)).toFixed(1);
+  }
+
+  try {
+    const { rows } = await db.query(
+      `INSERT INTO patient_vitals 
+       (patient_phone, systolic, diastolic, blood_sugar_fasting, blood_sugar_pp, pulse, height_cm, weight_kg, bmi, notes, recorded_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, now())
+       RETURNING *`,
+      [
+        patient_phone.trim(),
+        parseInt(systolic, 10) || null,
+        parseInt(diastolic, 10) || null,
+        blood_sugar_fasting ? parseFloat(blood_sugar_fasting) : null,
+        blood_sugar_pp ? parseFloat(blood_sugar_pp) : null,
+        parseInt(pulse, 10) || null,
+        height_cm ? parseFloat(height_cm) : null,
+        weight_kg ? parseFloat(weight_kg) : null,
+        bmi ? parseFloat(bmi) : null,
+        notes ? notes.trim() : null
+      ]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Health vitals recorded successfully.',
+      vitals: rows[0]
+    });
+  } catch (err) {
+    console.error('Vitals recording error:', err);
+    res.status(500).json({ error: 'Failed to record health vitals.' });
+  }
+});
+
+// Get patient vitals history
+router.get('/vitals/:phone', async (req, res) => {
+  const phone = req.params.phone.trim();
+  try {
+    const { rows } = await db.query(
+      'SELECT * FROM patient_vitals WHERE patient_phone = $1 ORDER BY recorded_at DESC LIMIT 25',
+      [phone]
+    );
+    res.json({ success: true, vitals: rows });
+  } catch (err) {
+    console.error('Vitals fetch error:', err);
+    res.status(500).json({ error: 'Failed to fetch patient vitals.' });
+  }
+});
+
+// ==========================================
+// 9. PRESCRIPTION MEDICINE DELIVERY (Pharmacy)
+// ==========================================
+
+// Submit medicine delivery order
+router.post('/pharmacy/order', async (req, res) => {
+  const { request_id, patient_name, patient_phone, delivery_address, medicine_details } = req.body;
+
+  if (!patient_name || !patient_phone || !delivery_address || !medicine_details) {
+    return res.status(400).json({ error: 'patient_name, patient_phone, delivery_address, and medicine_details are required.' });
+  }
+
+  try {
+    const { rows } = await db.query(
+      `INSERT INTO pharmacy_orders (request_id, patient_name, patient_phone, delivery_address, medicine_details, status, created_at)
+       VALUES ($1, $2, $3, $4, $5, 'pending', now())
+       RETURNING *`,
+      [
+        request_id ? parseInt(request_id, 10) : null,
+        patient_name.trim(),
+        patient_phone.trim(),
+        delivery_address.trim(),
+        medicine_details.trim()
+      ]
+    );
+
+    const wa = require('../services/whatsapp');
+    await wa.sendText(
+      patient_phone.trim(),
+      `📦 Medicine Order Confirmed! Hello ${patient_name}, your request for doorstep delivery of prescribed medicines has been received. Our partner pharmacy is preparing your dispatch to ${delivery_address}. Free Delivery!`
+    );
+
+    const ownerPhone = process.env.OWNER_WHATSAPP_NUMBER;
+    if (ownerPhone) {
+      await wa.sendText(
+        ownerPhone,
+        `💊 New Prescription Medicine Delivery Request!\nPatient: ${patient_name} (${patient_phone})\nAddress: ${delivery_address}\nMedicines: ${medicine_details}\nOrder ID: #${rows[0].id}`
+      );
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Prescription medicine delivery order placed successfully!',
+      order: rows[0],
+      order_id: rows[0].id
+    });
+  } catch (err) {
+    console.error('Pharmacy order error:', err);
+    res.status(500).json({ error: 'Failed to place medicine delivery order.' });
+  }
+});
+
+// List pharmacy orders
+router.get('/pharmacy/orders', async (req, res) => {
+  try {
+    const { rows } = await db.query('SELECT * FROM pharmacy_orders ORDER BY id DESC LIMIT 50');
+    res.json({ success: true, orders: rows });
+  } catch (err) {
+    console.error('Pharmacy list error:', err);
+    res.status(500).json({ error: 'Failed to fetch pharmacy orders.' });
+  }
+});
+
 module.exports = router;
+
