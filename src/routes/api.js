@@ -356,7 +356,7 @@ router.get('/doctor/available-requests', async (req, res) => {
     const { rows } = await db.query(
       `SELECT id, patient_name, patient_address, service_type, notes, amount, preferred_time, status, created_at
        FROM requests
-       WHERE status = 'new' AND (service_type = 'doctor' OR service_type = 'nurse')
+       WHERE status = 'new' AND service_type != 'lab_test'
        ORDER BY id DESC LIMIT 50`
     );
     res.json({ requests: rows });
@@ -375,11 +375,29 @@ router.post(['/doctor/accept-request', '/doctor/accept'], async (req, res) => {
 
   try {
     const cleanPhone = doctor_phone.replace(/[^0-9]/g, '');
-    const { rows: docRows } = await db.query(
+    let { rows: docRows } = await db.query(
       'SELECT id, name FROM doctors WHERE phone LIKE $1',
       [`%${cleanPhone}%`]
     );
-    const doctor = docRows[0];
+    let doctor = docRows[0];
+    if (!doctor) {
+      // Check if user is registered as doctor in users table
+      const { rows: uRows } = await db.query(
+        "SELECT id, name, phone, specialty FROM users WHERE role = 'doctor' AND (phone LIKE $1 OR username LIKE $1)",
+        [`%${cleanPhone}%`]
+      );
+      if (uRows[0]) {
+        // Auto-upsert into doctors table so assignments and foreign keys work cleanly
+        const ins = await db.query(
+          `INSERT INTO doctors (name, phone, specialty, active)
+           VALUES ($1, $2, $3, TRUE)
+           ON CONFLICT DO NOTHING
+           RETURNING id, name`,
+          [uRows[0].name || 'Doctor', cleanPhone, uRows[0].specialty || 'General Medicine']
+        );
+        doctor = ins.rows[0] || (await db.query('SELECT id, name FROM doctors WHERE phone LIKE $1', [`%${cleanPhone}%`])).rows[0];
+      }
+    }
     if (!doctor) {
       return res.status(404).json({ error: 'Doctor profile not found.' });
     }
@@ -426,7 +444,13 @@ router.post(['/doctor/accept-request', '/doctor/accept'], async (req, res) => {
 router.get('/doctor/my-requests/:phone', async (req, res) => {
   try {
     const cleanPhone = req.params.phone.replace(/[^0-9]/g, '');
-    const { rows: docRows } = await db.query('SELECT id, name FROM doctors WHERE phone LIKE $1', [`%${cleanPhone}%`]);
+    let { rows: docRows } = await db.query('SELECT id, name FROM doctors WHERE phone LIKE $1', [`%${cleanPhone}%`]);
+    if (!docRows[0]) {
+      const { rows: uRows } = await db.query("SELECT id, name FROM users WHERE role = 'doctor' AND phone LIKE $1", [`%${cleanPhone}%`]);
+      if (uRows[0]) {
+        docRows = (await db.query('SELECT id, name FROM doctors WHERE phone LIKE $1', [`%${cleanPhone}%`])).rows;
+      }
+    }
     if (!docRows[0]) return res.json({ requests: [] });
 
     const docId = docRows[0].id;

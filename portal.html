@@ -1095,6 +1095,7 @@
                 <th>ID</th>
                 <th>Service</th>
                 <th>Fee</th>
+                <th>Symptoms / Notes</th>
                 <th>Assigned Doctor</th>
                 <th>Preferred Time</th>
                 <th>Status</th>
@@ -1640,7 +1641,7 @@
       tbody.innerHTML = '';
       const list = data.requests || [];
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">No unassigned requests in stream right now. New requests will appear automatically.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--ink-soft); padding:20px;">No unassigned requests in stream right now. New requests will appear automatically.</td></tr>';
       } else {
         list.forEach(r => {
           const tr = document.createElement('tr');
@@ -2010,6 +2011,7 @@
     document.getElementById('bookModalPrice').textContent = s.price === 0 ? '₹0 FREE' : '₹' + s.price;
     document.getElementById('bookServiceType').value = s.type;
     document.getElementById('bookServiceAmount').value = s.price;
+    document.getElementById('bookNotes').value = '';
     document.getElementById('bookSubmitBtn').textContent = s.price === 0 ? 'Confirm & Request Doctor (₹0 FREE)' : ('Confirm & Request Care (₹' + s.price + ')');
 
     if (currentUser) {
@@ -2075,7 +2077,7 @@
       tbody.innerHTML = '';
       const list = data.bookings || [];
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">No bookings found. Click Explore Services Catalog to book your first doctor visit!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--ink-soft); padding:20px;">No bookings found. Click Explore Services Catalog to book your first doctor visit!</td></tr>';
       } else {
         list.forEach(r => {
           const tr = document.createElement('tr');
