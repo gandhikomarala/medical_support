@@ -1334,6 +1334,39 @@
   </div>
 </div>
 
+<!-- Admin Video Consultation & Meet Generator Modal -->
+<div class="modal-overlay" id="adminMeetModal">
+  <div class="modal-box" style="max-width:540px;">
+    <button class="modal-close" onclick="closeModal('adminMeetModal')">&times;</button>
+    <div style="margin-bottom:14px;">
+      <h2 style="font-size:20px; font-weight:700; margin:0 0 4px;">Generate Private Consultation Link</h2>
+      <p style="font-size:13px; color:var(--ink-soft); margin:0;">
+        Securely generate an encrypted Jitsi / Meet room link for Request #<span id="meetReqIdDisplay" style="font-weight:700; color:#1d4ed8;"></span> (<span id="meetPatientDisplay" style="font-weight:600;"></span>).
+      </p>
+    </div>
+
+    <form onsubmit="submitAdminMeetLink(event)">
+      <input type="hidden" id="meetReqId">
+
+      <div class="form-group">
+        <label>Custom Video Call URL (Optional)</label>
+        <input type="url" id="customMeetUrl" placeholder="Leave empty to auto-generate secure 1-click room">
+        <small style="color:var(--ink-soft); font-size:12px; display:block; margin-top:4px;">
+          If left empty, a private, encrypted WebRTC meeting room (meet.jit.si) will be automatically assigned.
+        </small>
+      </div>
+
+      <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:12px; margin-bottom:16px; font-size:12.5px; color:#1e40af;">
+        🛡️ <strong>Zero Direct Contact Guarantee:</strong> The link will be dispatched automatically via WhatsApp to both the assigned doctor and the patient. Neither party sees each other's direct personal phone numbers.
+      </div>
+
+      <button type="submit" class="btn-primary" id="meetSubmitBtn" style="width:100%; padding:12px; font-weight:600;">
+        Generate & Dispatch to Patient and Doctor
+      </button>
+    </form>
+  </div>
+</div>
+
 <script>
   let currentUser = JSON.parse(localStorage.getItem('ayans_user') || 'null');
 
@@ -1585,7 +1618,7 @@
                 ` : '<span style="color:#999; font-size:12px;">Link not generated</span>'}
               </td>
               <td>
-                <button class="btn-sm" onclick="openMeetModal(${r.id}, '${r.patient_name}')">${r.meet_link ? 'Regenerate Link' : 'Generate & Send Link'}</button>
+                <button class="btn-sm" onclick="openMeetModal(${r.id}, '${(r.patient_name || 'Patient').replace(/'/g, "\\'")}')">${r.meet_link ? 'Regenerate Link' : 'Generate & Send Link'}</button>
               </td>
             `;
             meetTbody.appendChild(tr);
