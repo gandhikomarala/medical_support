@@ -603,7 +603,8 @@ router.post('/onboarding/submit', async (req, res) => {
     return res.status(400).json({ error: 'Candidate name, phone, role, and recruiter name are required.' });
   }
 
-  const cleanPhone = candidate_phone.replace(/[^0-9]/g, '');
+  let cleanPhone = candidate_phone.replace(/[^0-9]/g, '');
+  if (cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
   if (cleanPhone.length < 10) {
     return res.status(400).json({ error: 'Please enter a valid candidate phone number with country code (e.g. 919959461095).' });
   }
@@ -637,14 +638,18 @@ router.post('/onboarding/submit', async (req, res) => {
       ]
     );
 
-    // Notify owner / admin via WhatsApp
-    const wa = require('../services/whatsapp');
-    const ownerPhone = process.env.OWNER_WHATSAPP_NUMBER;
-    if (ownerPhone) {
-      await wa.sendText(
-        ownerPhone,
-        `📋 New Staff Onboarding Submitted!\nCandidate: ${candidate_name} (${role.toUpperCase()} - ${specialty || 'General'})\nRegistration/License: ${license_number || 'N/A'}\nHired & Verified by: ${submitted_by_name} (${submitted_by_phone})\nPlease review and approve in Admin Portal.`
-      );
+    // Notify owner / admin via WhatsApp (safe-guarded)
+    try {
+      const wa = require('../services/whatsapp');
+      const ownerPhone = process.env.OWNER_WHATSAPP_NUMBER;
+      if (ownerPhone) {
+        await wa.sendText(
+          ownerPhone,
+          `📋 New Staff Onboarding Submitted!\nCandidate: ${candidate_name} (${role.toUpperCase()} - ${specialty || 'General'})\nRegistration/License: ${license_number || 'N/A'}\nHired & Verified by: ${submitted_by_name} (${submitted_by_phone})\nPlease review and approve in Admin Portal.`
+        );
+      }
+    } catch (waErr) {
+      console.warn('WhatsApp admin notify warning:', waErr.message);
     }
 
     res.status(201).json({
@@ -728,17 +733,21 @@ router.post('/onboarding/review', async (req, res) => {
         );
       }
 
-      // 4. WhatsApp notifications
-      const wa = require('../services/whatsapp');
-      await wa.sendText(
-        record.candidate_phone,
-        `🎉 Congratulations ${record.candidate_name}! Your Ayans Medicare staff onboarding (submitted by ${record.submitted_by_name}) has been verified and APPROVED by the Admin.\n\nYou can now log into your portal at https://medicalsupport-sable.vercel.app/portal.html using your phone (${record.candidate_phone}) and default password '${defaultPass}'. Welcome to our healthcare network!`
-      );
-      if (record.submitted_by_phone) {
+      // 4. WhatsApp notifications (safeguarded)
+      try {
+        const wa = require('../services/whatsapp');
         await wa.sendText(
-          record.submitted_by_phone,
-          `✅ Great news ${record.submitted_by_name}! Your candidate ${record.candidate_name} (${record.role} - ${record.specialty}) has been verified and APPROVED by the Admin.`
+          record.candidate_phone,
+          `🎉 Congratulations ${record.candidate_name}! Your Ayans Medicare staff onboarding (submitted by ${record.submitted_by_name}) has been verified and APPROVED by the Admin.\n\nYou can now log into your portal at https://medicalsupport-sable.vercel.app/portal.html using your phone (${record.candidate_phone}) and default password '${defaultPass}'. Welcome to our healthcare network!`
         );
+        if (record.submitted_by_phone) {
+          await wa.sendText(
+            record.submitted_by_phone,
+            `✅ Great news ${record.submitted_by_name}! Your candidate ${record.candidate_name} (${record.role} - ${record.specialty}) has been verified and APPROVED by the Admin.`
+          );
+        }
+      } catch (waErr) {
+        console.warn('WhatsApp review notify error:', waErr.message);
       }
 
       res.json({
@@ -753,12 +762,16 @@ router.post('/onboarding/review', async (req, res) => {
         [admin_notes || 'Verification requirements not satisfied', onboarding_id]
       );
 
-      const wa = require('../services/whatsapp');
-      if (record.submitted_by_phone) {
-        await wa.sendText(
-          record.submitted_by_phone,
-          `⚠️ Onboarding Update: Candidate ${record.candidate_name} (${record.role}) was rejected by the Admin. Reason: ${admin_notes || 'Documentation requirements not met'}.`
-        );
+      try {
+        const wa = require('../services/whatsapp');
+        if (record.submitted_by_phone) {
+          await wa.sendText(
+            record.submitted_by_phone,
+            `⚠️ Onboarding Update: Candidate ${record.candidate_name} (${record.role}) was rejected by the Admin. Reason: ${admin_notes || 'Documentation requirements not met'}.`
+          );
+        }
+      } catch (waErr) {
+        console.warn('WhatsApp reject notify error:', waErr.message);
       }
 
       res.json({

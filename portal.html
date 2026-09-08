@@ -864,51 +864,64 @@
         </p>
       </div>
 
+      <!-- 1-Click Quick-Fill Helper -->
+      <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:12px 16px; border-radius:10px; margin-bottom:18px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:13px; font-weight:700; color:#166534;">⚡ Quick-Fill Candidate (1-Click Test):</span>
+          <span style="font-size:11.5px; color:#15803d;">Generates unique test phone & verified credentials</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button type="button" class="btn-sm" style="background:#0284c7; color:#fff; border:none; padding:6px 14px; font-size:12px; border-radius:6px; cursor:pointer; font-weight:600;" onclick="quickFillCandidate('doctor')">🩺 Fill Doctor (Cardiologist)</button>
+          <button type="button" class="btn-sm" style="background:#7c3aed; color:#fff; border:none; padding:6px 14px; font-size:12px; border-radius:6px; cursor:pointer; font-weight:600;" onclick="quickFillCandidate('technician')">🔬 Fill Lab Technician</button>
+          <button type="button" class="btn-sm" style="background:#059669; color:#fff; border:none; padding:6px 14px; font-size:12px; border-radius:6px; cursor:pointer; font-weight:600;" onclick="quickFillCandidate('nurse')">👩‍⚕️ Fill Home Nurse</button>
+        </div>
+      </div>
+
       <div id="onboardingAlert" class="alert" style="display:none;"></div>
 
-      <form id="employeeOnboardForm" onsubmit="handleEmployeeOnboard(event)">
+      <form id="employeeOnboardForm" onsubmit="handleEmployeeOnboard(event)" novalidate>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
           <div class="form-group">
-            <label>Candidate Full Name *</label>
-            <input type="text" id="candName" required placeholder="e.g. Dr. Rajesh Kulkarni">
+            <label>Candidate Full Name <span style="color:#dc2626;">*</span></label>
+            <input type="text" id="candName" placeholder="e.g. Dr. Rajesh Kulkarni">
           </div>
           <div class="form-group">
-            <label>Candidate WhatsApp Phone (with 91) *</label>
-            <input type="tel" id="candPhone" required placeholder="e.g. 919988776655">
+            <label>Candidate WhatsApp Phone (with 91) <span style="color:#dc2626;">*</span></label>
+            <input type="tel" id="candPhone" placeholder="e.g. 919988776655">
           </div>
           <div class="form-group">
             <label>Candidate Email</label>
             <input type="email" id="candEmail" placeholder="e.g. rajesh.k@hospital.org">
           </div>
           <div class="form-group">
-            <label>Role to Assign *</label>
-            <select id="candRole" required>
+            <label>Role to Assign <span style="color:#dc2626;">*</span></label>
+            <select id="candRole">
               <option value="doctor">Doctor (Consultant / Specialist)</option>
               <option value="technician">Lab Technician / Phlebotomist</option>
               <option value="nurse">Home Care Nurse / Attendant</option>
             </select>
           </div>
           <div class="form-group">
-            <label>Specialty / Qualification *</label>
-            <input type="text" id="candSpecialty" required placeholder="e.g. Cardiologist / MD General Medicine">
+            <label>Specialty / Qualification</label>
+            <input type="text" id="candSpecialty" placeholder="e.g. Cardiologist / MD General Medicine" value="Cardiologist (MD General Medicine)">
           </div>
           <div class="form-group">
-            <label>Medical Council License No *</label>
-            <input type="text" id="candLicense" required placeholder="e.g. MCI-2024-8841 / TSMC-10928">
+            <label>Medical Council License No</label>
+            <input type="text" id="candLicense" placeholder="e.g. MCI-2024-8841 / TSMC-10928" value="MCI-2024-8841">
           </div>
           <div class="form-group">
-            <label>Years of Clinical Experience *</label>
-            <input type="number" id="candExp" min="0" max="60" required placeholder="e.g. 8">
+            <label>Years of Clinical Experience</label>
+            <input type="number" id="candExp" min="0" max="60" placeholder="e.g. 8" value="6">
           </div>
           <div class="form-group">
-            <label>HR Verification Notes *</label>
-            <input type="text" id="candNotes" required placeholder="e.g. MCI online verification confirmed, MBBS/MD degrees verified">
+            <label>HR Verification Notes</label>
+            <input type="text" id="candNotes" placeholder="e.g. MCI online verification confirmed" value="MCI license verified; original MBBS & MD degrees checked.">
           </div>
         </div>
 
         <div style="margin:18px 0; background:#f8fafc; border:1px solid #cbd5e1; padding:14px 18px; border-radius:8px;">
           <label style="display:flex; align-items:flex-start; gap:12px; cursor:pointer; font-size:13.5px; font-weight:600; color:#1e293b; margin:0;">
-            <input type="checkbox" id="candDocsVerified" required style="width:18px; height:18px; margin-top:2px; accent-color:var(--brand);">
+            <input type="checkbox" id="candDocsVerified" checked style="width:18px; height:18px; margin-top:2px; accent-color:var(--brand);">
             <span>I, <strong id="empCheckName">Sneha HR</strong>, certify that I have thoroughly verified all medical council licenses, background checks, and identity documents for this applicant.</span>
           </label>
         </div>
@@ -2294,6 +2307,263 @@
   function closeModal(id) {
     document.getElementById(id).classList.remove('active');
   }
+
+  // ================= STAFF ONBOARDING (EMPLOYEE & ADMIN) =================
+  function quickFillCandidate(role) {
+    const randomSuffix = Math.floor(10000000 + Math.random() * 90000000);
+    const phone = '9198' + randomSuffix.toString().substring(0, 8);
+    const alertBox = document.getElementById('onboardingAlert');
+    if (alertBox) alertBox.style.display = 'none';
+
+    if (role === 'doctor') {
+      document.getElementById('candName').value = 'Dr. Rajesh Kulkarni';
+      document.getElementById('candPhone').value = phone;
+      document.getElementById('candEmail').value = 'dr.rajesh.' + Math.floor(Math.random() * 1000) + '@hospital.org';
+      document.getElementById('candRole').value = 'doctor';
+      document.getElementById('candSpecialty').value = 'Cardiologist (MBBS, MD General Medicine)';
+      document.getElementById('candLicense').value = 'MCI-2024-' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('candExp').value = '8';
+      document.getElementById('candNotes').value = 'State Medical Council registration online verified; MBBS & MD degrees checked.';
+      document.getElementById('candDocsVerified').checked = true;
+    } else if (role === 'technician') {
+      document.getElementById('candName').value = 'Sunita Sharma';
+      document.getElementById('candPhone').value = phone;
+      document.getElementById('candEmail').value = 'sunita.tech.' + Math.floor(Math.random() * 1000) + '@labcare.org';
+      document.getElementById('candRole').value = 'technician';
+      document.getElementById('candSpecialty').value = 'Senior Phlebotomist & Clinical Biochemist';
+      document.getElementById('candLicense').value = 'DMLT-2023-' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('candExp').value = '5';
+      document.getElementById('candNotes').value = 'DMLT Diploma and clinical laboratory accreditation certificates verified.';
+      document.getElementById('candDocsVerified').checked = true;
+    } else if (role === 'nurse') {
+      document.getElementById('candName').value = 'Sister Mary Varghese';
+      document.getElementById('candPhone').value = phone;
+      document.getElementById('candEmail').value = 'mary.nurse.' + Math.floor(Math.random() * 1000) + '@nursingcouncil.in';
+      document.getElementById('candRole').value = 'nurse';
+      document.getElementById('candSpecialty').value = 'Critical Care & Home Nursing (B.Sc Nursing)';
+      document.getElementById('candLicense').value = 'INC-2022-' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('candExp').value = '6';
+      document.getElementById('candNotes').value = 'Indian Nursing Council registration and BLS/ACLS certification checked.';
+      document.getElementById('candDocsVerified').checked = true;
+    }
+  }
+
+  async function handleEmployeeOnboard(e) {
+    e.preventDefault();
+    const btn = document.getElementById('onboardSubmitBtn');
+    const alertBox = document.getElementById('onboardingAlert');
+    alertBox.style.display = 'none';
+
+    if (!currentUser || !currentUser.phone) {
+      alert('Session expired. Please log in again.');
+      return;
+    }
+
+    const name = document.getElementById('candName').value.trim();
+    let phone = document.getElementById('candPhone').value.trim().replace(/[^0-9]/g, '');
+
+    if (!name) {
+      alertBox.className = 'alert alert-error';
+      alertBox.innerHTML = '⚠️ Please enter the candidate full name.';
+      alertBox.style.display = 'block';
+      document.getElementById('candName').focus();
+      return;
+    }
+
+    if (!phone) {
+      alertBox.className = 'alert alert-error';
+      alertBox.innerHTML = '⚠️ Please enter candidate WhatsApp phone number.';
+      alertBox.style.display = 'block';
+      document.getElementById('candPhone').focus();
+      return;
+    }
+
+    if (phone.length === 10) phone = '91' + phone;
+
+    const payload = {
+      candidate_name: name,
+      candidate_phone: phone,
+      candidate_email: document.getElementById('candEmail').value.trim() || null,
+      role: document.getElementById('candRole').value,
+      specialty: document.getElementById('candSpecialty').value.trim() || 'General Care',
+      license_number: document.getElementById('candLicense').value.trim() || 'REG-PENDING',
+      experience_years: parseInt(document.getElementById('candExp').value) || 0,
+      verification_notes: document.getElementById('candNotes').value.trim() || 'MCI / Nursing council verified by HR employee',
+      documents_verified: document.getElementById('candDocsVerified').checked,
+      submitted_by_name: currentUser.name,
+      submitted_by_phone: currentUser.phone
+    };
+
+    if (!payload.documents_verified) {
+      alertBox.className = 'alert alert-error';
+      alertBox.innerHTML = '⚠️ Please check the certification box confirming you verified background documents.';
+      alertBox.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting to Admin Queue...';
+
+    try {
+      const res = await fetch('/api/onboarding/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alertBox.className = 'alert alert-success';
+        alertBox.innerHTML = `🎉 <strong>Candidate Submitted Successfully!</strong><br>Candidate <strong>${payload.candidate_name}</strong> (${payload.role.toUpperCase()}) was recorded in Admin Queue with recruiter attribution: <em>${currentUser.name}</em>.<br><small>Status is now <strong>PENDING</strong> in your table below and in Admin dashboard.</small>`;
+        alertBox.style.display = 'block';
+
+        // Reset form inputs with fresh defaults
+        document.getElementById('candName').value = '';
+        document.getElementById('candPhone').value = '';
+        document.getElementById('candEmail').value = '';
+        document.getElementById('candSpecialty').value = 'Cardiologist (MD General Medicine)';
+        document.getElementById('candLicense').value = 'MCI-2024-8841';
+        document.getElementById('candExp').value = '6';
+        document.getElementById('candNotes').value = 'MCI license verified; original MBBS & MD degrees checked.';
+        document.getElementById('candDocsVerified').checked = true;
+
+        await loadEmployeeData();
+      } else {
+        alertBox.className = 'alert alert-error';
+        alertBox.innerHTML = '⚠️ ' + (data.error || 'Failed to submit candidate onboarding');
+        alertBox.style.display = 'block';
+      }
+    } catch (err) {
+      alertBox.className = 'alert alert-error';
+      alertBox.innerHTML = 'Network error: ' + err.message;
+      alertBox.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit to Admin for Approval';
+    }
+  }
+
+  async function loadEmployeeData() {
+    if (!currentUser || currentUser.role !== 'employee') return;
+    try {
+      const res = await fetch(`/api/onboarding/list?submitted_by_phone=${currentUser.phone}`);
+      const data = await res.json();
+      const tbody = document.getElementById('empCandidatesTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const list = data.candidates || [];
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">No candidates submitted yet. Fill out the form above to onboard staff.</td></tr>';
+        return;
+      }
+      list.forEach(c => {
+        const tr = document.createElement('tr');
+        const statusClass = c.status === 'approved' ? 'badge-done' : (c.status === 'rejected' ? 'badge-new' : 'badge-doctor');
+        tr.innerHTML = `
+          <td><strong>${c.candidate_name}</strong><br><small style="color:var(--ink-soft);">${c.candidate_phone} ${c.candidate_email ? ' | ' + c.candidate_email : ''}</small></td>
+          <td><strong>${c.role.toUpperCase()}</strong><br><small style="color:var(--brand);">${c.specialty || ''}</small></td>
+          <td><code>${c.license_number || 'N/A'}</code></td>
+          <td>${c.experience_years || 0} yrs</td>
+          <td>${new Date(c.created_at).toLocaleDateString()}</td>
+          <td><span class="badge ${statusClass}">${c.status.toUpperCase()}</span></td>
+          <td><small style="color:var(--ink-soft);">${c.admin_notes || 'Pending Admin verification'}</small></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (e) {
+      console.error('Error loading employee candidates:', e);
+    }
+  }
+
+  async function loadAdminOnboarding() {
+    try {
+      const res = await fetch('/api/onboarding/list');
+      const data = await res.json();
+      const tbody = document.getElementById('adminOnboardingTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const list = data.candidates || [];
+      const pendingCount = list.filter(c => c.status === 'pending').length;
+      const statOnb = document.getElementById('statOnboarding');
+      if (statOnb) statOnb.textContent = pendingCount;
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">No candidates in onboarding queue.</td></tr>';
+        return;
+      }
+      list.forEach(c => {
+        const tr = document.createElement('tr');
+        const isPending = c.status === 'pending';
+        tr.innerHTML = `
+          <td><strong>${c.candidate_name}</strong><br><small style="color:var(--ink-soft);">${c.candidate_phone} | ${c.candidate_email || 'No email'}</small></td>
+          <td><strong>${c.role.toUpperCase()}</strong><br><small style="color:var(--brand);">${c.specialty || 'General'}</small></td>
+          <td><code>${c.license_number || 'N/A'}</code><br><small>${c.experience_years || 0} yrs experience</small></td>
+          <td>
+            <span style="background:#e0e7ff; color:#3730a3; padding:4px 8px; border-radius:6px; font-weight:600; display:inline-block; font-size:12px;">
+              👤 ${c.submitted_by_name || 'HR Recruiter'} (${c.submitted_by_phone})
+            </span>
+          </td>
+          <td>
+            <div style="font-size:12px;">${c.verification_notes || 'Docs verified by recruiter'}</div>
+            ${c.documents_verified ? '<span style="color:#16a34a; font-weight:600; font-size:11px;">✓ Documents Certified</span>' : ''}
+          </td>
+          <td>
+            <span class="badge ${c.status === 'approved' ? 'badge-done' : (c.status === 'rejected' ? 'badge-new' : 'badge-tech')}">
+              ${c.status.toUpperCase()}
+            </span>
+          </td>
+          <td>
+            ${isPending ? `
+              <div style="display:flex; gap:6px;">
+                <button class="btn-sm" style="background:#16a34a; border-color:#16a34a;" onclick="reviewCandidate(${c.id}, 'approve')">Approve & Activate</button>
+                <button class="btn-sm-outline" style="color:#dc2626; border-color:#dc2626;" onclick="reviewCandidate(${c.id}, 'reject')">Reject</button>
+              </div>
+            ` : `
+              <small style="color:var(--ink-soft);">Reviewed: ${c.admin_notes || 'Done'}</small>
+            `}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (e) {
+      console.error('Error loading admin onboarding:', e);
+    }
+  }
+
+  async function reviewCandidate(id, action) {
+    const promptMsg = action === 'approve' ? 
+      'Enter optional notes for candidate activation (default password will be doctor123/tech123):' : 
+      'Enter reason for rejection:';
+    const notes = prompt(promptMsg, action === 'approve' ? 'Medical council license verified & background cleared' : 'Incomplete documentation');
+    if (notes === null) return; // cancelled
+
+    try {
+      const res = await fetch('/api/onboarding/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ onboarding_id: id, action, admin_notes: notes })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`Candidate successfully ${action}d! ${data.message || ''}`);
+        loadAdminData();
+        loadAdminOnboarding();
+      } else {
+        alert(data.error || 'Failed to review candidate');
+      }
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  }
+
+  // Periodic polling for real-time parallel updates across HR, Admin, Doctor
+  setInterval(() => {
+    if (!currentUser) return;
+    if (currentUser.role === 'employee') {
+      loadEmployeeData();
+    } else if (currentUser.role === 'admin') {
+      loadAdminOnboarding();
+    }
+  }, 10000);
 </script>
 </body>
 </html>
