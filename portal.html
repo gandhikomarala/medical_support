@@ -1555,10 +1555,25 @@
     currentUser = null;
     document.getElementById('authSection').classList.remove('hidden');
     document.getElementById('userNav').classList.add('hidden');
-    document.getElementById('adminDashboard').classList.add('hidden');
-    document.getElementById('doctorDashboard').classList.add('hidden');
-    document.getElementById('technicianDashboard').classList.add('hidden');
-    document.getElementById('patientDashboard').classList.add('hidden');
+
+    const dashboards = ['adminDashboard', 'doctorDashboard', 'technicianDashboard', 'employeeDashboard', 'patientDashboard'];
+    dashboards.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    });
+
+    // Close any open modals
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+
+    // Clear alerts
+    const authAlert = document.getElementById('authAlert');
+    if (authAlert) authAlert.style.display = 'none';
+
+    // Clear form inputs
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) loginForm.reset();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function statusBadge(s) {
