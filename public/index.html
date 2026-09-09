@@ -963,6 +963,162 @@
     .stat-num { font-size: 22px !important; }
     .mobile-bottom-grid { grid-template-columns: 1fr 1.2fr !important; }
   }
+
+  /* ==========================================================
+     MFINE-STYLE REALISTIC 3D & VECTOR SERVICE ICONS & STRIP
+     ========================================================== */
+  .mfine-services-strip {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    padding: 32px 0 28px;
+    position: relative;
+  }
+  .mfine-services-header {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 26px;
+  }
+  .mfine-services-header h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--dark);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .mfine-services-header p {
+    font-size: 14.5px;
+    color: var(--slate);
+  }
+  .mfine-services-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+  }
+  .mfine-service-card {
+    background: #ffffff;
+    border: 1.5px solid #edf2f7;
+    border-radius: 16px;
+    padding: 20px 14px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .mfine-service-card:hover {
+    transform: translateY(-5px);
+    border-color: #38bdf8;
+    box-shadow: 0 12px 24px -6px rgba(14, 165, 233, 0.15), 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  .mfine-icon-wrap {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    position: relative;
+    transition: transform 0.25s ease;
+  }
+  .mfine-service-card:hover .mfine-icon-wrap {
+    transform: scale(1.08);
+  }
+  .mfine-service-card .svc-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 6px;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+  }
+  .svc-badge.green { background: #dcfce7; color: #166534; }
+  .svc-badge.blue { background: #e0f2fe; color: #0369a1; }
+  .svc-badge.orange { background: #ffedd5; color: #c2410c; }
+  .svc-badge.purple { background: #f3e8ff; color: #6b21a8; }
+
+  .mfine-service-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .mfine-service-sub {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--slate);
+  }
+
+  /* Realistic Pillar Icons */
+  .pillar-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  }
+  .pillar-icon.green {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 1px solid #a7f3d0;
+  }
+  .pillar-icon.blue {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+  }
+  .pillar-icon.purple {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border: 1px solid #e9d5ff;
+  }
+  .pillar-icon svg {
+    width: 38px;
+    height: 38px;
+  }
+
+  @media (max-width: 900px) {
+    .mfine-services-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+  }
+  @media (max-width: 580px) {
+    .mfine-services-grid {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 10px;
+      gap: 12px;
+      scrollbar-width: none;
+    }
+    .mfine-services-grid::-webkit-scrollbar { display: none; }
+    .mfine-service-card {
+      min-width: 140px;
+      flex-shrink: 0;
+      padding: 16px 10px 12px;
+    }
+    .mfine-icon-wrap {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 8px;
+    }
+    .mfine-icon-wrap svg {
+      width: 44px;
+      height: 44px;
+    }
+    .mfine-service-title { font-size: 13px; }
+  }
+
 </style>
 </head>
 <body>
@@ -1072,8 +1228,20 @@
     <!-- Live Interactive Dispatch Showcase -->
     <div class="hero-interactive-card">
       <div class="doc-live-header">
-        <div class="doc-avatar">
-          🩺
+        <div class="doc-avatar" style="background: transparent; padding: 0;">
+          <svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="24" cy="24" r="24" fill="#E2E8F0"/>
+  <!-- Head & Hair -->
+  <circle cx="24" cy="18" r="8" fill="#FCD34D"/>
+  <path d="M16 17C16 13.5 19.5 11 24 11C28.5 11 32 13.5 32 17C32 17.5 31.5 16 29 16C26.5 16 26.5 17.5 24 17.5C21.5 17.5 21 16 19 16C17 16 16 17.5 16 17Z" fill="#334155"/>
+  <!-- White Doctor Coat & Tie -->
+  <path d="M11 42C11 33.5 16.5 30 24 30C31.5 30 37 33.5 37 42H11Z" fill="#FFFFFF"/>
+  <path d="M21 30L24 35L27 30H21Z" fill="#0284C7"/>
+  <path d="M24 35V42" stroke="#CBD5E1" stroke-width="2"/>
+  <!-- Stethoscope -->
+  <path d="M19 28C19 32 21 35 24 35C27 35 29 32 29 28" stroke="#047857" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="24" cy="37" r="2.5" fill="#34D399" stroke="#047857" stroke-width="1.2"/>
+</svg>
           <div class="doc-avatar-badge" title="Doctor On Duty"></div>
         </div>
         <div class="doc-info">
@@ -1152,6 +1320,138 @@
   </div>
 </div>
 
+
+<!-- ================= MFINE-INSPIRED REALISTIC SERVICES STRIP ================= -->
+<section class="mfine-services-strip">
+  <div class="wrap">
+    <div class="mfine-services-header">
+      <div class="section-eyebrow gold">CERTIFIED HEALTHCARE SOLUTIONS</div>
+      <h2>Top Healthcare Services at Your Doorstep</h2>
+      <p>Consult verified MBBS/MD specialists, book certified NABL home tests, and get genuine medicines in minutes.</p>
+    </div>
+
+    <div class="mfine-services-grid">
+      <!-- 1. Doctor Home Visit -->
+      <div class="mfine-service-card" onclick="openBookingModal('doctor')">
+        <span class="svc-badge green">₹0 Fee</span>
+        <div class="mfine-icon-wrap">
+          <svg width="58" height="58" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="64" height="64" rx="18" fill="#ECFDF5"/>
+            <circle cx="32" cy="32" r="26" fill="url(#docGrad)" fill-opacity="0.15"/>
+            <path d="M22 20C22 18.8954 22.8954 18 24 18H40C41.1046 18 42 18.8954 42 20V26C42 32.6274 36.6274 38 30 38C25.5817 38 22 34.4183 22 30V20Z" fill="#10B981" fill-opacity="0.2"/>
+            <path d="M25 21V27C25 31.9706 29.0294 36 34 36C38.9706 36 43 31.9706 43 27V21" stroke="#047857" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="25" cy="20" r="2.5" fill="#047857"/>
+            <circle cx="43" cy="20" r="2.5" fill="#047857"/>
+            <path d="M34 36V42C34 44.2091 35.7909 46 38 46H39" stroke="#047857" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="42" cy="46" r="4.5" fill="#34D399" stroke="#047857" stroke-width="2"/>
+            <circle cx="34" cy="26" r="5" fill="#059669"/>
+            <path d="M34 23V29M31 26H37" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="docGrad" x1="6" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#059669"/>
+                <stop offset="1" stop-color="#10B981"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="mfine-service-title">Doctor Visits</div>
+        <div class="mfine-service-sub">MBBS / MD at Home</div>
+      </div>
+
+      <!-- 2. Lab Tests & Scans -->
+      <div class="mfine-service-card" onclick="openBookingModal('lab_test')">
+        <span class="svc-badge blue">NABL</span>
+        <div class="mfine-icon-wrap">
+          <svg width="58" height="58" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="64" height="64" rx="18" fill="#F0F9FF"/>
+            <path d="M29 18H35M31 18V25L22 41C20.5 43.6 22.4 47 25.4 47H38.6C41.6 47 43.5 43.6 42 41L33 25V18" stroke="#0284C7" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M24 40C27 38.5 31 41.5 35 40C37.5 39 39.5 40.5 40.5 40.5" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="29" cy="35" r="1.8" fill="#0284C7"/>
+            <circle cx="35" cy="33" r="1.2" fill="#0284C7"/>
+            <!-- Drop of blood/liquid -->
+            <path d="M43 21C43 21 47 25 47 27C47 29.2 45.2 31 43 31C40.8 31 39 29.2 39 27C39 25 43 21 43 21Z" fill="#E11D48"/>
+          </svg>
+        </div>
+        <div class="mfine-service-title">Lab Tests</div>
+        <div class="mfine-service-sub">Free Sample Pickup</div>
+      </div>
+
+      <!-- 3. Medicines & Pharmacy -->
+      <div class="mfine-service-card" onclick="openBookingModal('pharmacy')">
+        <span class="svc-badge green">Genuine</span>
+        <div class="mfine-icon-wrap">
+          <svg width="58" height="58" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="64" height="64" rx="18" fill="#F0FDF4"/>
+            <!-- Capsule 3D angled -->
+            <g transform="rotate(32 30 30)">
+              <rect x="20" y="20" width="22" height="12" rx="6" fill="#BBF7D0" stroke="#16A34A" stroke-width="2"/>
+              <path d="M20 26H31V32H20C17 32 15 29.5 15 26C15 22.5 17 20 20 20H31V26H20Z" fill="#22C55E"/>
+            </g>
+            <!-- Pill tablet with score line -->
+            <circle cx="41" cy="39" r="8" fill="#FFFFFF" stroke="#15803D" stroke-width="2"/>
+            <path d="M36 34L46 44" stroke="#15803D" stroke-width="1.6" stroke-linecap="round"/>
+            <!-- Cross -->
+            <circle cx="40" cy="20" r="4.5" fill="#16A34A"/>
+            <path d="M40 18V22M38 20H42" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="mfine-service-title">Medicines</div>
+        <div class="mfine-service-sub">Doorstep Delivery</div>
+      </div>
+
+      <!-- 4. Health Packages -->
+      <div class="mfine-service-card" onclick="openBookingModal('lab_test')">
+        <span class="svc-badge orange">Save 60%</span>
+        <div class="mfine-icon-wrap">
+          <svg width="58" height="58" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="64" height="64" rx="18" fill="#FFF7ED"/>
+            <!-- Clipboard with medical heart check -->
+            <rect x="20" y="19" width="24" height="30" rx="4" fill="#FFFFFF" stroke="#EA580C" stroke-width="2.2"/>
+            <rect x="26" y="16" width="12" height="6" rx="2" fill="#FDBA74" stroke="#EA580C" stroke-width="1.8"/>
+            <!-- Heart with ECG wave -->
+            <path d="M25 31C25 28.5 27 27 29 27C30.5 27 31.5 28 32 29C32.5 28 33.5 27 35 27C37 27 39 28.5 39 31C39 34.5 33.5 39 32 40C30.5 39 25 34.5 25 31Z" fill="#FFEDD5" stroke="#EA580C" stroke-width="1.8"/>
+            <path d="M28 32H30.5L32 30L33.5 34L34.5 32H36" stroke="#EA580C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="mfine-service-title">Health Checks</div>
+        <div class="mfine-service-sub">Full Body Panels</div>
+      </div>
+
+      <!-- 5. Senior Care & Nursing -->
+      <div class="mfine-service-card" onclick="openBookingModal('doctor')">
+        <span class="svc-badge purple">Specialized</span>
+        <div class="mfine-icon-wrap">
+          <svg width="58" height="58" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="64" height="64" rx="18" fill="#FAF5FF"/>
+            <!-- Heart with supportive hands / nursing cross -->
+            <path d="M32 21C28 17 21 19 21 26C21 34 32 42 32 42C32 42 43 34 43 26C43 19 36 17 32 21Z" fill="#E9D5FF" stroke="#9333EA" stroke-width="2.2"/>
+            <circle cx="32" cy="28" r="5" fill="#9333EA"/>
+            <path d="M32 25V31M29 28H35" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+            <!-- Pulse line below -->
+            <path d="M19 46H26L28 43L31 48L34 44L36 46H45" stroke="#9333EA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="mfine-service-title">Senior Care</div>
+        <div class="mfine-service-sub">Nursing &amp; Vitals</div>
+      </div>
+
+      <!-- 6. Instant WhatsApp Connect -->
+      <a class="mfine-service-card" id="mfineWaCard" href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20need%20healthcare%20services." target="_blank" rel="noopener">
+        <span class="svc-badge green">24/7 Live</span>
+        <div class="mfine-icon-wrap">
+          <svg width="58" height="58" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="64" height="64" rx="18" fill="#F0FDF4"/>
+            <circle cx="32" cy="32" r="18" fill="#25D366"/>
+            <path d="M32 19C24.8 19 19 24.8 19 32C19 34.3 19.6 36.5 20.7 38.5L19 45L25.6 43.3C27.5 44.4 29.7 45 32 45C39.2 45 45 39.2 45 32C45 24.8 39.2 19 32 19ZM38.4 37.2C38.1 38 36.7 38.6 36.1 38.7C35.5 38.8 34.8 38.8 32.1 37.7C28.7 36.3 26.6 32.8 26.4 32.6C26.2 32.4 25.1 30.9 25.1 29.3C25.1 27.7 25.9 26.9 26.2 26.6C26.5 26.3 26.9 26.2 27.2 26.2C27.4 26.2 27.6 26.2 27.8 26.2C28.1 26.2 28.3 26.1 28.6 26.8C28.9 27.5 29.5 29 29.6 29.2C29.7 29.4 29.7 29.6 29.5 29.9C29.4 30.1 29.2 30.3 29 30.5C28.8 30.7 28.6 30.9 28.9 31.4C29.2 31.9 30.1 33.4 31.4 34.5C33.1 36 34.4 36.5 34.9 36.7C35.4 36.9 35.6 36.8 35.8 36.6C36.1 36.3 36.8 35.5 37.1 35C37.3 34.5 37.5 34.6 37.8 34.7C38.1 34.8 39.9 35.7 40.2 35.9C40.6 36.1 40.8 36.2 40.9 36.3C40.9 36.5 40.9 37.1 40.6 37.7C40.3 38.1 38.7 38.6 38.4 37.2Z" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="mfine-service-title">WhatsApp Help</div>
+        <div class="mfine-service-sub">Instant Dispatch</div>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ================= CHOOSE QUALIFIED CARE (FLYER SHOWCASE) ================= -->
 <section id="services" style="background: #ffffff;">
   <div class="wrap">
@@ -1169,7 +1469,17 @@
       <div class="pillar-card">
         <div>
           <span class="pillar-badge green">Zero Consultation Fee</span>
-          <div class="pillar-icon">🛵🩺</div>
+          <div class="pillar-icon green">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 14V20C16 24.4183 19.5817 28 24 28C28.4183 28 32 24.4183 32 20V14" stroke="#047857" stroke-width="2.8" stroke-linecap="round"/>
+              <path d="M24 28V33C24 35.2 25.8 37 28 37H29" stroke="#047857" stroke-width="2.8" stroke-linecap="round"/>
+              <circle cx="33" cy="37" r="4" fill="#34D399" stroke="#047857" stroke-width="2"/>
+              <circle cx="16" cy="13" r="2.5" fill="#047857"/>
+              <circle cx="32" cy="13" r="2.5" fill="#047857"/>
+              <circle cx="24" cy="19" r="4.5" fill="#10B981" fill-opacity="0.25"/>
+              <path d="M24 16.5V21.5M21.5 19H26.5" stroke="#047857" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
           <h3 class="pillar-title">Qualified Doctor Home Visit</h3>
           <div class="pillar-slogan">FREE CONSULTATION, REST WE HANDLE</div>
           <p class="pillar-desc">
@@ -1196,7 +1506,15 @@
       <div class="pillar-card">
         <div>
           <span class="pillar-badge blue">Trusted Results</span>
-          <div class="pillar-icon">🩸🔬</div>
+          <div class="pillar-icon blue">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 12H27M23 12V18L15 32C13.6 34.5 15.4 37.5 18.2 37.5H29.8C32.6 37.5 34.4 34.5 33 32L25 18V12" stroke="#0284C7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M17.5 31C20 29.5 23 32 26 31C28 30.3 30 31.5 31.5 31.5" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="22" cy="27" r="1.5" fill="#0284C7"/>
+              <circle cx="27" cy="25" r="1" fill="#0284C7"/>
+              <path d="M34 14C34 14 38 18 38 20C38 22.2 36.2 24 34 24C31.8 24 30 22.2 30 20C30 18 34 14 34 14Z" fill="#E11D48"/>
+            </svg>
+          </div>
           <h3 class="pillar-title">Certified Lab Test Sample Collection</h3>
           <div class="pillar-slogan">TRUSTED RESULTS AT HOME</div>
           <p class="pillar-desc">
@@ -1223,7 +1541,16 @@
       <div class="pillar-card">
         <div>
           <span class="pillar-badge purple">Years of Experience</span>
-          <div class="pillar-icon">🏥💊</div>
+          <div class="pillar-icon purple">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="rotate(30 24 24)">
+                <rect x="15" y="16" width="18" height="10" rx="5" fill="#E9D5FF" stroke="#7E22CE" stroke-width="2"/>
+                <path d="M15 21H24V26H15C12.5 26 10.5 24 10.5 21C10.5 18 12.5 16 15 16H24V21H15Z" fill="#A855F7"/>
+              </g>
+              <circle cx="33" cy="31" r="6.5" fill="#FFFFFF" stroke="#7E22CE" stroke-width="2"/>
+              <path d="M29 27L37 35" stroke="#7E22CE" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
           <h3 class="pillar-title">Full Patient Care &amp; Support</h3>
           <div class="pillar-slogan">DOORSTEP MEDICINES &amp; NURSING</div>
           <p class="pillar-desc">
@@ -1343,7 +1670,9 @@
         </div>
       </div>
       <div style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; text-align: center; box-shadow: var(--shadow-sm);">
-        <div style="font-size: 40px; margin-bottom: 10px;" id="deptIcon">🩺</div>
+        <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: center;" id="deptIcon">
+          <svg width="50" height="50" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="#ECFDF5"/><path d="M16 14V20C16 24.4 19.6 28 24 28C28.4 28 32 24.4 32 20V14" stroke="#047857" stroke-width="2.5" stroke-linecap="round"/><path d="M24 28V33C24 35.2 25.8 37 28 37H29" stroke="#047857" stroke-width="2.5" stroke-linecap="round"/><circle cx="33" cy="37" r="4" fill="#34D399" stroke="#047857" stroke-width="1.8"/><circle cx="16" cy="13" r="2.2" fill="#047857"/><circle cx="32" cy="13" r="2.2" fill="#047857"/></svg>
+        </div>
         <h4 style="font-size: 17px; margin-bottom: 4px;" id="deptDocName">Dr. Rajesh Kulkarni</h4>
         <p style="font-size: 13px; color: var(--primary-dark); font-weight: 600; margin-bottom: 14px;" id="deptDocDeg">MD General Medicine (12 Yrs Exp)</p>
         <button class="btn-primary" onclick="openBookingModal('doctor')" style="width: 100%;">
@@ -1505,7 +1834,19 @@
 
     <div class="doctors-grid">
       <div class="doctor-card">
-        <div class="doctor-card-avatar">👨‍⚕️</div>
+        <div class="doctor-card-avatar" style="background: transparent; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="24" cy="24" r="24" fill="#E2E8F0"/>
+  <!-- Head & Hair -->
+  <circle cx="24" cy="18" r="8" fill="#FCD34D"/>
+  <path d="M16 17C16 13.5 19.5 11 24 11C28.5 11 32 13.5 32 17C32 17.5 31.5 16 29 16C26.5 16 26.5 17.5 24 17.5C21.5 17.5 21 16 19 16C17 16 16 17.5 16 17Z" fill="#334155"/>
+  <!-- White Doctor Coat & Tie -->
+  <path d="M11 42C11 33.5 16.5 30 24 30C31.5 30 37 33.5 37 42H11Z" fill="#FFFFFF"/>
+  <path d="M21 30L24 35L27 30H21Z" fill="#0284C7"/>
+  <path d="M24 35V42" stroke="#CBD5E1" stroke-width="2"/>
+  <!-- Stethoscope -->
+  <path d="M19 28C19 32 21 35 24 35C27 35 29 32 29 28" stroke="#047857" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="24" cy="37" r="2.5" fill="#34D399" stroke="#047857" stroke-width="1.2"/>
+</svg></div>
         <div class="doctor-name">Dr. Rajesh Kulkarni</div>
         <div class="doctor-degree">MBBS, MD General Medicine</div>
         <div class="doctor-meta">12 Yrs Exp &bull; Vijayawada Zone</div>
@@ -1515,7 +1856,20 @@
       </div>
 
       <div class="doctor-card">
-        <div class="doctor-card-avatar" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">👩‍⚕️</div>
+        <div class="doctor-card-avatar" style="background: transparent; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="24" cy="24" r="24" fill="#E0F2FE"/>
+  <!-- Hair back -->
+  <path d="M15 20C15 14 18.5 10 24 10C29.5 10 33 14 33 20V26C33 27 31 27 31 25V20C31 16 28 14 24 14C20 14 17 16 17 20V25C17 27 15 27 15 26V20Z" fill="#475569"/>
+  <!-- Head -->
+  <circle cx="24" cy="18" r="7.5" fill="#FDE047"/>
+  <!-- White Coat -->
+  <path d="M12 42C12 33.5 17 30 24 30C31 30 36 33.5 36 42H12Z" fill="#FFFFFF"/>
+  <path d="M21.5 30L24 34L26.5 30H21.5Z" fill="#0D9488"/>
+  <path d="M24 34V42" stroke="#E2E8F0" stroke-width="1.8"/>
+  <!-- Stethoscope -->
+  <path d="M19 27C19 31.5 21 34.5 24 34.5C27 34.5 29 31.5 29 27" stroke="#0284C7" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="24" cy="36.5" r="2.5" fill="#38BDF8" stroke="#0284C7" stroke-width="1.2"/>
+</svg></div>
         <div class="doctor-name">Dr. Shalini Rao</div>
         <div class="doctor-degree">MBBS, DNB Cardiology</div>
         <div class="doctor-meta">9 Yrs Exp &bull; Guntur Zone</div>
@@ -1525,7 +1879,19 @@
       </div>
 
       <div class="doctor-card">
-        <div class="doctor-card-avatar" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">👨‍⚕️</div>
+        <div class="doctor-card-avatar" style="background: transparent; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="24" cy="24" r="24" fill="#E2E8F0"/>
+  <!-- Head & Hair -->
+  <circle cx="24" cy="18" r="8" fill="#FCD34D"/>
+  <path d="M16 17C16 13.5 19.5 11 24 11C28.5 11 32 13.5 32 17C32 17.5 31.5 16 29 16C26.5 16 26.5 17.5 24 17.5C21.5 17.5 21 16 19 16C17 16 16 17.5 16 17Z" fill="#334155"/>
+  <!-- White Doctor Coat & Tie -->
+  <path d="M11 42C11 33.5 16.5 30 24 30C31.5 30 37 33.5 37 42H11Z" fill="#FFFFFF"/>
+  <path d="M21 30L24 35L27 30H21Z" fill="#0284C7"/>
+  <path d="M24 35V42" stroke="#CBD5E1" stroke-width="2"/>
+  <!-- Stethoscope -->
+  <path d="M19 28C19 32 21 35 24 35C27 35 29 32 29 28" stroke="#047857" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="24" cy="37" r="2.5" fill="#34D399" stroke="#047857" stroke-width="1.2"/>
+</svg></div>
         <div class="doctor-name">Dr. Vikram Sethi</div>
         <div class="doctor-degree">MBBS, MS Orthopedics</div>
         <div class="doctor-meta">10 Yrs Exp &bull; Joint &amp; Spine</div>
@@ -1535,7 +1901,20 @@
       </div>
 
       <div class="doctor-card">
-        <div class="doctor-card-avatar" style="background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);">👩‍⚕️</div>
+        <div class="doctor-card-avatar" style="background: transparent; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="24" cy="24" r="24" fill="#E0F2FE"/>
+  <!-- Hair back -->
+  <path d="M15 20C15 14 18.5 10 24 10C29.5 10 33 14 33 20V26C33 27 31 27 31 25V20C31 16 28 14 24 14C20 14 17 16 17 20V25C17 27 15 27 15 26V20Z" fill="#475569"/>
+  <!-- Head -->
+  <circle cx="24" cy="18" r="7.5" fill="#FDE047"/>
+  <!-- White Coat -->
+  <path d="M12 42C12 33.5 17 30 24 30C31 30 36 33.5 36 42H12Z" fill="#FFFFFF"/>
+  <path d="M21.5 30L24 34L26.5 30H21.5Z" fill="#0D9488"/>
+  <path d="M24 34V42" stroke="#E2E8F0" stroke-width="1.8"/>
+  <!-- Stethoscope -->
+  <path d="M19 27C19 31.5 21 34.5 24 34.5C27 34.5 29 31.5 29 27" stroke="#0284C7" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="24" cy="36.5" r="2.5" fill="#38BDF8" stroke="#0284C7" stroke-width="1.2"/>
+</svg></div>
         <div class="doctor-name">Dr. Ananya Reddy</div>
         <div class="doctor-degree">MBBS, DCH (Pediatrics)</div>
         <div class="doctor-meta">8 Yrs Exp &bull; Child Healthcare</div>
@@ -1952,7 +2331,7 @@
     document.getElementById('deptDesc').textContent = d.desc;
     document.getElementById('deptDocName').textContent = d.doc;
     document.getElementById('deptDocDeg').textContent = d.deg;
-    document.getElementById('deptIcon').textContent = d.icon;
+    document.getElementById('deptIcon').innerHTML = d.icon;
 
     const chipsWrap = document.getElementById('deptChips');
     chipsWrap.innerHTML = '';
