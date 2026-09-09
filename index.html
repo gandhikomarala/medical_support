@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tapaswi Medical &amp; Ayans Medicare — Choose Qualified Care</title>
+<title>Ayans Medicare — Choose Qualified Care | Free Doctor Home Visits & Medicines</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
@@ -333,14 +333,14 @@
 </head>
 <body>
 
-<!-- Tapaswi Medical Campaign Announcement Bar -->
-<div style="background: linear-gradient(90deg, #064e3b 0%, #0f766e 50%, #064e3b 100%); color: #ffffff; padding: 9px 16px; font-size: 13.5px; border-bottom: 1px solid #115e59; position: relative; z-index: 60;">
-  <div class="wrap" style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; text-align: center;">
-    <span style="background: #f59e0b; color: #78350f; font-weight: 800; font-size: 11px; padding: 2px 8px; border-radius: 12px; letter-spacing: 0.5px;">DON'T GAMBLE WITH HEALTH</span>
+<!-- Ayans Medicare Campaign Announcement Bar -->
+<div style="background: linear-gradient(90deg, #064e3b 0%, #0f766e 50%, #064e3b 100%); color: #ffffff; padding: 10px 16px; font-size: 13.5px; border-bottom: 1px solid #115e59; position: relative; z-index: 60;">
+  <div class="wrap" style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; text-align: center;">
+    <span style="background: #f59e0b; color: #78350f; font-weight: 800; font-size: 11px; padding: 3px 10px; border-radius: 12px; letter-spacing: 0.5px;">DON'T GAMBLE WITH YOUR LOVED ONES' HEALTH</span>
     <span style="font-weight: 500;">Why choose an unqualified RMP when a <strong>qualified doctor comes to your home for FREE</strong>?</span>
-    <a href="https://wa.me/919581582220?text=Hi%20Tapaswi%20Medical%2C%20I%20would%20like%20to%20book%20a%20free%20doctor%20home%20visit." target="_blank" rel="noopener" style="background: #25D366; color: #ffffff; text-decoration: none; padding: 4px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;">
-      WhatsApp 9581582220
-    </a>
+    <button onclick="openBookingModal('doctor')" style="background: #25D366; color: #ffffff; border: none; padding: 4px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer;">
+      ⚡ Book Free Doctor Visit
+    </button>
   </div>
 </div>
 
@@ -350,7 +350,7 @@
     <div class="brand" style="display:flex; flex-direction:column;">
       <div>Ayans <span>Medicare</span></div>
       <span style="font-family:'IBM Plex Sans',sans-serif; font-size:11.5px; font-weight:600; color:#0f766e; letter-spacing:0.3px;">
-        In Association with <strong>Tapaswi Medical</strong>
+        Choose Qualified Care &bull; <strong>Doctor at Home &amp; Pharmacy</strong>
       </span>
     </div>
     <nav><ul>
@@ -377,37 +377,42 @@
           🛡️ CHOOSE QUALIFIED CARE
         </span>
         <span style="background:#e6f7ec; color:#0d5f2c; border:1px solid #b4e3c3; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">
-          Tapaswi Medical Online Pharmacy
+          🏡 QUALIFIED DOCTORS AT HOME (₹0 FEE)
+        </span>
+        <span style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">
+          💊 GENUINE MEDICINES &amp; LABS
         </span>
       </div>
-      <h1 style="font-size:38px; line-height:1.2; color:var(--ink);">Why choose an unqualified RMP? When a qualified doctor comes to your home for <span style="color:var(--wa-dark); text-decoration:underline; text-decoration-color:#86efac;">FREE</span>.</h1>
+      <h1 style="font-size:38px; line-height:1.2; color:var(--ink);">
+        Why choose an unqualified RMP? When a qualified doctor comes to your home for <span style="color:var(--wa-dark); text-decoration:underline; text-decoration-color:#86efac;">FREE</span>.
+      </h1>
       <p class="lead" style="margin-top:16px; font-size:17.5px; color:var(--ink-soft); max-width:48ch;">
-        Don't gamble with your loved ones' health. Get verified MBBS/MD doctors at your doorstep with zero consultation fee, certified NABL lab test collections, and 100% genuine medicines delivered by <strong>Tapaswi Medical Online Pharmacy</strong>.
+        Don't gamble with your loved ones' health. Receive verified MBBS/MD doctors at your doorstep with zero consultation fee, certified NABL lab test collections with trusted results, and 100% genuine medicines delivered directly to your home.
       </p>
       <div class="hero-ctas" style="margin-top:24px;">
-        <a class="btn-wa" id="heroWaBtn" href="#" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 8.1 8.11c0 4.47-3.63 8.1-8.1 8.1a8.06 8.06 0 0 1-4.11-1.12l-.3-.17-3.13.82.84-3.05-.19-.32a8.08 8.08 0 0 1-1.23-4.27 8.1 8.1 0 0 1 8.12-8.1m-4.42 4.13c-.17 0-.44.06-.67.32-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.16 1.75 2.79 4.32 3.8 2.13.85 2.57.68 3.03.64.47-.04 1.5-.61 1.72-1.2.21-.6.21-1.11.15-1.21-.06-.11-.23-.17-.47-.3-.25-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.17.25-.65.82-.8 1-.15.17-.29.19-.54.06-.25-.13-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.4-.79-1.91-.2-.5-.41-.43-.57-.44z"/></svg>
-          WhatsApp 9581582220
-        </a>
-        <a class="btn-ghost" href="tel:+919581582220" style="font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-          📞 Call 9581582220
-        </a>
-        <button class="btn-ghost" onclick="openBookingModal()" style="font-weight:600; background:var(--sage); cursor:pointer;">
-          ⚡ Book Online (₹0 Fee)
+        <button class="btn-primary" onclick="openBookingModal('doctor')" style="background:#15803d; color:#fff; border:none; padding:12px 22px; font-size:15px; font-weight:700; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(21,128,61,0.25);">
+          ⚡ Book Doctor Visit (₹0 Fee)
         </button>
+        <a class="btn-wa" id="heroWaBtn" href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20would%20like%20to%20book%20a%20free%20doctor%20home%20visit." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 8.1 8.11c0 4.47-3.63 8.1-8.1 8.1a8.06 8.06 0 0 1-4.11-1.12l-.3-.17-3.13.82.84-3.05-.19-.32a8.08 8.08 0 0 1-1.23-4.27 8.1 8.1 0 0 1 8.12-8.1m-4.42 4.13c-.17 0-.44.06-.67.32-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.16 1.75 2.79 4.32 3.8 2.13.85 2.57.68 3.03.64.47-.04 1.5-.61 1.72-1.2.21-.6.21-1.11.15-1.21-.06-.11-.23-.17-.47-.3-.25-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.17.25-.65.82-.8 1-.15.17-.29.19-.54.06-.25-.13-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.4-.79-1.91-.2-.5-.41-.43-.57-.44z"/></svg>
+          WhatsApp Us
+        </a>
+        <a class="btn-ghost" href="tel:+919959461095" style="font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+          📞 Call Helpline
+        </a>
       </div>
       <p class="hero-note" style="margin-top:14px; font-weight:500;">
-        Serving Vijayawada, Guntur &amp; Bapatla with <strong>TRUST</strong> | Direct WhatsApp helpline: <strong>9581582220</strong>, rest we will handle.
+        Serving Vijayawada, Guntur &amp; Bapatla with <strong>TRUST</strong> | Direct WhatsApp helpline: <strong>+91 99594 61095</strong>, rest we will handle.
       </p>
     </div>
 
     <div class="phone" aria-hidden="true">
       <div class="phone-screen">
         <div class="chat-head" style="background:#0f766e;">
-          <div class="chat-avatar" style="color:#0f766e; font-weight:700;">TM</div>
+          <div class="chat-avatar" style="color:#0f766e; font-weight:700;">AM</div>
           <div>
-            <div style="font-weight:600;">Tapaswi Medical &amp; Ayans</div>
-            <div style="font-size:11px; opacity:.9;">Helpline: 9581582220 (online)</div>
+            <div style="font-weight:600;">Ayans Medicare Support</div>
+            <div style="font-size:11px; opacity:.9;">Verified Healthcare Network (online)</div>
           </div>
         </div>
         <div class="chat-body">
@@ -415,102 +420,151 @@
           <div class="bubble in">Namaste! Yes, our verified MBBS doctor will visit for a FREE consultation (₹0 fee). Please share your address.<span class="chat-time">9:12 AM</span></div>
           <div class="bubble out">Governorpet, Vijayawada.<span class="chat-time">9:13 AM</span></div>
           <div class="bubble in">Dr. Rajesh Kulkarni (MD General Medicine) is assigned. ETA 18 mins. Rest we will handle!<span class="chat-time">9:14 AM</span></div>
-          <div class="bubble in">💊 Prescribed medicines will be delivered by Tapaswi Medical Online Pharmacy.<span class="chat-time">9:45 AM</span></div>
+          <div class="bubble in">💊 100% genuine prescribed medicines and lab tests arranged at home.<span class="chat-time">9:45 AM</span></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= CHOOSE QUALIFIED CARE (TAPASWI CAMPAIGN) ================= -->
-<section style="background:#ffffff; border-top:1px solid var(--sage-line); border-bottom:1px solid var(--sage-line); padding:52px 0;">
+<!-- ================= CHOOSE QUALIFIED CARE CAMPAIGN ================= -->
+<section style="background:#ffffff; border-top:1px solid var(--sage-line); border-bottom:1px solid var(--sage-line); padding:56px 0;">
   <div class="wrap">
-    <div style="text-align:center; max-width:760px; margin:0 auto 40px;">
-      <div style="display:inline-block; background:#fef3c7; color:#b45309; font-weight:800; font-size:12px; padding:4px 14px; border-radius:12px; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:10px;">
-        TAPASWI MEDICAL ONLINE PHARMACY &amp; CLINIC
+    <div style="text-align:center; max-width:800px; margin:0 auto 40px;">
+      <div style="display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg, #0d9488, #0f766e); color:#ffffff; font-weight:800; font-size:12px; padding:6px 18px; border-radius:30px; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:12px; box-shadow:0 4px 12px rgba(13,148,136,0.25);">
+        ✨ DON'T GAMBLE WITH YOUR LOVED ONES' HEALTH
       </div>
-      <h2 style="font-size:32px; font-weight:700; color:var(--ink); line-height:1.2;">Choose Qualified Care — Our Services &amp; Medicines</h2>
-      <p style="font-size:16px; color:var(--ink-soft); margin-top:10px;">
-        Don't gamble with your loved ones' health. Skip unqualified RMPs when licensed doctors, certified lab tests, and genuine pharmacy supplies are available at your doorstep with <strong>zero consultation fees</strong>.
+      <h2 style="font-size:36px; font-weight:700; color:var(--ink); line-height:1.2; margin:0 0 12px;">
+        Choose Qualified Care — Our Services &amp; Medicines
+      </h2>
+      <p style="font-size:16.5px; color:var(--ink-soft); line-height:1.6; margin:0;">
+        Why risk your family's health with an unverified RMP when licensed MBBS/MD doctors, certified diagnostic lab tests, and 100% genuine medicines arrive right at your doorstep with <strong>ZERO consultation fees</strong>?
       </p>
     </div>
 
+    <!-- 3 Core Feature Pillars -->
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:24px;">
       <!-- Pillar 1 -->
-      <div style="background:#f8fafc; border:2px solid #cbd5e1; border-radius:16px; padding:28px 22px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+      <div style="background:#f8fafc; border:2px solid #cbd5e1; border-radius:16px; padding:28px 22px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 12px rgba(0,0,0,0.03); transition:transform .2s ease, border-color .2s ease;">
         <div>
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-            <span style="font-size:36px;">🛵🩺</span>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <span style="font-size:38px;">🛵🩺</span>
             <span style="background:#dcfce7; color:#15803d; font-weight:700; font-size:11px; padding:4px 10px; border-radius:6px; text-transform:uppercase;">Zero Consultation Fee</span>
           </div>
-          <h3 style="font-size:20px; font-weight:700; margin:0 0 6px; color:#0f172a;">Qualified Doctor Home Visit</h3>
+          <h3 style="font-size:21px; font-weight:700; margin:0 0 6px; color:#0f172a;">Qualified Doctor Home Visit</h3>
           <p style="font-size:13px; font-weight:700; color:#0284c7; margin:0 0 10px;">FREE CONSULTATION, REST WE HANDLE</p>
           <p style="color:#475569; font-size:14px; line-height:1.6; margin:0;">
-            Licensed MBBS/MD medical specialists arrive at your doorstep for thorough physical examination, vitals check, and verified prescriptions. No clinic queues or unverified quacks.
+            Licensed MBBS/MD medical specialists arrive at your doorstep for thorough physical examination, vitals check, stethoscope evaluation, and verified prescriptions. No clinic queues, zero consultation fees, and no unverified quacks.
           </p>
         </div>
-        <div style="margin-top:22px;">
-          <a href="https://wa.me/919581582220?text=Hi%20Tapaswi%20Medical%2C%20I%20want%20to%20book%20a%20Qualified%20Doctor%20Home%20Visit%20(Free%20Consultation)." target="_blank" rel="noopener" class="btn-wa" style="width:100%; justify-content:center; padding:11px 16px; font-size:14px;">
-            Book Free Doctor Visit
+        <div style="margin-top:22px; display:flex; flex-direction:column; gap:8px;">
+          <button onclick="openBookingModal('doctor')" class="btn-primary" style="background:#15803d; color:#fff; border:none; width:100%; justify-content:center; padding:11px 16px; font-size:14px; font-weight:600; border-radius:8px; cursor:pointer;">
+            ⚡ Book Free Doctor Visit
+          </button>
+          <a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20want%20to%20book%20a%20Qualified%20Doctor%20Home%20Visit%20(Free%20Consultation)." target="_blank" rel="noopener" class="btn-wa" style="width:100%; justify-content:center; padding:10px 16px; font-size:13.5px;">
+            WhatsApp Doctor Booking
           </a>
         </div>
       </div>
 
       <!-- Pillar 2 -->
-      <div style="background:#f8fafc; border:2px solid #cbd5e1; border-radius:16px; padding:28px 22px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+      <div style="background:#f8fafc; border:2px solid #cbd5e1; border-radius:16px; padding:28px 22px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 12px rgba(0,0,0,0.03); transition:transform .2s ease, border-color .2s ease;">
         <div>
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-            <span style="font-size:36px;">🩸🔬</span>
-            <span style="background:#e0f2fe; color:#0369a1; font-weight:700; font-size:11px; padding:4px 10px; border-radius:6px; text-transform:uppercase;">NABL Accredited</span>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <span style="font-size:38px;">🩸🔬</span>
+            <span style="background:#e0f2fe; color:#0369a1; font-weight:700; font-size:11px; padding:4px 10px; border-radius:6px; text-transform:uppercase;">Trusted Results</span>
           </div>
-          <h3 style="font-size:20px; font-weight:700; margin:0 0 6px; color:#0f172a;">Certified Lab Test Sample Collection</h3>
+          <h3 style="font-size:21px; font-weight:700; margin:0 0 6px; color:#0f172a;">Certified Lab Test Sample Collection</h3>
           <p style="font-size:13px; font-weight:700; color:#0284c7; margin:0 0 10px;">TRUSTED RESULTS AT HOME</p>
           <p style="color:#475569; font-size:14px; line-height:1.6; margin:0;">
-            Certified phlebotomists collect fasting/post-prandial blood and diagnostic samples hygienically at home. Accurate, authenticated lab reports delivered directly into your WhatsApp thread.
+            Certified phlebotomists collect fasting/post-prandial blood and diagnostic samples hygienically at home. Accurate, NABL-authenticated lab reports delivered directly into your WhatsApp thread and medical portal.
           </p>
         </div>
-        <div style="margin-top:22px;">
-          <a href="https://wa.me/919581582220?text=Hi%20Tapaswi%20Medical%2C%20I%20need%20a%20Certified%20Lab%20Test%20sample%20collection%20at%20home." target="_blank" rel="noopener" class="btn-wa" style="width:100%; justify-content:center; padding:11px 16px; font-size:14px; background:#0284c7;">
-            Book Lab Test Collection
+        <div style="margin-top:22px; display:flex; flex-direction:column; gap:8px;">
+          <button onclick="openBookingModal('lab_test')" class="btn-primary" style="background:#0284c7; color:#fff; border:none; width:100%; justify-content:center; padding:11px 16px; font-size:14px; font-weight:600; border-radius:8px; cursor:pointer;">
+            🔬 Book Lab Sample Pickup
+          </button>
+          <a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20need%20a%20Certified%20Lab%20Test%20sample%20collection%20at%20home." target="_blank" rel="noopener" class="btn-wa" style="width:100%; justify-content:center; padding:10px 16px; font-size:13.5px; background:#0284c7;">
+            WhatsApp Lab Booking
           </a>
         </div>
       </div>
 
       <!-- Pillar 3 -->
-      <div style="background:#f8fafc; border:2px solid #cbd5e1; border-radius:16px; padding:28px 22px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+      <div style="background:#f8fafc; border:2px solid #cbd5e1; border-radius:16px; padding:28px 22px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 12px rgba(0,0,0,0.03); transition:transform .2s ease, border-color .2s ease;">
         <div>
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-            <span style="font-size:36px;">🏥💊</span>
-            <span style="background:#fef3c7; color:#92400e; font-weight:700; font-size:11px; padding:4px 10px; border-radius:6px; text-transform:uppercase;">Tapaswi Pharmacy</span>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <span style="font-size:38px;">🏥💊</span>
+            <span style="background:#fef3c7; color:#92400e; font-weight:700; font-size:11px; padding:4px 10px; border-radius:6px; text-transform:uppercase;">Years of Experience</span>
           </div>
-          <h3 style="font-size:20px; font-weight:700; margin:0 0 6px; color:#0f172a;">Full Patient Care &amp; Support</h3>
-          <p style="font-size:13px; font-weight:700; color:#0284c7; margin:0 0 10px;">YEARS OF EXPERIENCE &amp; DOORSTEP MEDICINES</p>
+          <h3 style="font-size:21px; font-weight:700; margin:0 0 6px; color:#0f172a;">Full Patient Care &amp; Support</h3>
+          <p style="font-size:13px; font-weight:700; color:#0284c7; margin:0 0 10px;">DOORSTEP MEDICINES &amp; NURSING</p>
           <p style="color:#475569; font-size:14px; line-height:1.6; margin:0;">
-            100% genuine medicines delivered straight to your door by <strong>Tapaswi Medical Online Pharmacy</strong>. Trained home nurses for injections, IV drip, wound dressings, and post-hospitalization recovery.
+            100% genuine medicines delivered straight to your door by licensed pharmacists. Trained home nurses for injections, IV drip, sterile wound dressings, and dedicated post-hospitalization recovery.
           </p>
         </div>
-        <div style="margin-top:22px;">
-          <a href="https://wa.me/919581582220?text=Hi%20Tapaswi%20Medical%2C%20I%20want%20to%20order%20medicines%20or%20need%20home%20nursing%20care." target="_blank" rel="noopener" class="btn-wa" style="width:100%; justify-content:center; padding:11px 16px; font-size:14px; background:#16a34a;">
-            Order Medicines / Nursing
+        <div style="margin-top:22px; display:flex; flex-direction:column; gap:8px;">
+          <button onclick="openBookingModal('pharmacy')" class="btn-primary" style="background:#16a34a; color:#fff; border:none; width:100%; justify-content:center; padding:11px 16px; font-size:14px; font-weight:600; border-radius:8px; cursor:pointer;">
+            💊 Order Genuine Medicines
+          </button>
+          <a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20want%20to%20order%20medicines%20or%20need%20home%20nursing%20care." target="_blank" rel="noopener" class="btn-wa" style="width:100%; justify-content:center; padding:10px 16px; font-size:13.5px; background:#16a34a;">
+            WhatsApp Nursing &amp; Meds
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Tapaswi Trust Strip -->
-    <div style="margin-top:36px; background:linear-gradient(135deg, #1e293b, #0f172a); border-radius:14px; padding:24px 28px; color:#fff; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;">
+    <!-- Comparison: Unqualified RMP vs Qualified Ayans Doctor -->
+    <div style="margin-top:44px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:32px 28px; box-shadow:0 4px 16px rgba(0,0,0,0.02);">
+      <div style="text-align:center; margin-bottom:26px;">
+        <h3 style="font-size:24px; font-weight:700; color:var(--ink); margin:0 0 6px;">Why Choose Qualified Care Over An Unqualified RMP?</h3>
+        <p style="font-size:15px; color:var(--ink-soft); margin:0;">Understand the clinical differences to keep your loved ones safe</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+        <div style="background:#fff1f2; border:1.5px solid #fecdd3; border-radius:12px; padding:22px;">
+          <div style="display:flex; align-items:center; gap:8px; color:#9f1239; font-weight:700; font-size:16px; margin-bottom:14px;">
+            <span>❌</span> Unqualified RMP / Quack Practice
+          </div>
+          <ul style="list-style:none; padding:0; margin:0; font-size:13.5px; color:#881337; display:flex; flex-direction:column; gap:10px;">
+            <li style="display:flex; gap:8px;"><span>⚠️</span><span>No recognized MBBS/MD qualification or State Medical Council registration.</span></li>
+            <li style="display:flex; gap:8px;"><span>⚠️</span><span>Frequent overuse of unnecessary steroid and heavy antibiotic injections.</span></li>
+            <li style="display:flex; gap:8px;"><span>⚠️</span><span>High risk of misdiagnosing chronic conditions like hypertension, diabetes, and heart disease.</span></li>
+            <li style="display:flex; gap:8px;"><span>⚠️</span><span>Unregulated, loose medicines sold at inflated costs with zero accountability.</span></li>
+            <li style="display:flex; gap:8px;"><span>⚠️</span><span>No documented prescription history or clinical follow-up records.</span></li>
+          </ul>
+        </div>
+        <div style="background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:22px;">
+          <div style="display:flex; align-items:center; gap:8px; color:#166534; font-weight:700; font-size:16px; margin-bottom:14px;">
+            <span>✅</span> Qualified Ayans Medicare Doctor
+          </div>
+          <ul style="list-style:none; padding:0; margin:0; font-size:13.5px; color:#14532d; display:flex; flex-direction:column; gap:10px;">
+            <li style="display:flex; gap:8px;"><span>✓</span><span>100% verified MBBS/MD doctors with NMC / State Medical Council licenses.</span></li>
+            <li style="display:flex; gap:8px;"><span>✓</span><span><strong>₹0 Consultation Fee</strong> — specialized clinical care brought to your home for free.</span></li>
+            <li style="display:flex; gap:8px;"><span>✓</span><span>Evidence-based diagnosis, complete vitals checkup &amp; sterile medical hygiene.</span></li>
+            <li style="display:flex; gap:8px;"><span>✓</span><span>100% genuine batch-tested prescription medicines and NABL-accredited diagnostic labs.</span></li>
+            <li style="display:flex; gap:8px;"><span>✓</span><span>Digital prescriptions, WhatsApp progress tracking, and dedicated care support.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Trust Strip -->
+    <div style="margin-top:36px; background:linear-gradient(135deg, #0f172a, #1e293b); border-radius:14px; padding:24px 28px; color:#fff; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;">
       <div>
-        <div style="font-size:12.5px; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.6px;">Serving Your Community with TRUST</div>
+        <div style="font-size:12.5px; color:#38bdf8; font-weight:700; text-transform:uppercase; letter-spacing:0.6px;">Serving Your Community with TRUST</div>
         <div style="font-size:20px; font-weight:700; margin-top:3px;">
-          Just give us a call for your health: <a href="tel:+919581582220" style="color:#38bdf8; text-decoration:none;">9581582220</a>, rest we will handle.
+          Just give us a call for your health: <a href="tel:+919959461095" style="color:#38bdf8; text-decoration:none;">+91 99594 61095</a>, rest we will handle.
         </div>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <a href="tel:+919581582220" class="btn-ghost" style="background:#334155; color:#fff; border-color:#475569; padding:10px 18px; font-size:14px; font-weight:600;">
-          📞 Call 9581582220
+        <a href="tel:+919959461095" class="btn-ghost" style="background:#334155; color:#fff; border-color:#475569; padding:10px 18px; font-size:14px; font-weight:600;">
+          📞 Call Helpline
         </a>
-        <a href="https://wa.me/919581582220?text=Hi%20Tapaswi%20Medical%2C%20I%20need%20healthcare%20support." target="_blank" rel="noopener" class="btn-wa" style="padding:10px 18px; font-size:14px;">
-          WhatsApp 9581582220
+        <button class="btn-primary" onclick="openBookingModal('doctor')" style="background:#10b981; color:#fff; border:none; padding:10px 18px; font-size:14px; font-weight:600; border-radius:8px; cursor:pointer;">
+          ⚡ Book Online (₹0 Fee)
+        </button>
+        <a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20need%20healthcare%20support." target="_blank" rel="noopener" class="btn-wa" style="padding:10px 18px; font-size:14px;">
+          WhatsApp Us
         </a>
       </div>
     </div>
@@ -598,7 +652,7 @@
 <section class="cta-band">
   <div class="wrap">
     <h2>Serving Your Community with TRUST.</h2>
-    <p style="font-size:18px; color:#e2e8f0; margin-top:8px;">Just give us a call for your health: <strong>9581582220</strong>, rest we will handle.</p>
+    <p style="font-size:18px; color:#e2e8f0; margin-top:8px;">Just give us a call or message for your health: <strong>+91 99594 61095</strong>, rest we will handle.</p>
     <p>Save the number, or tap below to start now.</p>
     <a class="btn-wa" id="finalWaBtn" href="#" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 8.1 8.11c0 4.47-3.63 8.1-8.1 8.1a8.06 8.06 0 0 1-4.11-1.12l-.3-.17-3.13.82.84-3.05-.19-.32a8.08 8.08 0 0 1-1.23-4.27 8.1 8.1 0 0 1 8.12-8.1m-4.42 4.13c-.17 0-.44.06-.67.32-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.16 1.75 2.79 4.32 3.8 2.13.85 2.57.68 3.03.64.47-.04 1.5-.61 1.72-1.2.21-.6.21-1.11.15-1.21-.06-.11-.23-.17-.47-.3-.25-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.17.25-.65.82-.8 1-.15.17-.29.19-.54.06-.25-.13-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.4-.79-1.91-.2-.5-.41-.43-.57-.44z"/></svg>
@@ -617,14 +671,14 @@
       <a href="#services">Services</a>
       <a href="#how">How it works</a>
       <a href="#coverage">Coverage</a>
-      <a id="footWaLink" href="#" target="_blank" rel="noopener">WhatsApp / Call: +91 9581582220</a>
+      <a id="footWaLink" href="#" target="_blank" rel="noopener">WhatsApp / Call: +91 99594 61095</a>
     </div>
   </div>
-  <div class="wrap" style="margin-top:24px; font-size:13px;">© 2026 Ayans Medicare in partnership with Tapaswi Medical Online Pharmacy. This platform provides non-emergency home healthcare services only. For emergencies, visit the nearest hospital.</div>
+  <div class="wrap" style="margin-top:24px; font-size:13px;">© 2026 Ayans Medicare. Dedicated to qualified, compassionate, zero-fee home medical care. For emergencies, visit the nearest hospital.</div>
 </footer>
 
 <script>
-  const WA_NUMBER = "919581582220"; // Ayans Medicare WhatsApp Business number
+  const WA_NUMBER = "919959461095"; // Ayans Medicare WhatsApp Business number
 
   function waLink(message){
     return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -790,7 +844,7 @@
 
 
 <!-- Floating WhatsApp Support Widget -->
-<a href="https://wa.me/919581582220?text=Hi%20Tapaswi%20Medical%2C%20I%20need%20healthcare%20assistance." target="_blank" rel="noopener" style="position:fixed; bottom:24px; right:24px; z-index:999; background:#25D366; color:#ffffff; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(37,211,102,0.45); text-decoration:none; transition:transform 0.2s ease;" title="Chat with Tapaswi Medical on WhatsApp: 9581582220" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+<a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20need%20healthcare%20assistance." target="_blank" rel="noopener" style="position:fixed; bottom:24px; right:24px; z-index:999; background:#25D366; color:#ffffff; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(37,211,102,0.45); text-decoration:none; transition:transform 0.2s ease;" title="Chat with Ayans Medicare on WhatsApp: +91 99594 61095" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
   <svg viewBox="0 0 24 24" fill="currentColor" style="width:34px;height:34px;"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 8.1 8.11c0 4.47-3.63 8.1-8.1 8.1a8.06 8.06 0 0 1-4.11-1.12l-.3-.17-3.13.82.84-3.05-.19-.32a8.08 8.08 0 0 1-1.23-4.27 8.1 8.1 0 0 1 8.12-8.1m-4.42 4.13c-.17 0-.44.06-.67.32-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.16 1.75 2.79 4.32 3.8 2.13.85 2.57.68 3.03.64.47-.04 1.5-.61 1.72-1.2.21-.6.21-1.11.15-1.21-.06-.11-.23-.17-.47-.3-.25-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.17.25-.65.82-.8 1-.15.17-.29.19-.54.06-.25-.13-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.4-.79-1.91-.2-.5-.41-.43-.57-.44z"/></svg>
 </a>
 
