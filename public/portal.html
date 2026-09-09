@@ -529,7 +529,10 @@
 
 <header>
   <div class="nav-container">
-    <a href="/" class="brand">Ayans <span>Medicare</span> Portal</a>
+    <a href="/" class="brand" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+      Ayans <span>Medicare</span> Portal
+      <span style="font-family:'IBM Plex Sans',sans-serif; font-size:11px; font-weight:700; color:#0f766e; background:#f0fdf4; padding:2px 8px; border-radius:6px; border:1px solid #bbf7d0;">Tapaswi Medical Partner</span>
+    </a>
     <div id="userNav" class="user-badge hidden">
       <span class="user-pill" id="userPill"></span>
       <button class="btn-logout" onclick="logout()">Sign Out</button>
@@ -546,7 +549,7 @@
   <div id="authSection" class="auth-card">
     <div style="text-align: center; margin-bottom: 22px;">
       <div style="display:inline-block; background:var(--sage); padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; color:var(--wa-dark); margin-bottom:8px;">
-        AYANS HEALTHCARE NETWORK
+        AYANS HEALTHCARE &bull; TAPASWI MEDICAL PHARMACY
       </div>
       <h2 style="font-family:'Fraunces',serif; font-size:24px; font-weight:700; color:var(--ink); margin:0 0 4px;">Sign In to Medical Portal</h2>
       <p style="font-size:13.5px; color:var(--ink-soft); margin:0;">
@@ -597,6 +600,9 @@
           <div class="chip" style="background:#f3e8ff; color:#7e22ce; font-weight:600;" onclick="fillDemo('technician', '919876543211', 'tech123')">🔬 Tech (Priya)</div>
           <div class="chip" style="background:#fef3c7; color:#b45309; font-weight:600;" onclick="fillDemo('employee', '919876543200', 'staff123')">💼 HR (Sneha HR)</div>
           <div class="chip" style="background:#fee2e2; color:#b91c1c; font-weight:600;" onclick="fillDemo('admin', 'admin', 'admin123')">🛡️ Admin (Coordinator)</div>
+        </div>
+        <div style="margin-top:12px; text-align:center; font-size:12px; color:var(--ink-soft); font-weight:500;">
+          📞 Tapaswi Medical Helpline: <a href="https://wa.me/919581582220" target="_blank" style="color:var(--wa-dark); font-weight:700; text-decoration:none;">WhatsApp 9581582220</a> | Rest we will handle
         </div>
       </div>
     </form>
