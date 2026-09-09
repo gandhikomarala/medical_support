@@ -41,15 +41,26 @@
     --shadow-glow: 0 8px 24px rgba(5, 150, 105, 0.25);
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; font-size: 16px; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    max-width: 100vw;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     background: var(--bg-page);
     color: var(--dark);
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
+    max-width: 100vw;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+  }
+  img, svg, video, canvas {
+    max-width: 100%;
+    height: auto;
   }
 
   h1, h2, h3, h4 {
@@ -637,26 +648,320 @@
   }
 
   /* Responsive Media Queries */
+  /* ==========================================================
+     RESPONSIVE & MOBILE-FIRST FIT-TO-SCREEN SYSTEM
+     ========================================================== */
   @media (max-width: 1024px) {
-    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-    .stats-grid { grid-template-columns: repeat(3, 1fr); }
-    .pillars-grid { grid-template-columns: 1fr; }
-    .packages-grid { grid-template-columns: 1fr; }
-    .doctors-grid { grid-template-columns: repeat(2, 1fr); }
-    .steps-row { grid-template-columns: repeat(2, 1fr); }
-    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .pillars-grid { grid-template-columns: 1fr; gap: 20px; }
+    .packages-grid { grid-template-columns: 1fr; gap: 20px; }
+    .doctors-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .steps-row { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .trust-banner { padding: 32px 24px; }
   }
 
   @media (max-width: 768px) {
+    /* Container padding on mobile */
+    .wrap {
+      padding: 0 16px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* Top alert bar - clean single or dual stacked line */
+    .top-alert-bar {
+      padding: 8px 12px;
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+    .top-alert-bar .wrap {
+      flex-direction: column;
+      gap: 6px;
+      text-align: center;
+    }
+    .top-alert-bar .btn-emergency-top {
+      font-size: 11px;
+      padding: 3px 8px;
+    }
+
+    /* Header Nav & Actions */
     header nav ul { display: none; }
-    .hero-title { font-size: 32px; }
-    .comparison-grid { grid-template-columns: 1fr; }
-    .dept-content { grid-template-columns: 1fr; }
-    .testi-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .mobile-bottom-bar { display: block; }
-    body { padding-bottom: 72px; }
-    .form-row { grid-template-columns: 1fr; }
+    .nav { padding: 10px 0; }
+    .brand-logo { gap: 8px; }
+    .brand-icon { width: 34px; height: 34px; font-size: 18px; border-radius: 8px; }
+    .brand-text { font-size: 18px; }
+    .brand-sub { font-size: 9.5px; display: none; /* Hide subtitle on mobile for sleek fit */ }
+
+    /* In header, hide redundant wide buttons on mobile to avoid header crowding */
+    .nav-actions .btn-wa { display: none !important; }
+    .nav-actions .btn-ghost {
+      padding: 6px 10px !important;
+      font-size: 12px !important;
+    }
+    .nav-actions .btn-primary {
+      padding: 7px 12px !important;
+      font-size: 12px !important;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      padding: 24px 0 36px !important;
+    }
+    .hero-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      margin-bottom: 12px;
+      max-width: 100%;
+      white-space: normal;
+      text-align: left;
+    }
+    .hero-title {
+      font-size: 26px !important;
+      line-height: 1.25 !important;
+      letter-spacing: -0.02em !important;
+      margin-bottom: 12px !important;
+    }
+    .hero-desc {
+      font-size: 14.5px !important;
+      line-height: 1.5 !important;
+      margin-bottom: 20px !important;
+    }
+    .hero-actions {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .hero-actions > * {
+      width: 100% !important;
+      justify-content: center !important;
+      text-align: center !important;
+    }
+    .symptom-box {
+      padding: 12px 14px;
+      margin-bottom: 20px;
+    }
+    .symptom-tags {
+      gap: 6px;
+    }
+    .symptom-pill {
+      font-size: 11.5px;
+      padding: 4px 10px;
+    }
+
+    /* Hero Interactive Card */
+    .hero-interactive-card {
+      padding: 18px 14px !important;
+      border-radius: 14px !important;
+    }
+    .dispatch-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .dispatch-steps {
+      gap: 8px;
+    }
+    .dispatch-step {
+      font-size: 12px;
+      padding: 10px;
+    }
+
+    /* Statistics Grid (2 columns on mobile, last item spans full width) */
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px !important;
+      padding: 20px 14px !important;
+    }
+    .stat-item:last-child {
+      grid-column: span 2;
+    }
+    .stat-num {
+      font-size: 26px !important;
+    }
+    .stat-label {
+      font-size: 11.5px !important;
+    }
+
+    /* Section Headings */
+    .section-head {
+      margin-bottom: 28px !important;
+    }
+    .section-title {
+      font-size: 22px !important;
+      line-height: 1.3 !important;
+    }
+    .section-sub {
+      font-size: 13.5px !important;
+    }
+
+    /* Pillar Cards */
+    .pillar-card {
+      padding: 20px 16px !important;
+    }
+    .pillar-title {
+      font-size: 17px !important;
+    }
+
+    /* Department Tabs (Horizontally scrollable with smooth touch) */
+    .dept-tabs {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      padding-bottom: 8px !important;
+      margin-bottom: 20px !important;
+      scrollbar-width: none;
+    }
+    .dept-tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .dept-tab-btn {
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      font-size: 12.5px !important;
+      padding: 8px 14px !important;
+    }
+    .dept-content {
+      grid-template-columns: 1fr !important;
+      padding: 18px 14px !important;
+      gap: 16px !important;
+    }
+
+    /* Comparison Table/Cards */
+    .comparison-wrapper {
+      padding: 18px 14px !important;
+      margin-top: 32px !important;
+      border-radius: 14px !important;
+    }
+    .comparison-grid {
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+    .comp-box {
+      padding: 16px 14px !important;
+    }
+    .comp-item {
+      font-size: 13px !important;
+    }
+
+    /* Packages Grid */
+    .packages-grid {
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+    .pkg-card {
+      padding: 20px 16px !important;
+    }
+
+    /* Doctors Grid */
+    .doctors-grid {
+      grid-template-columns: 1fr !important;
+      gap: 14px !important;
+    }
+    .doc-card {
+      padding: 16px !important;
+    }
+
+    /* How It Works Steps */
+    .steps-row {
+      grid-template-columns: 1fr !important;
+      gap: 14px !important;
+    }
+    .step-card {
+      padding: 18px 14px !important;
+    }
+
+    /* Testimonials */
+    .testi-grid {
+      grid-template-columns: 1fr !important;
+      gap: 14px !important;
+    }
+    .testi-card {
+      padding: 18px 16px !important;
+    }
+
+    /* Trust Banner */
+    .trust-banner {
+      padding: 24px 16px !important;
+      flex-direction: column !important;
+      text-align: center !important;
+      gap: 18px !important;
+    }
+    .trust-banner > div {
+      width: 100% !important;
+    }
+    .trust-banner h3 {
+      font-size: 20px !important;
+    }
+    .trust-banner p {
+      font-size: 13.5px !important;
+    }
+    .trust-banner a {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+
+    /* Footer */
+    .foot-grid {
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+    footer {
+      padding: 36px 0 24px !important;
+    }
+    .foot-bottom {
+      flex-direction: column !important;
+      gap: 12px !important;
+      text-align: center !important;
+    }
+
+    /* Modal Form for Mobile */
+    .modal-card {
+      padding: 20px 16px !important;
+      max-width: calc(100vw - 24px) !important;
+      margin: 12px auto !important;
+      max-height: 90vh !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+    .modal-title {
+      font-size: 19px !important;
+    }
+    .form-row {
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+    }
+
+    /* Mobile Bottom Sticky Action Bar */
+    .mobile-bottom-bar {
+      display: block !important;
+      padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    }
+    .mobile-bottom-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1.4fr !important;
+      gap: 10px !important;
+      align-items: center !important;
+    }
+    body {
+      padding-bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+    }
+  }
+
+  @media (max-width: 360px) {
+    /* Extra small screens (e.g. 320px Galaxy Fold / small iPhones) */
+    .hero-title { font-size: 23px !important; }
+    .brand-text { font-size: 16px !important; }
+    .brand-icon { width: 30px !important; height: 30px !important; font-size: 15px !important; }
+    .nav-actions .btn-primary { padding: 6px 9px !important; font-size: 11px !important; }
+    .nav-actions .btn-ghost { padding: 6px 8px !important; font-size: 11px !important; }
+    .stat-num { font-size: 22px !important; }
+    .mobile-bottom-grid { grid-template-columns: 1fr 1.2fr !important; }
   }
 </style>
 </head>

@@ -523,6 +523,69 @@
   .status-warning { background: #fef3c7; color: #92400e; }
   .status-alert { background: #fee2e2; color: #991b1b; }
 
+
+  /* ==========================================================
+     PORTAL RESPONSIVE & MOBILE-FIRST FIT-TO-SCREEN SYSTEM
+     ========================================================== */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+  .card-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+  table {
+    min-width: 600px; /* Allow smooth horizontal scrolling inside table card without breaking page */
+  }
+
+  @media (max-width: 768px) {
+    header {
+      padding: 10px 14px !important;
+    }
+    .nav-container {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .dashboard-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .dashboard-header h1 {
+      font-size: 22px !important;
+    }
+    .stats-row, .grid-stats {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+    }
+    .modal-box {
+      width: calc(100vw - 24px) !important;
+      max-width: 100% !important;
+      padding: 20px 16px !important;
+      margin: 12px auto !important;
+    }
+    .form-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .auth-container, .login-box {
+      width: 100% !important;
+      padding: 20px 16px !important;
+    }
+    .tab-bar {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      padding-bottom: 4px;
+    }
+  }
+
 </style>
 </head>
 <body>
