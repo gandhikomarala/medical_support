@@ -1,6 +1,7 @@
 const db = require('../db');
 const wa = require('./whatsapp');
 const groq = require('./groq');
+const realtime = require('./realtime');
 
 const OWNER = process.env.OWNER_WHATSAPP_NUMBER;
 
@@ -48,17 +49,23 @@ async function createRequest({ patient_name, patient_phone, patient_address, ser
     await wa.broadcast(doctors.map((d) => d.phone), summary);
     for (const d of doctors) await log(request.id, 'out', d.phone, summary);
   } else if (service_type === 'lab_test') {
-    // Lab-only bookings (no doctor visit) can go straight to technicians.
     await broadcastToTechnicians(request);
   }
-  // Pharmacy requests are handled directly by the owner (prescription photo, pricing, delivery) —
-  // no auto-broadcast needed, but the owner notification above already covers it.
 
   await wa.sendText(
     patient_phone,
     `Hi ${patient_name}, we've received your ${serviceLabel(service_type)} request (#${request.id}). ` +
       `We'll confirm your provider here on WhatsApp shortly.`
   );
+
+  // Emit Real-Time WebSocket Events
+  try {
+    realtime.broadcast('role:admin', 'request:new', { request });
+    realtime.broadcast('role:doctor', 'request:new', { request });
+    realtime.broadcast(`user:${String(patient_phone).replace(/[^0-9]/g, '')}`, 'request:created', { request });
+  } catch (e) {
+    console.warn('Realtime broadcast error in createRequest:', e.message);
+  }
 
   return request;
 }
@@ -91,6 +98,17 @@ async function handleDoctorAccept(doctorPhone, requestId) {
     `Good news — ${doctor.name} has accepted your request and will be in touch shortly.`
   );
   await notifyOwner(`✅ Request #${request.id} accepted by Dr. ${doctor.name}.`);
+
+  // Emit Real-Time WebSocket Events
+  try {
+    realtime.broadcast('role:admin', 'request:claimed', { request, doctor });
+    realtime.broadcast('role:doctor', 'request:claimed', { request, doctor });
+    realtime.broadcast(`user:${String(request.patient_phone).replace(/[^0-9]/g, '')}`, 'doctor:assigned', { request, doctor });
+  } catch (e) {
+    console.warn('Realtime broadcast error in handleDoctorAccept:', e.message);
+  }
+
+  return { success: true, request };
 }
 
 // --- 3. Doctor sends prescription (+ optional lab tests) in free text ---
@@ -112,10 +130,20 @@ async function handleDoctorPrescription(doctorPhone, requestId, freeText) {
   );
   await wa.sendText(request.patient_phone, `Your prescription is ready. We'll share it with you shortly.`);
 
+  // Emit Real-Time WebSocket Events
+  try {
+    realtime.broadcast('role:admin', 'doctor:prescribed', { request });
+    realtime.broadcast(`user:${String(request.patient_phone).replace(/[^0-9]/g, '')}`, 'doctor:prescribed', { request });
+  } catch (e) {
+    console.warn('Realtime broadcast error in handleDoctorPrescription:', e.message);
+  }
+
   if (labTestsText) {
     await db.query(`UPDATE requests SET status = 'lab_requested', updated_at = now() WHERE id = $1`, [request.id]);
     await broadcastToTechnicians({ ...request, lab_tests_needed: labTestsText });
   }
+
+  return request;
 }
 
 // --- 4. Broadcast a lab order to the technician roster ---
@@ -129,6 +157,14 @@ async function broadcastToTechnicians(request) {
     `Reply with the time you can reach the patient (e.g. "today 5:30pm") to claim this pickup.`;
   await wa.broadcast(techs.map((t) => t.phone), text);
   for (const t of techs) await log(request.id, 'out', t.phone, text);
+
+  // Emit Real-Time WebSocket Events
+  try {
+    realtime.broadcast('role:technician', 'lab:requested', { request });
+    realtime.broadcast('role:admin', 'lab:requested', { request });
+  } catch (e) {
+    console.warn('Realtime broadcast error in broadcastToTechnicians:', e.message);
+  }
 }
 
 // --- 5. First technician to reply with a time wins ---
@@ -159,6 +195,17 @@ async function handleTechnicianTimeReply(techPhone, requestId, freeText) {
     `A technician will visit around ${parsed.visit_time} to collect your sample for: ${request.lab_tests_needed}.`
   );
   await notifyOwner(`🧪 ${tech.name} confirmed for #${request.id} at ${parsed.visit_time}.`);
+
+  // Emit Real-Time WebSocket Events
+  try {
+    realtime.broadcast('role:admin', 'technician:assigned', { request, technician: tech });
+    realtime.broadcast('role:technician', 'technician:assigned', { request, technician: tech });
+    realtime.broadcast(`user:${String(request.patient_phone).replace(/[^0-9]/g, '')}`, 'technician:assigned', { request, technician: tech });
+  } catch (e) {
+    console.warn('Realtime broadcast error in handleTechnicianTimeReply:', e.message);
+  }
+
+  return { success: true, request };
 }
 
 // --- 6. Technician sends the report (image/PDF) ---
@@ -183,6 +230,17 @@ async function handleReportUpload(techPhone, requestId, mediaUrl) {
 
   await wa.sendText(request.patient_phone, `Your lab report is ready and has been shared with your doctor.`);
   await db.query(`UPDATE requests SET status = 'completed', updated_at = now() WHERE id = $1`, [request.id]);
+
+  // Emit Real-Time WebSocket Events
+  try {
+    realtime.broadcast('role:admin', 'lab:report_uploaded', { request, mediaUrl });
+    realtime.broadcast(`user:${String(request.patient_phone).replace(/[^0-9]/g, '')}`, 'lab:report_uploaded', { request, mediaUrl });
+    if (request.assigned_doctor_id) {
+      realtime.broadcast('role:doctor', 'lab:report_uploaded', { request, mediaUrl });
+    }
+  } catch (e) {
+    console.warn('Realtime broadcast error in handleReportUpload:', e.message);
+  }
 }
 
 // --- Escalation: nobody accepted within the configured window ---
@@ -194,9 +252,10 @@ async function escalateStaleRequests() {
   );
   for (const r of rows) {
     await notifyOwner(`⚠️ No one has accepted request #${r.id} (${r.patient_name}) in ${minutes} minutes. Please follow up directly.`);
-    // Bump updated_at so we don't re-alert every polling cycle; a separate "escalated" flag
-    // is cleaner for production — left simple here intentionally.
     await db.query(`UPDATE requests SET updated_at = now() WHERE id = $1`, [r.id]);
+    try {
+      realtime.broadcast('role:admin', 'request:stale_escalation', { request: r, minutes });
+    } catch (e) {}
   }
 }
 

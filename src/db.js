@@ -6,8 +6,8 @@ let pgPool = null;
 let sqliteDb = null;
 let useSqlite = false;
 
-const DEFAULT_NEON_URL = 'postgresql://neondb_owner:npg_XQ89nabrAypx@ep-wild-cherry-ae1aitnt-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
-const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.NEON_DATABASE_URL || DEFAULT_NEON_URL;
+// Read database URL from environment variable. If none provided, db.js automatically falls back to local SQLite.
+const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.NEON_DATABASE_URL || '';
 
 // Attempt Postgres if dbUrl is set
 if (dbUrl && dbUrl.startsWith('postgres')) {

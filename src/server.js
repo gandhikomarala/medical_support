@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const express = require('express');
 const cors = require('cors');
@@ -9,6 +10,7 @@ const apiRoutes = require('./routes/api');
 const authRoutes = require('./routes/auth');
 const webhookRoutes = require('./routes/webhook');
 const requestService = require('./services/requestService');
+const realtime = require('./services/realtime');
 const db = require('./db');
 
 const app = express();
@@ -36,17 +38,19 @@ app.use(apiRoutes);
 app.use('/webhook', webhookRoutes);
 
 app.get('/health', (req, res) => {
+  const rtStats = realtime.getStats();
   res.json({
     ok: true,
     service: 'Ayans Medicare Backend',
     database: db.isSqlite ? 'SQLite (local)' : 'PostgreSQL',
+    realtime: rtStats,
     timestamp: new Date().toISOString()
   });
 });
 
 // Fallback for SPA or direct navigation without crashing
 app.get('*', (req, res) => {
-  if (req.path.startsWith('/api') || req.path.startsWith('/webhook')) {
+  if (req.path.startsWith('/api') || req.path.startsWith('/webhook') || req.path.startsWith('/ws')) {
     return res.status(404).json({ error: 'Endpoint not found' });
   }
   const file = req.path.startsWith('/portal') ? 'portal.html' : 'index.html';
@@ -54,18 +58,27 @@ app.get('*', (req, res) => {
   if (fs.existsSync(filePath)) {
     return res.sendFile(filePath);
   }
-  // If static file is served by Vercel Edge directly:
   res.redirect('/');
 });
 
-// Only bind port and start recurring timers when run directly in Node (not serverless)
+// Only bind port, attach WebSocket server, and start recurring timers when run directly in Node (not serverless)
 if (require.main === module && !process.env.VERCEL) {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
+  const server = http.createServer(app);
+
+  // Attach WebSocket Hub to HTTP server
+  try {
+    realtime.initRealtime(server);
+  } catch (err) {
+    console.warn('Realtime init error:', err.message);
+  }
+
+  server.listen(PORT, () => {
     console.log('======================================================');
     console.log(` Ayans Medicare server is running on http://localhost:${PORT}`);
     console.log(` Website Frontend: http://localhost:${PORT}/`);
     console.log(` Management Portal: http://localhost:${PORT}/portal.html`);
+    console.log(` Real-time WebSocket: ws://localhost:${PORT}/ws`);
     console.log(` API Health check: http://localhost:${PORT}/health`);
     console.log(` Database Engine: ${db.isSqlite ? 'SQLite (local file)' : 'PostgreSQL'}`);
     console.log('======================================================');

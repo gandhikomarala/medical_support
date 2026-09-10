@@ -586,6 +586,122 @@
     }
   }
 
+
+  /* Real-Time Status Pill & Toast Notifications */
+  .rt-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    margin-right: 8px;
+    letter-spacing: 0.2px;
+    transition: all 0.2s ease;
+  }
+  .rt-online { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  .rt-connecting { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+  .rt-offline { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+  .rt-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .rt-pulse {
+    animation: rtPulse 1.5s infinite;
+  }
+  @keyframes rtPulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* Live Activity Feed */
+  .activity-feed-card {
+    background: #ffffff;
+    border: 1px solid var(--sage-line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  }
+  .activity-feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed var(--sage-line);
+    padding-bottom: 8px;
+  }
+  .activity-feed-header h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .activity-feed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+    font-size: 13px;
+  }
+  .activity-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: #f8fafc;
+    border-left: 3px solid var(--wa-dark);
+  }
+  .activity-item.doctor { border-left-color: #0284c7; }
+  .activity-item.tech { border-left-color: #7c3aed; }
+  .activity-item.onboard { border-left-color: #e11d48; }
+
+  /* Toast Container */
+  #toastContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .toast {
+    pointer-events: auto;
+    min-width: 280px;
+    max-width: 400px;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1);
+    border-left: 4px solid var(--wa-dark);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .toast.info { border-left-color: #0284c7; }
+  .toast.warning { border-left-color: #d97706; }
+  .toast.alert { border-left-color: #dc2626; }
+  .toast-icon { font-size: 20px; line-height: 1; }
+  .toast-title { font-weight: 700; font-size: 13.5px; color: var(--ink); margin-bottom: 2px; }
+  .toast-body { font-size: 12.5px; color: var(--ink-soft); line-height: 1.4; }
+  @keyframes toastSlideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
 </style>
 </head>
 <body>
@@ -593,7 +709,11 @@
 <header>
   <div class="nav-container">
     <a href="/" class="brand">Ayans <span>Medicare</span> Portal</a>
-    <div id="userNav" class="user-badge hidden">
+    <div id="userNav" class="user-badge hidden" style="display:flex; align-items:center; gap:8px;">
+      <span id="rtStatusPill" class="rt-status-pill rt-connecting">
+        <span class="rt-dot rt-pulse"></span>
+        <span id="rtStatusText">Connecting</span>
+      </span>
       <span class="user-pill" id="userPill"></span>
       <button class="btn-logout" onclick="logout()">Sign Out</button>
     </div>
@@ -716,6 +836,21 @@
       <div class="stat-card"><div class="val" id="statActiveLab" style="color:#7c3aed;">0</div><div class="lbl">Lab Pickups</div></div>
       <div class="stat-card"><div class="val" id="statDone" style="color:#16a34a;">0</div><div class="lbl">Completed</div></div>
       <div class="stat-card" style="border-top:3px solid #e11d48;"><div class="val" id="statOnboarding" style="color:#e11d48;">0</div><div class="lbl">Staff Onboarding Queue</div></div>
+    </div>
+    <!-- Real-Time Activity Feed -->
+    <div class="activity-feed-card">
+      <div class="activity-feed-header">
+        <h3>
+          <span style="color:#15803d;">⚡</span> Real-Time Live Activity Feed
+        </h3>
+        <span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">Auto-syncing across network</span>
+      </div>
+      <div class="activity-feed-list" id="adminActivityFeed">
+        <div class="activity-item">
+          <span>🛡️ System connected to Ayans Real-time Hub. Ready for live events.</span>
+          <small style="color:var(--ink-soft);">Just now</small>
+        </div>
+      </div>
     </div>
 
     <div class="card-table">
@@ -1585,6 +1720,7 @@
     if (empDash) empDash.classList.add('hidden');
     document.getElementById('patientDashboard').classList.add('hidden');
 
+    connectRealtime(user);
     if (user.role === 'admin') {
       document.getElementById('adminDashboard').classList.remove('hidden');
       loadAdminData();
@@ -1614,6 +1750,7 @@
   }
 
   function logout() {
+    disconnectRealtime();
     localStorage.removeItem('ayans_user');
     currentUser = null;
     document.getElementById('authSection').classList.remove('hidden');
@@ -2642,6 +2779,286 @@
       loadAdminOnboarding();
     }
   }, 10000);
+
+  // ==========================================
+  // REAL-TIME WEBSOCKET & TOAST SYSTEM
+  // ==========================================
+  let socket = null;
+  let socketReconnectTimer = null;
+  let fallbackPollTimer = null;
+
+  function showToast(title, message, type = 'success', duration = 5000) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const iconMap = {
+      success: '✅',
+      info: 'ℹ️',
+      warning: '⚠️',
+      alert: '🚨'
+    };
+    toast.innerHTML = `
+      <div class="toast-icon">${iconMap[type] || '🔔'}</div>
+      <div>
+        <div class="toast-title">${title}</div>
+        <div class="toast-body">${message}</div>
+      </div>
+    `;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(30px)';
+      setTimeout(() => toast.remove(), 300);
+    }, duration);
+  }
+
+  function addActivityItem(text, category = 'normal') {
+    const feed = document.getElementById('adminActivityFeed');
+    if (!feed) return;
+    const item = document.createElement('div');
+    item.className = `activity-item ${category}`;
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    item.innerHTML = `<span>${text}</span><small style="color:var(--ink-soft);">${timeStr}</small>`;
+    feed.prepend(item);
+    // Keep max 15 items
+    while (feed.children.length > 15) {
+      feed.removeChild(feed.lastChild);
+    }
+  }
+
+  function setRtStatus(status) {
+    const pill = document.getElementById('rtStatusPill');
+    const text = document.getElementById('rtStatusText');
+    if (!pill || !text) return;
+
+    pill.className = 'rt-status-pill';
+    if (status === 'online') {
+      pill.classList.add('rt-online');
+      text.textContent = 'Live Sync';
+    } else if (status === 'connecting') {
+      pill.classList.add('rt-connecting');
+      text.textContent = 'Connecting...';
+    } else {
+      pill.classList.add('rt-offline');
+      text.textContent = 'Offline (Polling)';
+    }
+  }
+
+  function connectRealtime(user) {
+    if (!user) return;
+    if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
+      return;
+    }
+
+    setRtStatus('connecting');
+
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/ws`;
+
+    try {
+      socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        setRtStatus('online');
+        clearInterval(fallbackPollTimer);
+        fallbackPollTimer = null;
+
+        // Join room by role and by phone
+        socket.send(JSON.stringify({
+          action: 'join',
+          role: user.role,
+          phone: user.phone
+        }));
+        console.log('[rt] Connected to WebSocket as', user.role, user.phone);
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          handleRealtimeEvent(data);
+        } catch (e) {
+          console.warn('[rt] Message parse error:', e.message);
+        }
+      };
+
+      socket.onclose = () => {
+        setRtStatus('offline');
+        socket = null;
+        startFallbackPolling();
+        // Try reconnecting in 5s
+        clearTimeout(socketReconnectTimer);
+        socketReconnectTimer = setTimeout(() => {
+          if (currentUser) connectRealtime(currentUser);
+        }, 5000);
+      };
+
+      socket.onerror = () => {
+        setRtStatus('offline');
+      };
+    } catch (err) {
+      console.warn('[rt] WebSocket initialization failed:', err.message);
+      setRtStatus('offline');
+      startFallbackPolling();
+    }
+  }
+
+  function disconnectRealtime() {
+    clearTimeout(socketReconnectTimer);
+    clearInterval(fallbackPollTimer);
+    if (socket) {
+      socket.close();
+      socket = null;
+    }
+  }
+
+  function startFallbackPolling() {
+    if (fallbackPollTimer) return;
+    console.log('[rt] Started fallback 8s polling');
+    fallbackPollTimer = setInterval(() => {
+      if (!currentUser) return;
+      if (currentUser.role === 'admin') {
+        loadAdminData();
+        loadAdminOnboarding();
+      } else if (currentUser.role === 'doctor') {
+        loadDoctorData();
+      } else if (currentUser.role === 'technician') {
+        loadTechnicianData();
+      } else if (currentUser.role === 'employee') {
+        loadEmployeeData();
+      } else if (currentUser.role === 'patient') {
+        loadPatientData();
+      }
+    }, 8000);
+  }
+
+  function handleRealtimeEvent(msg) {
+    if (msg.type !== 'event') return;
+    const { event, payload } = msg;
+
+    switch (event) {
+      case 'request:new': {
+        const r = payload.request;
+        showToast('New Patient Request', `#${r.id}: ${r.patient_name} requested ${r.service_type}`, 'info');
+        addActivityItem(`📥 New booking #${r.id} (${r.patient_name} - ${r.service_type})`, 'normal');
+        if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'doctor')) {
+          if (currentUser.role === 'admin') loadAdminData();
+          if (currentUser.role === 'doctor') loadAvailableRequests();
+        }
+        break;
+      }
+
+      case 'request:claimed': {
+        const r = payload.request;
+        const d = payload.doctor;
+        showToast('Doctor Accepted', `Dr. ${d ? d.name : 'Doctor'} claimed request #${r.id}`, 'success');
+        addActivityItem(`🩺 Dr. ${d ? d.name : 'Doctor'} claimed patient #${r.id} (${r.patient_name})`, 'doctor');
+        if (currentUser) {
+          if (currentUser.role === 'admin') loadAdminData();
+          if (currentUser.role === 'doctor') {
+            loadDoctorData();
+            loadAvailableRequests();
+          }
+        }
+        break;
+      }
+
+      case 'doctor:assigned': {
+        const r = payload.request;
+        const d = payload.doctor;
+        showToast('Doctor Dispatched', `Dr. ${d ? d.name : 'Doctor'} is assigned to your visit!`, 'success');
+        if (currentUser && currentUser.role === 'patient') loadPatientData();
+        break;
+      }
+
+      case 'doctor:prescribed': {
+        const r = payload.request;
+        showToast('Prescription Logged', `Prescription ready for Request #${r.id}`, 'info');
+        addActivityItem(`📋 Prescription issued for patient #${r.id} (${r.patient_name})`, 'doctor');
+        if (currentUser) {
+          if (currentUser.role === 'admin') loadAdminData();
+          if (currentUser.role === 'patient') loadPatientData();
+        }
+        break;
+      }
+
+      case 'lab:requested': {
+        const r = payload.request;
+        showToast('Lab Sample Required', `New pickup needed for patient #${r.id} (${r.patient_name})`, 'warning');
+        addActivityItem(`🔬 Lab tests ordered for patient #${r.id}: ${r.lab_tests_needed || 'Diagnostic'}`, 'tech');
+        if (currentUser) {
+          if (currentUser.role === 'technician') loadTechnicianData();
+          if (currentUser.role === 'admin') loadAdminData();
+        }
+        break;
+      }
+
+      case 'technician:assigned': {
+        const r = payload.request;
+        const t = payload.technician;
+        showToast('Technician Dispatched', `Sample collection claimed by ${t ? t.name : 'Technician'}`, 'info');
+        addActivityItem(`🧪 ${t ? t.name : 'Technician'} scheduled sample pickup for #${r.id}`, 'tech');
+        if (currentUser) {
+          if (currentUser.role === 'admin') loadAdminData();
+          if (currentUser.role === 'patient') loadPatientData();
+          if (currentUser.role === 'technician') loadTechnicianData();
+        }
+        break;
+      }
+
+      case 'lab:report_uploaded': {
+        const r = payload.request;
+        showToast('Lab Report Ready', `Diagnostic report uploaded for Request #${r.id}`, 'success');
+        addActivityItem(`✅ Lab report uploaded & completed for patient #${r.id}`, 'tech');
+        if (currentUser) {
+          if (currentUser.role === 'patient') loadPatientData();
+          if (currentUser.role === 'doctor') loadDoctorData();
+          if (currentUser.role === 'admin') loadAdminData();
+        }
+        break;
+      }
+
+      case 'teleconsult:link_ready': {
+        const r = payload.request;
+        const link = payload.meet_link;
+        showToast('Private Meet Link Ready', `Video room generated for Request #${r.id}`, 'info');
+        addActivityItem(`📹 Video consult room generated for patient #${r.id}`, 'doctor');
+        if (currentUser) {
+          if (currentUser.role === 'patient') loadPatientData();
+          if (currentUser.role === 'doctor') loadDoctorData();
+          if (currentUser.role === 'admin') loadAdminData();
+        }
+        break;
+      }
+
+      case 'onboarding:submitted': {
+        const onb = payload.onboarding;
+        showToast('New Staff Candidate', `${onb.candidate_name} (${onb.role}) submitted by ${onb.submitted_by_name}`, 'info');
+        addActivityItem(`💼 New candidate ${onb.candidate_name} (${onb.role}) submitted for verification`, 'onboard');
+        if (currentUser && currentUser.role === 'admin') {
+          loadAdminOnboarding();
+        }
+        break;
+      }
+
+      case 'onboarding:reviewed': {
+        const { candidate, action, admin_notes } = payload;
+        showToast('Candidate Reviewed', `Candidate ${candidate.candidate_name} was ${action}ed by Admin!`, action === 'approve' ? 'success' : 'warning');
+        addActivityItem(`⚖️ Admin ${action}ed ${candidate.candidate_name} (${candidate.role})`, 'onboard');
+        if (currentUser) {
+          if (currentUser.role === 'employee') loadEmployeeData();
+          if (currentUser.role === 'admin') loadAdminOnboarding();
+        }
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+
 </script>
 </body>
 </html>
