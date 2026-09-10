@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ayans Medicare — Choose Qualified Care | Free Doctor Home Visits, Labs &amp; Pharmacy</title>
-<meta name="description" content="Why choose an unqualified RMP when a qualified MBBS/MD doctor comes to your home for FREE? Ayans Medicare brings verified doctors, certified NABL lab collections, and genuine medicines straight to your doorstep.">
+<title>Nhealth — Healthcare at Home | Free Doctor Home Visits, Labs &amp; Pharmacy</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<meta name="description" content="Why choose an unqualified RMP when a qualified MBBS/MD doctor comes to your home for FREE? Nhealth brings verified doctors, certified NABL lab collections, and genuine medicines straight to your doorstep.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
@@ -190,6 +192,113 @@
   }
 
   .nav-actions { display: flex; align-items: center; gap: 12px; }
+  /* ===== MFine Reference Header Upgrade ===== */
+  .mfine-header { background: #ffffff; border-bottom: 1px solid #e2e8f0; position: sticky; top:0; z-index:92; }
+  .mfine-header .nav { gap:16px; }
+  .mfine-nav-desktop ul { display:flex; gap:22px; font-size:14px; font-weight:600; color:#1e293b; }
+  .mfine-nav-desktop a { color:#334155; }
+  .mfine-nav-desktop a:hover { color:#0f766e; }
+  .has-dropdown { position:relative; }
+  .mfine-dropdown {
+    display:none; position:absolute; top: calc(100% + 12px); left:0; background:#fff; border:1px solid #e2e8f0; border-radius:14px;
+    box-shadow:0 12px 28px rgba(15,23,42,0.08); padding:10px; min-width:300px; z-index:95;
+  }
+  .has-dropdown:hover .mfine-dropdown { display:block; }
+  .mfine-dropdown a { display:flex; gap:12px; align-items:center; padding:10px 12px; border-radius:10px; text-decoration:none; }
+  .mfine-dropdown a:hover { background:#f8fafc; }
+  .mfine-dropdown a span { font-size:22px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:#f1f5f9; border-radius:10px; }
+  .mfine-dropdown a div strong { display:block; font-size:13.5px; color:#0f172a; }
+  .mfine-dropdown a div small { color:#64748b; font-size:11.5px; }
+
+  .mfine-search-wrap { position:relative; flex:1; max-width:460px; margin:0 8px; }
+  .mfine-search-bar {
+    display:flex; align-items:center; gap:10px; background:#f1f5f9; border:1.5px solid #e2e8f0; border-radius:12px; padding:9px 14px;
+    transition: all 0.15s ease;
+  }
+  .mfine-search-bar:focus-within { background:#fff; border-color:#14b8a6; box-shadow:0 0 0 3px rgba(20,184,166,0.12); }
+  .mfine-search-icon { width:18px; height:18px; flex-shrink:0; }
+  .mfine-search-bar input { flex:1; border:none; background:transparent; outline:none; font-size:13.5px; font-family:inherit; color:#0f172a; }
+  .mfine-search-bar input::placeholder { color:#94a3b8; font-size:13px; }
+  .mfine-search-clear { display:none; background:#e2e8f0; border:none; width:22px; height:22px; border-radius:50%; cursor:pointer; font-size:14px; }
+  .mfine-search-bar.has-value .mfine-search-clear { display:inline-flex; align-items:center; justify-content:center; }
+
+  .mfine-search-dropdown {
+    display:none; position:absolute; top: calc(100% + 10px); left:0; right:0; background:#fff; border:1px solid #e2e8f0; border-radius:14px;
+    box-shadow:0 16px 36px rgba(15,23,42,0.08); padding:14px; z-index:93; max-height:70vh; overflow:auto;
+  }
+  .mfine-search-wrap.active .mfine-search-dropdown { display:block; }
+  .mfine-search-section { font-size:11px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; color:#64748b; margin:10px 0 8px; }
+  .mfine-search-suggestions { display:flex; flex-wrap:wrap; gap:8px; }
+  .mfine-search-suggestions button {
+    background:#f8fafc; border:1px solid #e2e8f0; padding:7px 12px; border-radius:20px; font-size:12.5px; font-weight:600; cursor:pointer; color:#0f172a;
+  }
+  .mfine-search-suggestions button:hover { background:#ecfdf5; border-color:#6ee7b7; color:#047857; }
+  .mfine-search-actions { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+  .mfine-search-actions a { display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:#f8fafc; border:1px solid #e2e8f0; font-size:13px; font-weight:600; color:#0f172a; }
+  .mfine-search-actions a:hover { background:#fff; border-color:#14b8a6; }
+
+  .mfine-location-pill {
+    display:flex; align-items:center; gap:6px; background:#f8fafc; border:1px solid #e2e8f0; padding:7px 12px; border-radius:20px; font-size:13px; font-weight:600; color:#0f172a; white-space:nowrap;
+  }
+  .mfine-location-pill svg { width:16px; height:16px; }
+  .mfine-location-pill small { color:#64748b; font-weight:500; }
+  .mfine-login-btn {
+    display:flex; align-items:center; gap:8px; background:#fff; border:1.5px solid #e2e8f0; padding:8px 14px; border-radius:20px; font-size:13.5px; font-weight:600; color:#0f172a;
+  }
+  .mfine-login-btn svg { width:16px; height:16px; }
+  .mfine-login-btn:hover { border-color:#0f766e; color:#0f766e; }
+  .mfine-wa-compact { padding:9px 12px !important; border-radius:20px !important; }
+  .mfine-mobile-search { display:none; background:#f1f5f9; border:1px solid #e2e8f0; width:36px; height:36px; border-radius:10px; font-size:18px; }
+  .mfine-mobile-search-bar { display:none; padding:10px 16px; background:#fff; border-top:1px solid #e2e8f0; }
+  .mfine-mobile-search-bar.active { display:block; }
+
+  @media (max-width: 1100px) { .mfine-nav-desktop { display:none; } .mfine-search-wrap { max-width:360px; } }
+  @media (max-width: 860px) { .mfine-search-wrap { display:none; } .mfine-mobile-search { display:inline-flex; align-items:center; justify-content:center; } .mfine-location-pill { display:none; } }
+  @media (max-width: 768px) { .mfine-mobile-search-bar .mfine-search-bar { background:#f1f5f9; } }
+
+  /* MFine Banner Carousel */
+  .mfine-banner-carousel { background:#f8fafc; padding:18px 0 6px; border-bottom:1px solid #e2e8f0; position:relative; overflow:hidden; }
+  .mfine-banner-track { display:flex; transition:transform 0.5s cubic-bezier(0.16,1,0.3,1); will-change:transform; }
+  .mfine-banner-slide { min-width:100%; padding:0 24px; box-sizing:border-box; }
+  .mfine-banner-card {
+    max-width:1200px; margin:0 auto; background:#fff; border:1px solid #e2e8f0; border-radius:20px; padding:18px 22px; display:grid; grid-template-columns:1.15fr 0.85fr; gap:18px; align-items:center;
+    box-shadow:0 8px 24px rgba(15,23,42,0.04); position:relative; overflow:hidden;
+  }
+  .mfine-banner-card::after { content:""; position:absolute; right:-40px; top:-40px; width:220px; height:220px; background:radial-gradient(60% 60% at 50% 50%, rgba(20,184,166,0.12) 0%, transparent 70%); pointer-events:none; }
+  .mfine-banner-left h3 { font-size:22px; font-weight:800; color:#0f172a; margin-bottom:6px; letter-spacing:-0.02em;}
+  .mfine-banner-left h3 span { color:#0f766e; }
+  .mfine-banner-left p { font-size:13.5px; color:#64748b; line-height:1.5; margin-bottom:12px; max-width:48ch; }
+  .mfine-banner-badges { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .mfine-banner-badge { font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; border:1px solid #e2e8f0; background:#f8fafc; color:#334155; }
+  .mfine-banner-badge.green { background:#ecfdf5; border-color:#a7f3d0; color:#047857; }
+  .mfine-banner-badge.blue { background:#eff6ff; border-color:#bfdbfe; color:#1d4ed8; }
+  .mfine-banner-cta { display:flex; gap:10px; flex-wrap:wrap; }
+  .mfine-banner-visual { position:relative; display:flex; align-items:center; justify-content:center; min-height:160px; }
+  .mfine-banner-visual img { width:100%; max-width:340px; height:auto; border-radius:14px; object-fit:cover; }
+  .mfine-banner-visual .mfine-banner-float { position:absolute; bottom:8px; right:8px; background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:8px 12px; box-shadow:0 8px 16px rgba(0,0,0,0.06); display:flex; gap:10px; align-items:center; }
+  .mfine-banner-dots { display:flex; justify-content:center; gap:8px; padding:12px 0 8px; }
+  .mfine-banner-dot { width:8px; height:8px; border-radius:50%; background:#cbd5e1; cursor:pointer; transition:all 0.2s; border:none; padding:0;}
+  .mfine-banner-dot.active { width:22px; background:#0f766e; border-radius:6px; }
+  .mfine-banner-arrow { position:absolute; top:50%; transform:translateY(-50%); background:#fff; border:1px solid #e2e8f0; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.05); z-index:2; }
+  .mfine-banner-arrow.prev { left:12px; }
+  .mfine-banner-arrow.next { right:12px; }
+  @media (max-width: 860px) { .mfine-banner-card { grid-template-columns:1fr; padding:16px;} .mfine-banner-visual { min-height:140px; order:-1; } .mfine-banner-visual img { max-width:100%; } .mfine-banner-card h3 { font-size:19px; } .mfine-banner-arrow { display:none; } }
+
+  /* MFine Trust + Partners Marquee */
+  .mfine-trust-strip { background:#fff; border-top:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0; padding:14px 0; }
+  .mfine-trust-grid { display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap; }
+  .mfine-trust-item { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:#334155; }
+  .mfine-trust-item .icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+  .mfine-trust-item .icon.green { background:#ecfdf5; border:1px solid #a7f3d0; }
+  .mfine-trust-item .icon.blue { background:#eff6ff; border:1px solid #bfdbfe; }
+  .mfine-trust-item .icon.orange { background:#fff7ed; border:1px solid #fed7aa; }
+  .mfine-marquee { overflow:hidden; background:#f8fafc; border-bottom:1px solid #e2e8f0; padding:12px 0; }
+  .mfine-marquee-track { display:flex; gap:40px; align-items:center; animation: marquee 28s linear infinite; will-change:transform; }
+  .mfine-marquee-track:hover { animation-play-state:paused; }
+  .mfine-marquee-item { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#475569; white-space:nowrap; opacity:0.9; }
+  .mfine-marquee-item .dot { width:6px; height:6px; border-radius:50%; background:#cbd5e1; }
+  @keyframes marquee { 0% { transform:translateX(0);} 100% { transform:translateX(-50%);} }
+
 
   /* Hero Section */
   .hero-section {
@@ -1137,40 +1246,161 @@
   </div>
 </div>
 
-<!-- Glassmorphism Header -->
-<header>
+<!-- MFine-inspired Header — Nhealth -->
+<header class="mfine-header">
   <div class="wrap nav">
     <a href="/" class="brand-logo">
-      <div class="brand-icon">✚</div>
+      <img src="/nhealth-mark.png" alt="Nhealth" style="height:38px;width:auto;object-fit:contain;">
       <div>
-        <div class="brand-text">Ayans <span>Medicare</span></div>
-        <span class="brand-sub">Choose Qualified Care &bull; Zero Consultation Fee</span>
+        <div class="brand-text">Nhealth</div>
+        <span class="brand-sub">Healthcare at Home &bull; Zero Consultation Fee</span>
       </div>
     </a>
-    <nav>
+
+    <nav class="mfine-nav-desktop">
       <ul>
-        <li><a href="#services">Doctor Home Visit <span class="nav-tag">₹0 Fee</span></a></li>
-        <li><a href="#services">Lab Tests at Home</a></li>
-        <li><a href="#services">Doorstep Pharmacy</a></li>
+        <li class="has-dropdown">
+          <a href="#services">Services ▾</a>
+          <div class="mfine-dropdown">
+            <a href="#" onclick="openBookingModal('doctor');return false;"><span>🩺</span><div><strong>Doctor Home Visit</strong><small>MBBS/MD at home — ₹0 fee</small></div></a>
+            <a href="#" onclick="openBookingModal('lab_test');return false;"><span>🔬</span><div><strong>Lab Tests at Home</strong><small>NABL certified, free pickup</small></div></a>
+            <a href="#" onclick="openBookingModal('pharmacy');return false;"><span>💊</span><div><strong>Medicines</strong><small>2-hour genuine delivery</small></div></a>
+            <a href="#departments"><span>🏥</span><div><strong>Health Checks</strong><small>Full body, diabetes, cardiac</small></div></a>
+            <a href="#doctors"><span>👨‍⚕️</span><div><strong>Care Programs</strong><small>Diabetes, cardiac, senior care</small></div></a>
+          </div>
+        </li>
         <li><a href="#comparison">RMP vs Doctor</a></li>
-        <li><a href="#doctors">Our Specialists</a></li>
+        <li><a href="#doctors">Doctors</a></li>
         <li><a href="#coverage">Coverage</a></li>
       </ul>
     </nav>
+
+    <div class="mfine-search-wrap" id="mfineSearchWrap">
+      <div class="mfine-search-bar">
+        <svg class="mfine-search-icon" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20L16.5 16.5"/></svg>
+        <input type="text" id="mfineSearchInput" placeholder="Search for doctor, lab test, medicine or symptom" autocomplete="off">
+        <button class="mfine-search-clear" id="mfineSearchClear" aria-label="Clear">×</button>
+      </div>
+      <div class="mfine-search-dropdown" id="mfineSearchDropdown">
+        <div class="mfine-search-section">Popular Searches</div>
+        <div class="mfine-search-suggestions">
+          <button onclick="mfineQuickSearch('General Physician')">🩺 General Physician — ₹0</button>
+          <button onclick="mfineQuickSearch('Lab Test')">🔬 Lab Test at Home</button>
+          <button onclick="mfineQuickSearch('Diabetes')">🩸 Diabetes Screening — ₹499</button>
+          <button onclick="mfineQuickSearch('Medicines')">💊 Order Medicines</button>
+          <button onclick="mfineQuickSearch('Cardiology')">❤️ Cardiology — BP & Heart</button>
+          <button onclick="mfineQuickSearch('Pediatric')">👶 Child Health</button>
+        </div>
+        <div class="mfine-search-section">Quick Actions</div>
+        <div class="mfine-search-actions">
+          <a href="#" onclick="openBookingModal('doctor');return false;">⚡ Book Free Doctor Visit</a>
+          <a href="#" onclick="openBookingModal('lab_test');return false;">🧪 Book Lab Test</a>
+          <a id="mfineSearchWa" href="#" target="_blank">💬 WhatsApp Helpline</a>
+        </div>
+      </div>
+    </div>
+
     <div class="nav-actions">
-      <a href="/portal.html" class="btn-ghost" style="padding: 9px 16px; font-size: 13.5px;">
-        👤 Staff &amp; Patient Portal
+      <div class="mfine-location-pill" title="Service area">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="1.8"><path d="M12 21s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>
+        <span>Vijayawada</span>
+        <small>520001 ▾</small>
+      </div>
+      <a href="/portal.html" class="mfine-login-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+        <span>Login</span>
       </a>
-      <button class="btn-primary" onclick="openBookingModal('doctor')" style="padding: 10px 18px; font-size: 13.5px;">
-        ⚡ Book Online
-      </button>
-      <a class="btn-wa" id="hdrWaBtn" href="#" target="_blank" rel="noopener" style="padding: 10px 16px; font-size: 13.5px;">
+      <a class="btn-wa mfine-wa-compact" id="hdrWaBtn" href="#" target="_blank" rel="noopener" title="WhatsApp">
         <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 8.1 8.11c0 4.47-3.63 8.1-8.1 8.1a8.06 8.06 0 0 1-4.11-1.12l-.3-.17-3.13.82.84-3.05-.19-.32a8.08 8.08 0 0 1-1.23-4.27 8.1 8.1 0 0 1 8.12-8.1m-4.42 4.13c-.17 0-.44.06-.67.32-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.16 1.75 2.79 4.32 3.8 2.13.85 2.57.68 3.03.64.47-.04 1.5-.61 1.72-1.2.21-.6.21-1.11.15-1.21-.06-.11-.23-.17-.47-.3-.25-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.17.25-.65.82-.8 1-.15.17-.29.19-.54.06-.25-.13-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.4-.79-1.91-.2-.5-.41-.43-.57-.44z"/></svg>
-        WhatsApp
       </a>
+      <button class="mfine-mobile-search" id="mfineMobileSearchBtn" aria-label="Search">⌕</button>
+    </div>
+  </div>
+  <!-- Mobile search overlay -->
+  <div class="mfine-mobile-search-bar" id="mfineMobileSearchBar">
+    <div class="mfine-search-bar">
+      <svg class="mfine-search-icon" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20L16.5 16.5"/></svg>
+      <input type="text" id="mfineMobileSearchInput" placeholder="Search doctor, lab, medicine">
+      <button class="mfine-search-clear" onclick="document.getElementById('mfineMobileSearchBar').classList.remove('active')">×</button>
     </div>
   </div>
 </header>
+<!-- MFine-style Promo Banner Carousel -->
+<div class="mfine-banner-carousel" id="mfineBannerCarousel">
+  <button class="mfine-banner-arrow prev" aria-label="Previous" onclick="mfineBannerPrev()">‹</button>
+  <button class="mfine-banner-arrow next" aria-label="Next" onclick="mfineBannerNext()">›</button>
+  <div class="mfine-banner-track" id="mfineBannerTrack">
+    <!-- Slide 1: Free Doctor -->
+    <div class="mfine-banner-slide">
+      <div class="mfine-banner-card" style="background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 50%, #ffffff 100%); border-color:#a7f3d0;">
+        <div class="mfine-banner-left">
+          <div class="mfine-banner-badges"><span class="mfine-banner-badge green">₹0 Consultation</span><span class="mfine-banner-badge">MBBS / MD Verified</span></div>
+          <h3>Free Doctor Home Visit <span>₹0 Fee</span> — Today</h3>
+          <p>Skip the RMP. Certified MBBS/MD specialists come to your doorstep in 18 mins avg. Physical exam, vitals, digital prescription on WhatsApp.</p>
+          <div class="mfine-banner-cta">
+            <button class="btn-primary" onclick="openBookingModal('doctor')" style="padding:11px 20px; font-size:14px;">⚡ Book Free Visit</button>
+            <a class="btn-ghost" href="#comparison" style="padding:10px 18px; font-size:13.5px;">Why Qualified?</a>
+          </div>
+        </div>
+        <div class="mfine-banner-visual">
+          <div style="width:340px; height:180px; background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:54px; border:1px solid #a7f3d0;">🩺</div>
+          <div class="mfine-banner-float">
+            <div style="width:36px; height:36px; border-radius:10px; background:#dcfce7; display:flex; align-items:center; justify-content:center; font-size:16px;">✓</div>
+            <div><div style="font-size:12px; font-weight:700; color:#0f172a;">Dr. Rajesh on the way</div><div style="font-size:11px; color:#64748b;">ETA 18 mins • Free visit</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Slide 2: Lab Tests -->
+    <div class="mfine-banner-slide">
+      <div class="mfine-banner-card" style="background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 50%, #ffffff 100%); border-color:#bfdbfe;">
+        <div class="mfine-banner-left">
+          <div class="mfine-banner-badges"><span class="mfine-banner-badge blue">NABL Certified</span><span class="mfine-banner-badge">Free Home Pickup</span></div>
+          <h3>Lab Tests at Home — <span>Free Sample Pickup</span></h3>
+          <p>Full body, diabetes, thyroid, cardiac packages from ₹399. Certified phlebotomist at home, same-day NABL report on WhatsApp & portal.</p>
+          <div class="mfine-banner-cta">
+            <button class="btn-primary" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);" onclick="openBookingModal('lab_test')">🧪 Book Lab Test</button>
+            <a class="btn-ghost" href="#packages">View Packages →</a>
+          </div>
+        </div>
+        <div class="mfine-banner-visual">
+          <div style="width:340px; height:180px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:54px; border:1px solid #bfdbfe;">🔬</div>
+          <div class="mfine-banner-float">
+            <div style="width:36px; height:36px; border-radius:10px; background:#dbeafe; display:flex; align-items:center; justify-content:center; font-size:16px;">🧫</div>
+            <div><div style="font-size:12px; font-weight:700; color:#0f172a;">65+ Parameters</div><div style="font-size:11px; color:#64748b;">NABL • Home collection</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Slide 3: Pharmacy -->
+    <div class="mfine-banner-slide">
+      <div class="mfine-banner-card" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 30%, #ffffff 100%); border-color:#fed7aa;">
+        <div class="mfine-banner-left">
+          <div class="mfine-banner-badges"><span class="mfine-banner-badge" style="background:#fff7ed; border-color:#fed7aa; color:#c2410c;">Genuine 100%</span><span class="mfine-banner-badge">2-Hour Delivery</span></div>
+          <h3>Medicines Delivered <span>in 2 Hours</span> — Free</h3>
+          <p>100% genuine medicines from licensed pharmacies. Free doorstep delivery, temperature-controlled, with prescription guidance.</p>
+          <div class="mfine-banner-cta">
+            <button class="btn-primary" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);" onclick="openBookingModal('pharmacy')">💊 Order Medicines</button>
+            <a class="btn-ghost" href="tel:+919959461095">📞 +91 99594 61095</a>
+          </div>
+        </div>
+        <div class="mfine-banner-visual">
+          <div style="width:340px; height:180px; background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:54px; border:1px solid #fed7aa;">📦</div>
+          <div class="mfine-banner-float">
+            <div style="width:36px; height:36px; border-radius:10px; background:#ffedd5; display:flex; align-items:center; justify-content:center; font-size:16px;">✓</div>
+            <div><div style="font-size:12px; font-weight:700; color:#0f172a;">Free Delivery</div><div style="font-size:11px; color:#64748b;">2-4 hours • Genuine</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mfine-banner-dots" id="mfineBannerDots">
+    <button class="mfine-banner-dot active" onclick="mfineBannerGo(0)" aria-label="Slide 1"></button>
+    <button class="mfine-banner-dot" onclick="mfineBannerGo(1)" aria-label="Slide 2"></button>
+    <button class="mfine-banner-dot" onclick="mfineBannerGo(2)" aria-label="Slide 3"></button>
+  </div>
+</div>
+
 
 <!-- Hero Section -->
 <section class="hero-section">
@@ -1288,7 +1518,7 @@
       </div>
 
       <div class="live-chat-snippet">
-        <strong>Ayans Medicare:</strong> "Namaste! Your doctor consultation is <strong>100% Free (₹0 fee)</strong>. Dr. Rajesh is en route to your address. Rest we will handle!"
+        <strong>Nhealth:</strong> "Namaste! Your doctor consultation is <strong>100% Free (₹0 fee)</strong>. Dr. Rajesh is en route to your address. Rest we will handle!"
       </div>
     </div>
   </div>
@@ -1316,6 +1546,39 @@
     <div class="stat-card">
       <div class="stat-num" style="color: #d97706;">4.9 ★</div>
       <div class="stat-label">Rated Across Community</div>
+    </div>
+  </div>
+</div>
+
+<!-- MFine-style Trust Icons + Partners Marquee -->
+<div class="mfine-trust-strip">
+  <div class="wrap mfine-trust-grid">
+    <div class="mfine-trust-item"><div class="icon green">✓</div><div><div style="font-weight:800; color:#0f172a;">15,000+ Patients</div><div style="font-size:11px; color:#64748b; font-weight:500;">Trusted home care</div></div></div>
+    <div class="mfine-trust-item"><div class="icon blue">◎</div><div><div style="font-weight:800; color:#0f172a;">NABL & NABH Labs</div><div style="font-size:11px; color:#64748b; font-weight:500;">Certified diagnostics</div></div></div>
+    <div class="mfine-trust-item"><div class="icon orange">★</div><div><div style="font-weight:800; color:#0f172a;">4.9 ★ Community Rated</div><div style="font-size:11px; color:#64748b; font-weight:500;">Across Vijayawada region</div></div></div>
+    <div class="mfine-trust-item" style="margin-left:auto; background:#f8fafc; border:1px solid #e2e8f0; padding:8px 14px; border-radius:20px; font-size:12px;">🛡️ <strong>Medical Council Verified Doctors</strong></div>
+  </div>
+</div>
+<div class="mfine-marquee">
+  <div class="wrap" style="overflow:hidden;">
+    <div class="mfine-marquee-track">
+      <span class="mfine-marquee-item"><span class="dot" style="background:#14b8a6;"></span> Vijayawada Govt. Hospital Network</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> NABL Certified Labs</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Apollo Diagnostics</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Manipal Hospital</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Fortis Healthcare</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Care Health Insurance</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Niva Bupa</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Free Doctor Visit ₹0</span>
+      <!-- duplicate for loop -->
+      <span class="mfine-marquee-item"><span class="dot" style="background:#14b8a6;"></span> Vijayawada Govt. Hospital Network</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> NABL Certified Labs</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Apollo Diagnostics</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Manipal Hospital</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Fortis Healthcare</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Care Health Insurance</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Niva Bupa</span>
+      <span class="mfine-marquee-item"><span class="dot"></span> Free Doctor Visit ₹0</span>
     </div>
   </div>
 </div>
@@ -1436,7 +1699,7 @@
       </div>
 
       <!-- 6. Instant WhatsApp Connect -->
-      <a class="mfine-service-card" id="mfineWaCard" href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20need%20healthcare%20services." target="_blank" rel="noopener">
+      <a class="mfine-service-card" id="mfineWaCard" href="https://wa.me/919959461095?text=Hi%20Nhealth%2C%20I%20need%20healthcare%20services." target="_blank" rel="noopener">
         <span class="svc-badge green">24/7 Live</span>
         <div class="mfine-icon-wrap">
           <svg width="58" height="58" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1457,7 +1720,7 @@
   <div class="wrap">
     <div class="section-header">
       <div class="section-eyebrow gold">✨ OUR SERVICES &amp; MEDICINES</div>
-      <h2 class="section-title">Choose Qualified Care at Your Doorstep</h2>
+      <h2 class="section-title">Healthcare at Home at Your Doorstep</h2>
       <p class="section-desc">
         Don't gamble with your loved ones' health. When certified MBBS/MD specialists come to your home with zero consultation fees, certified NABL lab collections, and authentic pharmacy supplies, quality healthcare is always within reach.
       </p>
@@ -1496,7 +1759,7 @@
           <button onclick="openBookingModal('doctor')" class="btn-primary" style="width: 100%;">
             ⚡ Book Free Doctor Visit
           </button>
-          <a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20want%20to%20book%20a%20Qualified%20Doctor%20Home%20Visit%20(Free%20Consultation)." target="_blank" rel="noopener" class="btn-wa" style="width: 100%;">
+          <a href="https://wa.me/919959461095?text=Hi%20Nhealth%2C%20I%20want%20to%20book%20a%20Qualified%20Doctor%20Home%20Visit%20(Free%20Consultation)." target="_blank" rel="noopener" class="btn-wa" style="width: 100%;">
             Book on WhatsApp
           </a>
         </div>
@@ -1531,7 +1794,7 @@
           <button onclick="openBookingModal('lab_test')" class="btn-primary" style="width: 100%; background: #0284c7;">
             🔬 Book Lab Sample Pickup
           </button>
-          <a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20need%20a%20Certified%20Lab%20Test%20sample%20collection%20at%20home." target="_blank" rel="noopener" class="btn-wa" style="width: 100%; background: #0284c7;">
+          <a href="https://wa.me/919959461095?text=Hi%20Nhealth%2C%20I%20need%20a%20Certified%20Lab%20Test%20sample%20collection%20at%20home." target="_blank" rel="noopener" class="btn-wa" style="width: 100%; background: #0284c7;">
             Book on WhatsApp
           </a>
         </div>
@@ -1567,18 +1830,18 @@
           <button onclick="openBookingModal('pharmacy')" class="btn-primary" style="width: 100%; background: #16a34a;">
             💊 Order Genuine Medicines
           </button>
-          <a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20want%20to%20order%20medicines%20or%20need%20home%20nursing%20care." target="_blank" rel="noopener" class="btn-wa" style="width: 100%; background: #16a34a;">
+          <a href="https://wa.me/919959461095?text=Hi%20Nhealth%2C%20I%20want%20to%20order%20medicines%20or%20need%20home%20nursing%20care." target="_blank" rel="noopener" class="btn-wa" style="width: 100%; background: #16a34a;">
             Book on WhatsApp
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Comparison Matrix: Unqualified RMP vs Qualified Ayans Doctor -->
+    <!-- Comparison Matrix: Unqualified RMP vs Qualified Nhealth Doctor -->
     <div class="comparison-wrapper" id="comparison">
       <div style="text-align: center; max-width: 680px; margin: 0 auto;">
         <span class="section-eyebrow">CRITICAL HEALTH ADVISORY</span>
-        <h3 style="font-size: 28px; margin-bottom: 8px;">Why Choose Qualified Care Over An Unqualified RMP?</h3>
+        <h3 style="font-size: 28px; margin-bottom: 8px;">Why Healthcare at Home Over An Unqualified RMP?</h3>
         <p style="font-size: 15px; color: var(--slate);">Understand the clinical dangers of unregulated quacks to keep your family safe</p>
       </div>
 
@@ -1598,7 +1861,7 @@
 
         <div class="comp-box good">
           <div class="comp-head">
-            <span>✅</span> Qualified Ayans Medicare Doctor
+            <span>✅</span> Qualified Nhealth Doctor
           </div>
           <ul class="comp-list">
             <li><span>✓</span><span><strong>100% Medical Council Verified:</strong> Licensed MBBS &amp; MD doctors with verified registration numbers.</span></li>
@@ -1627,7 +1890,7 @@
         <button class="btn-primary" onclick="openBookingModal('doctor')" style="background: #10b981;">
           ⚡ Book Free Visit (₹0)
         </button>
-        <a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20need%20healthcare%20support." target="_blank" rel="noopener" class="btn-wa">
+        <a href="https://wa.me/919959461095?text=Hi%20Nhealth%2C%20I%20need%20healthcare%20support." target="_blank" rel="noopener" class="btn-wa">
           WhatsApp Us
         </a>
       </div>
@@ -1790,7 +2053,7 @@
   <div class="wrap">
     <div class="section-header">
       <div class="section-eyebrow">SEAMLESS CLINICAL WORKFLOW</div>
-      <h2 class="section-title">How Ayans Medicare Works in 4 Easy Steps</h2>
+      <h2 class="section-title">How Nhealth Works in 4 Easy Steps</h2>
       <p class="section-desc">
         No complicated apps, no passwords to remember. Your health records, doctor updates, and prescriptions stay securely in your WhatsApp chat.
       </p>
@@ -1942,7 +2205,7 @@
         <div>
           <div class="testi-stars">★★★★★</div>
           <p class="testi-text">
-            "My 78-year-old mother had sudden high blood pressure and dizziness. An unqualified RMP nearby was going to give heavy injections, but I called Ayans Medicare. Dr. Rajesh arrived within 20 minutes, did a calm examination, and didn't charge a single rupee consultation fee! Genuine medicines were delivered right after."
+            "My 78-year-old mother had sudden high blood pressure and dizziness. An unqualified RMP nearby was going to give heavy injections, but I called Nhealth. Dr. Rajesh arrived within 20 minutes, did a calm examination, and didn't charge a single rupee consultation fee! Genuine medicines were delivered right after."
           </p>
         </div>
         <div class="testi-author">
@@ -1958,7 +2221,7 @@
         <div>
           <div class="testi-stars">★★★★★</div>
           <p class="testi-text">
-            "Taking my toddler to a hospital with high fever in the rain was terrifying. The Ayans Medicare doctor visited our house, checked his chest, and sent the prescription to our WhatsApp. The phlebotomist came in the morning for blood tests. Invaluable service for families!"
+            "Taking my toddler to a hospital with high fever in the rain was terrifying. The Nhealth doctor visited our house, checked his chest, and sent the prescription to our WhatsApp. The phlebotomist came in the morning for blood tests. Invaluable service for families!"
           </p>
         </div>
         <div class="testi-author">
@@ -1974,7 +2237,7 @@
         <div>
           <div class="testi-stars">★★★★★</div>
           <p class="testi-text">
-            "We needed daily dressing and IV antibiotics for my father after knee surgery. Ayans Medicare provided a certified nurse and delivered the hospital-prescribed medicines at genuine discounts. Very professional and polite staff."
+            "We needed daily dressing and IV antibiotics for my father after knee surgery. Nhealth provided a certified nurse and delivered the hospital-prescribed medicines at genuine discounts. Very professional and polite staff."
           </p>
         </div>
         <div class="testi-author">
@@ -2007,7 +2270,7 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          Yes! Under our Choose Qualified Care initiative, consultation with our verified MBBS/MD doctors at your home is completely free (₹0 fee). You only pay if you choose to order genuine prescribed medicines or opt for NABL laboratory tests.
+          Yes! Under our Healthcare at Home initiative, consultation with our verified MBBS/MD doctors at your home is completely free (₹0 fee). You only pay if you choose to order genuine prescribed medicines or opt for NABL laboratory tests.
         </div>
       </div>
 
@@ -2037,7 +2300,7 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-answer">
-          All digital prescriptions and authenticated NABL lab reports are sent directly into your WhatsApp chat thread and permanently archived in your Ayans Medicare Patient Portal account.
+          All digital prescriptions and authenticated NABL lab reports are sent directly into your WhatsApp chat thread and permanently archived in your Nhealth Patient Portal account.
         </div>
       </div>
     </div>
@@ -2064,8 +2327,8 @@
   <div class="wrap foot-grid">
     <div>
       <div class="brand-logo" style="margin-bottom: 14px;">
-        <div class="brand-icon" style="background: #10b981;">✚</div>
-        <div class="brand-text" style="color: #ffffff;">Ayans <span style="color: #10b981;">Medicare</span></div>
+        <img src="/nhealth-mark.png" alt="Nhealth" style="height:30px;width:auto;object-fit:contain;">
+        <div class="brand-text" style="color: #ffffff;">Nhealth</div>
       </div>
       <p style="max-width: 34ch; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
         Dedicated to qualified, compassionate, zero-fee home medical care. Connecting patients with verified doctors, certified NABL labs, and genuine pharmacy care.
@@ -2107,7 +2370,7 @@
   </div>
 
   <div class="wrap" style="padding-top: 24px; border-top: 1px solid #1e293b; font-size: 12.5px; text-align: center; color: #64748b;">
-    &copy; 2026 Ayans Medicare Network. All rights reserved. Choose Qualified Care.
+    &copy; 2026 Nhealth Network. All rights reserved. Healthcare at Home.
   </div>
 </footer>
 
@@ -2124,7 +2387,7 @@
 </div>
 
 <!-- Floating WhatsApp Support Widget -->
-<a href="https://wa.me/919959461095?text=Hi%20Ayans%20Medicare%2C%20I%20need%20healthcare%20assistance." target="_blank" rel="noopener" style="position:fixed; bottom:24px; right:24px; z-index:999; background:#25D366; color:#ffffff; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(37,211,102,0.45); text-decoration:none; transition:transform 0.2s ease;" title="Chat with Ayans Medicare on WhatsApp: +91 99594 61095" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+<a href="https://wa.me/919959461095?text=Hi%20Nhealth%2C%20I%20need%20healthcare%20assistance." target="_blank" rel="noopener" style="position:fixed; bottom:24px; right:24px; z-index:999; background:#25D366; color:#ffffff; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(37,211,102,0.45); text-decoration:none; transition:transform 0.2s ease;" title="Chat with Nhealth on WhatsApp: +91 99594 61095" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
   <svg viewBox="0 0 24 24" fill="currentColor" style="width:34px;height:34px;"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 8.1 8.11c0 4.47-3.63 8.1-8.1 8.1a8.06 8.06 0 0 1-4.11-1.12l-.3-.17-3.13.82.84-3.05-.19-.32a8.08 8.08 0 0 1-1.23-4.27 8.1 8.1 0 0 1 8.12-8.1m-4.42 4.13c-.17 0-.44.06-.67.32-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.16 1.75 2.79 4.32 3.8 2.13.85 2.57.68 3.03.64.47-.04 1.5-.61 1.72-1.2.21-.6.21-1.11.15-1.21-.06-.11-.23-.17-.47-.3-.25-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.17.25-.65.82-.8 1-.15.17-.29.19-.54.06-.25-.13-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.44-.06-.13-.57-1.4-.79-1.91-.2-.5-.41-.43-.57-.44z"/></svg>
 </a>
 
@@ -2179,18 +2442,18 @@
 </div>
 
 <script>
-  const WA_NUMBER = "919959461095"; // Ayans Medicare WhatsApp Helpline
+  const WA_NUMBER = "919959461095"; // Nhealth WhatsApp Helpline
 
   function waLink(message){
     return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
   }
 
   // Set default WhatsApp links
-  document.getElementById('hdrWaBtn').href = waLink("Hi Ayans Medicare, I'd like to book a free doctor home visit.");
-  document.getElementById('heroWaBtn').href = waLink("Hi Ayans Medicare, I would like to book a qualified doctor home visit (₹0 Consultation Fee).");
-  document.getElementById('finalWaBtn').href = waLink("Hi Ayans Medicare, I need healthcare support at my home.");
-  document.getElementById('coverageWaBtn').href = waLink("Hi Ayans Medicare, my pincode is ___. Is doctor home visit available in my area?");
-  document.getElementById('footWaLink').href = waLink("Hi Ayans Medicare, I'd like to know more about your healthcare services.");
+  document.getElementById('hdrWaBtn').href = waLink("Hi Nhealth, I'd like to book a free doctor home visit.");
+  document.getElementById('heroWaBtn').href = waLink("Hi Nhealth, I would like to book a qualified doctor home visit (₹0 Consultation Fee).");
+  document.getElementById('finalWaBtn').href = waLink("Hi Nhealth, I need healthcare support at my home.");
+  document.getElementById('coverageWaBtn').href = waLink("Hi Nhealth, my pincode is ___. Is doctor home visit available in my area?");
+  document.getElementById('footWaLink').href = waLink("Hi Nhealth, I'd like to know more about your healthcare services.");
 
   function openBookingModal(service = 'doctor') {
     const modal = document.getElementById('bookingModal');
@@ -2348,6 +2611,97 @@
     const item = btn.parentElement;
     item.classList.toggle('open');
   }
+
+  // ===== MFine Upgrade: Header Search =====
+  (function(){
+    const wrap = document.getElementById('mfineSearchWrap');
+    const input = document.getElementById('mfineSearchInput');
+    const clear = document.getElementById('mfineSearchClear');
+    const dropdown = document.getElementById('mfineSearchDropdown');
+    const mobileBtn = document.getElementById('mfineMobileSearchBtn');
+    const mobileBar = document.getElementById('mfineMobileSearchBar');
+    const mobileInput = document.getElementById('mfineMobileSearchInput');
+    const waLinkEl = document.getElementById('mfineSearchWa');
+    if (waLinkEl) waLinkEl.href = waLink("Hi Nhealth, I need healthcare support.");
+
+    function setWaFromSearch(q){
+      if(waLinkEl) waLinkEl.href = waLink("Hi Nhealth, looking for " + q);
+    }
+    window.mfineQuickSearch = function(term){
+      if(input) input.value = term;
+      if(mobileInput) mobileInput.value = term;
+      setWaFromSearch(term);
+      // filter or open modal
+      if(term.toLowerCase().includes('lab')) openBookingModal('lab_test');
+      else if(term.toLowerCase().includes('medicine')) openBookingModal('pharmacy');
+      else if(term.toLowerCase().includes('cardio') || term.toLowerCase().includes('diabetes') || term.toLowerCase().includes('pediatric')) {
+        document.getElementById('departments')?.scrollIntoView({behavior:'smooth'});
+      } else openBookingModal('doctor');
+      // also auto-fill booking notes
+      const notes = document.getElementById('bookingNotes');
+      if(notes && term) notes.value = "Looking for: " + term;
+      wrap?.classList.remove('active');
+    };
+    function updateClear(){
+      if(input && input.value.trim().length>0) {
+        wrap?.classList.add('has-value');
+        document.querySelector('.mfine-search-bar')?.classList.add('has-value');
+      } else {
+        wrap?.classList.remove('has-value');
+        document.querySelector('.mfine-search-bar')?.classList.remove('has-value');
+      }
+    }
+    if(input){
+      input.addEventListener('focus', ()=> wrap.classList.add('active'));
+      input.addEventListener('input', ()=>{ updateClear(); setWaFromSearch(input.value); if(input.value.trim().length===0) wrap.classList.add('active'); });
+      input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); mfineQuickSearch(input.value); }});
+    }
+    if(clear){ clear.addEventListener('click', ()=>{ input.value=''; updateClear(); input.focus(); }); }
+    document.addEventListener('click', (e)=>{
+      if(wrap && !wrap.contains(e.target)) wrap.classList.remove('active');
+    });
+    if(mobileBtn && mobileBar){
+      mobileBtn.addEventListener('click', ()=> mobileBar.classList.toggle('active'));
+    }
+    if(mobileInput){
+      mobileInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ mfineQuickSearch(mobileInput.value); mobileBar.classList.remove('active'); }});
+    }
+  })();
+
+  // ===== MFine Banner Carousel =====
+  let mfineBannerIdx = 0;
+  const mfineBannerTotal = 3;
+  function mfineBannerUpdate(){
+    const track = document.getElementById('mfineBannerTrack');
+    const dots = document.querySelectorAll('.mfine-banner-dot');
+    if(track) track.style.transform = `translateX(-${mfineBannerIdx * 100}%)`;
+    dots.forEach((d,i)=> d.classList.toggle('active', i===mfineBannerIdx));
+  }
+  window.mfineBannerGo = function(i){ mfineBannerIdx=i; mfineBannerUpdate(); };
+  window.mfineBannerNext = function(){ mfineBannerIdx = (mfineBannerIdx+1)%mfineBannerTotal; mfineBannerUpdate(); };
+  window.mfineBannerPrev = function(){ mfineBannerIdx = (mfineBannerIdx-1+mfineBannerTotal)%mfineBannerTotal; mfineBannerUpdate(); };
+  let mfineBannerTimer = setInterval(()=>{ mfineBannerNext(); }, 4200);
+  const carouselEl = document.getElementById('mfineBannerCarousel');
+  if(carouselEl){
+    carouselEl.addEventListener('mouseenter', ()=> clearInterval(mfineBannerTimer));
+    carouselEl.addEventListener('mouseleave', ()=> mfineBannerTimer = setInterval(()=> mfineBannerNext(), 4200));
+    // swipe support
+    let startX=0;
+    carouselEl.addEventListener('touchstart', e=> startX=e.touches[0].clientX, {passive:true});
+    carouselEl.addEventListener('touchend', e=> {
+      const dx = e.changedTouches[0].clientX - startX;
+      if(Math.abs(dx)>50){ if(dx<0) mfineBannerNext(); else mfineBannerPrev(); }
+    });
+  }
+
+  // Keep existing waLinks updated on load
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const waNumber = "919959461095";
+    const wa = (m)=>`https://wa.me/${waNumber}?text=${encodeURIComponent(m)}`;
+    const el = document.getElementById('mfineSearchWa');
+    if(el) el.href = wa("Hi Nhealth, I need healthcare support.");
+  });
+
 </script>
 </body>
 </html>

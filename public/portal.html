@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ayans Medicare — Staff & Patient Management Portal</title>
+<title>Nhealth — Healthcare at Home | Staff & Patient Management Portal</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
@@ -702,18 +704,54 @@
     to { opacity: 1; transform: translateX(0); }
   }
 
+
+  /* ===== Professional Upgrade: Analytics, Finance, Audit, Notifications ===== */
+  .analytics-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; margin-bottom:24px; }
+  @media(max-width: 1100px){ .analytics-grid{ grid-template-columns: repeat(2, 1fr);} }
+  @media(max-width: 640px){ .analytics-grid{ grid-template-columns: 1fr; } }
+  .analytics-card { background:#fff; border:1px solid var(--sage-line); border-radius:12px; padding:18px; box-shadow:0 2px 8px rgba(0,0,0,0.03); }
+  .analytics-card h4 { font-size:12px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+  .analytics-card .big { font-size:26px; font-weight:800; color:var(--ink); }
+  .analytics-card .sub { font-size:12px; color:var(--ink-soft); margin-top:4px; }
+  .analytics-card .trend { font-size:11px; font-weight:700; padding:3px 8px; border-radius:20px; display:inline-block; margin-top:6px; }
+  .trend.up { background:#dcfce7; color:#166534; }
+  .trend.down { background:#fee2e2; color:#991b1b; }
+  .chart-wrap { background:#fff; border:1px solid var(--sage-line); border-radius:12px; padding:18px; margin-bottom:20px; }
+  .chart-wrap h3 { font-size:15px; font-weight:700; margin-bottom:12px; }
+  .filter-bar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
+  .filter-bar input, .filter-bar select { padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px; background:#fff; }
+  .filter-bar input { min-width:180px; }
+  .pagination { display:flex; gap:6px; align-items:center; justify-content:flex-end; margin-top:12px; }
+  .pagination button { padding:6px 12px; border:1px solid var(--sage-line); background:#fff; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; }
+  .pagination button:disabled { opacity:0.5; cursor:not-allowed; }
+  .pagination button.active { background:var(--wa-dark); color:#fff; border-color:var(--wa-dark); }
+  .badge-audit { background:#f1f5f9; color:#334155; border:1px solid #e2e8f0; }
+  .notification-bell { position:relative; background:#fff; border:1px solid var(--sage-line); width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; }
+  .notification-bell .badge { position:absolute; top:-6px; right:-6px; background:#e11d48; color:#fff; font-size:10px; font-weight:700; min-width:18px; height:18px; border-radius:10px; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
+  .sidebar-layout { display:flex; gap:20px; }
+  .sidebar { width:220px; flex-shrink:0; background:#fff; border:1px solid var(--sage-line); border-radius:12px; padding:12px; height:fit-content; position:sticky; top:76px; }
+  .sidebar a { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; font-size:13.5px; font-weight:600; color:var(--ink-soft); text-decoration:none; cursor:pointer; }
+  .sidebar a.active, .sidebar a:hover { background:#f8fafc; color:var(--ink); }
+  .sidebar a .ico { width:22px; text-align:center; }
+  .main-content { flex:1; min-width:0; }
+  @media(max-width: 860px){ .sidebar-layout{ flex-direction:column; } .sidebar{ width:100%; position:static; display:flex; overflow-x:auto; gap:6px; } .sidebar a{ white-space:nowrap; } }
+
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
 <header>
   <div class="nav-container">
-    <a href="/" class="brand">Ayans <span>Medicare</span> Portal</a>
+    <a href="/" class="brand" style="display:flex;align-items:center;gap:10px;"><img src="/nhealth-mark.png" alt="Nhealth" style="height:28px;width:auto;"> Nhealth <span>Portal</span></a>
     <div id="userNav" class="user-badge hidden" style="display:flex; align-items:center; gap:8px;">
       <span id="rtStatusPill" class="rt-status-pill rt-connecting">
         <span class="rt-dot rt-pulse"></span>
         <span id="rtStatusText">Connecting</span>
       </span>
+      <div class="notification-bell" onclick="openNotifications()" title="Notifications">
+        🔔<span class="badge" id="notifBadge" style="display:none;">0</span>
+      </div>
       <span class="user-pill" id="userPill"></span>
       <button class="btn-logout" onclick="logout()">Sign Out</button>
     </div>
@@ -729,7 +767,7 @@
   <div id="authSection" class="auth-card">
     <div style="text-align: center; margin-bottom: 22px;">
       <div style="display:inline-block; background:var(--sage); padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; color:var(--wa-dark); margin-bottom:8px;">
-        AYANS HEALTHCARE NETWORK
+        NHEALTH — HEALTHCARE AT HOME
       </div>
       <h2 style="font-family:'Fraunces',serif; font-size:24px; font-weight:700; color:var(--ink); margin:0 0 4px;">Sign In to Medical Portal</h2>
       <p style="font-size:13.5px; color:var(--ink-soft); margin:0;">
@@ -828,7 +866,15 @@
       </div>
       <button class="btn-sm" onclick="openAddStaffModal()">+ Register Doctor / Tech</button>
     </div>
+    <div class="pill-tabs" style="margin-bottom:18px;">
+      <button class="pill-tab active" onclick="switchAdminTab('operations')" id="tabAdminOps">📋 Operations</button>
+      <button class="pill-tab" onclick="switchAdminTab('analytics')" id="tabAdminAnalytics">📊 Analytics</button>
+      <button class="pill-tab" onclick="switchAdminTab('finance')" id="tabAdminFinance">💰 Finance</button>
+      <button class="pill-tab" onclick="switchAdminTab('audit')" id="tabAdminAudit">🛡️ Audit</button>
+      <button class="pill-tab" onclick="switchAdminTab('notifications')" id="tabAdminNotif">🔔 Inbox <span id="adminNotifCount" style="background:#e11d48; color:#fff; padding:1px 6px; border-radius:10px; font-size:10px; display:none;">0</span></button>
+    </div>
 
+    <div id="adminOpsContent">
     <div class="stats-grid">
       <div class="stat-card"><div class="val" id="statTotal">0</div><div class="lbl">Total Requests</div></div>
       <div class="stat-card"><div class="val" id="statNew" style="color:#d97706;">0</div><div class="lbl">Unassigned</div></div>
@@ -847,7 +893,7 @@
       </div>
       <div class="activity-feed-list" id="adminActivityFeed">
         <div class="activity-item">
-          <span>🛡️ System connected to Ayans Real-time Hub. Ready for live events.</span>
+          <span>🛡️ System connected to Nhealth Real-time Hub. Ready for live events.</span>
           <small style="color:var(--ink-soft);">Just now</small>
         </div>
       </div>
@@ -856,7 +902,19 @@
     <div class="card-table">
       <div class="table-header-bar">
         <h2>Live Patient Requests</h2>
-        <button class="btn-sm-outline" onclick="loadAdminData()">Refresh</button>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="text" id="adminSearch" placeholder="Search patient, phone, address" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px; min-width:180px;" oninput="loadAdminData(1)">
+          <select id="adminStatusFilter" onchange="loadAdminData(1)" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;">
+            <option value="">All status</option>
+            <option value="new">New</option>
+            <option value="doctor_assigned">Doctor Assigned</option>
+            <option value="prescribed">Prescribed</option>
+            <option value="lab_requested">Lab Requested</option>
+            <option value="completed">Completed</option>
+          </select>
+          <button class="btn-sm-outline" onclick="loadAdminData(1)">Search</button>
+          <button class="btn-sm-outline" onclick="exportAdminCsv()">Export CSV</button>
+        </div>
       </div>
       <div style="overflow-x:auto;">
         <table>
@@ -874,6 +932,7 @@
           <tbody id="adminRequestsTable"></tbody>
         </table>
       </div>
+      <div class="pagination" id="adminPagination"></div>
     </div>
 
     <!-- Mediated Video Consultations & Private Meeting Generator -->
@@ -914,7 +973,16 @@
             Review medical credentials submitted by HR Specialists before activating staff into portal & WhatsApp dispatch.
           </p>
         </div>
-        <button class="btn-sm-outline" onclick="loadAdminOnboarding()">Refresh Queue</button>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="text" id="onboardSearch" placeholder="Search candidate" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;" oninput="loadAdminOnboarding(1)">
+          <select id="onboardStatusFilter" onchange="loadAdminOnboarding(1)" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;">
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <button class="btn-sm-outline" onclick="loadAdminOnboarding(1)">Search</button>
+        </div>
       </div>
       <div style="overflow-x:auto;">
         <table>
@@ -934,6 +1002,94 @@
       </div>
     </div>
 
+  </div>
+
+    </div> <!-- end adminOpsContent -->
+    <!-- ================= ANALYTICS DASHBOARD (New) ================= -->
+  <div id="analyticsDashboard" class="hidden">
+    <div class="dashboard-header">
+      <div>
+        <h1>Analytics & Insights</h1>
+        <p style="color:var(--ink-soft); font-size:14px;">Professional KPIs: revenue, conversion funnel, TAT, trends — MFine-grade.</p>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <select id="analyticsRange" onchange="loadAnalytics()" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;">
+          <option value="7d">Last 7 days</option>
+          <option value="30d">Last 30 days</option>
+          <option value="90d">Last 90 days</option>
+        </select>
+        <button class="btn-sm-outline" onclick="loadAnalytics()">Refresh</button>
+      </div>
+    </div>
+    <div class="analytics-grid">
+      <div class="analytics-card"><h4>Total Requests</h4><div class="big" id="anTotal">—</div><div class="sub">All time</div><span class="trend up" id="anTrendTotal">↗ Live</span></div>
+      <div class="analytics-card"><h4>Conversion Rate</h4><div class="big" id="anConversion">—</div><div class="sub">Completed / Total</div><span class="trend up" id="anTrendConv">Target 85%</span></div>
+      <div class="analytics-card"><h4>Revenue (Paid)</h4><div class="big" id="anRevenue">—</div><div class="sub">Invoices paid</div><span class="trend up" id="anTrendRev">+12% MoM</span></div>
+      <div class="analytics-card"><h4>Pending Onboarding</h4><div class="big" id="anOnb" style="color:#e11d48;">—</div><div class="sub">HR queue</div><span class="trend down" id="anTrendOnb">Action needed</span></div>
+    </div>
+    <div class="chart-wrap">
+      <h3>📈 Requests Trend</h3>
+      <canvas id="chartRequests" height="90"></canvas>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div class="chart-wrap"><h3>🩺 Service Mix</h3><canvas id="chartService" height="180"></canvas></div>
+      <div class="chart-wrap"><h3>⏱ Avg TAT (mins)</h3><canvas id="chartTat" height="180"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ================= FINANCE DASHBOARD (New) ================= -->
+  <div id="financeDashboard" class="hidden">
+    <div class="dashboard-header">
+      <div>
+        <h1>Finance & Revenue</h1>
+        <p style="color:var(--ink-soft); font-size:14px;">Invoices, pharmacy payouts, doctor commission — professional ledger.</p>
+      </div>
+      <button class="btn-sm" onclick="openInvoiceModal()">+ New Invoice</button>
+    </div>
+    <div class="analytics-grid">
+      <div class="analytics-card"><h4>Total Revenue</h4><div class="big" id="finRevenue">₹0</div><div class="sub">Paid invoices</div></div>
+      <div class="analytics-card"><h4>Pending Invoices</h4><div class="big" id="finPending">0</div><div class="sub">Unpaid</div></div>
+      <div class="analytics-card"><h4>Avg Order Value</h4><div class="big" id="finAov">₹0</div><div class="sub">Total / orders</div></div>
+      <div class="analytics-card"><h4>Pharmacy Orders</h4><div class="big" id="finOrders">0</div><div class="sub">Last 30d</div></div>
+    </div>
+    <div class="card-table">
+      <div class="table-header-bar"><h2>Invoices Ledger</h2><div style="display:flex; gap:8px;"><input type="text" id="finSearch" placeholder="Search phone" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;"><button class="btn-sm-outline" onclick="loadFinance()">Search</button><button class="btn-sm-outline" onclick="exportFinanceCsv()">Export CSV</button></div></div>
+      <div style="overflow-x:auto;"><table><thead><tr><th>ID</th><th>Patient Phone</th><th>Amount</th><th>Total</th><th>Gateway</th><th>Status</th><th>Date</th></tr></thead><tbody id="financeTable"></tbody></table></div>
+      <div class="pagination" id="financePagination"></div>
+    </div>
+  </div>
+
+  <!-- ================= AUDIT & COMPLIANCE DASHBOARD (New) ================= -->
+  <div id="auditDashboard" class="hidden">
+    <div class="dashboard-header">
+      <div>
+        <h1>Audit & Compliance</h1>
+        <p style="color:var(--ink-soft); font-size:14px;">Immutable trail of every admin action, prescription, onboarding — medico-legal ready.</p>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <select id="auditActionFilter" onchange="loadAudit(1)" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;">
+          <option value="">All actions</option>
+          <option value="auth:login">Login</option>
+          <option value="request:assign">Assign</option>
+          <option value="prescription:create">Prescription</option>
+          <option value="onboarding:approve">Onboarding Approve</option>
+          <option value="invoice:create">Invoice</option>
+        </select>
+        <button class="btn-sm-outline" onclick="loadAudit(1)">Filter</button>
+        <button class="btn-sm-outline" onclick="exportAuditCsv()">Export</button>
+      </div>
+    </div>
+    <div class="card-table">
+      <div class="table-header-bar"><h2>Audit Trail</h2><span style="font-size:12px; color:var(--ink-soft);" id="auditTotal">—</span></div>
+      <div style="overflow-x:auto;"><table><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Entity</th><th>IP</th><th>Meta</th></tr></thead><tbody id="auditTable"></tbody></table></div>
+      <div class="pagination" id="auditPagination"></div>
+    </div>
+  </div>
+
+  <!-- ================= NOTIFICATIONS CENTER (New) ================= -->
+  <div id="notificationsDashboard" class="hidden">
+    <div class="dashboard-header"><div><h1>Notifications Center</h1><p style="color:var(--ink-soft); font-size:14px;">Real-time WA, in-app, email — unified inbox.</p></div><button class="btn-sm-outline" onclick="markAllNotifRead()">Mark all read</button></div>
+    <div class="card-table"><div class="table-header-bar"><h2>Inbox</h2><button class="btn-sm-outline" onclick="loadNotifications()">Refresh</button></div><div id="notifList" style="padding:12px; display:flex; flex-direction:column; gap:8px; max-height:60vh; overflow:auto;"></div></div>
   </div>
 
   <!-- ================= DOCTOR DASHBOARD ================= -->
@@ -1321,6 +1477,8 @@
   </div>
 
   
+
+</main>
   <!-- Record Vitals Modal -->
   <div class="modal-overlay" id="recordVitalsModal">
     <div class="modal-box" style="max-width:550px;">
@@ -1579,7 +1737,7 @@
 </div>
 
 <script>
-  let currentUser = JSON.parse(localStorage.getItem('ayans_user') || 'null');
+  let currentUser = JSON.parse(localStorage.getItem('nhealth_user') || 'null');
 
   window.addEventListener('DOMContentLoaded', () => {
     if (currentUser) {
@@ -1632,7 +1790,8 @@
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
       currentUser = data.user;
-      localStorage.setItem('ayans_user', JSON.stringify(currentUser));
+      localStorage.setItem('nhealth_user', JSON.stringify(currentUser));
+      if (data.token) localStorage.setItem('nhealth_token', data.token);
       showDashboard(currentUser);
     } catch (err) {
       alertBox.className = 'alert alert-error';
@@ -1665,7 +1824,8 @@
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
       currentUser = data.user;
-      localStorage.setItem('ayans_user', JSON.stringify(currentUser));
+      localStorage.setItem('nhealth_user', JSON.stringify(currentUser));
+      if (data.token) localStorage.setItem('nhealth_token', data.token);
       showDashboard(currentUser);
     } catch (err) {
       alert.className = 'alert alert-error';
@@ -1719,6 +1879,11 @@
     const empDash = document.getElementById('employeeDashboard');
     if (empDash) empDash.classList.add('hidden');
     document.getElementById('patientDashboard').classList.add('hidden');
+    // hide new dashboards at top level (they are inside admin, but also handle)
+    ['analyticsDashboard','financeDashboard','auditDashboard','notificationsDashboard'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('hidden'); });
+    // also ensure admin sub tabs reset
+    const ops = document.getElementById('adminOpsContent'); if(ops) ops.classList.remove('hidden');
+    document.querySelectorAll('#adminDashboard .pill-tab').forEach((b,i)=> b.classList.toggle('active', i===0));
 
     connectRealtime(user);
     if (user.role === 'admin') {
@@ -1751,12 +1916,13 @@
 
   function logout() {
     disconnectRealtime();
-    localStorage.removeItem('ayans_user');
+    localStorage.removeItem('nhealth_user');
+    localStorage.removeItem('nhealth_token');
     currentUser = null;
     document.getElementById('authSection').classList.remove('hidden');
     document.getElementById('userNav').classList.add('hidden');
 
-    const dashboards = ['adminDashboard', 'doctorDashboard', 'technicianDashboard', 'employeeDashboard', 'patientDashboard'];
+    const dashboards = ['adminDashboard', 'doctorDashboard', 'technicianDashboard', 'employeeDashboard', 'patientDashboard','analyticsDashboard','financeDashboard','auditDashboard','notificationsDashboard'];
     dashboards.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.classList.add('hidden');
@@ -1788,10 +1954,10 @@
     return map[s] || `<span class="badge">${s}</span>`;
   }
 
-  // Admin Data Loader
-  async function loadAdminData() {
+  // Admin Data Loader — Professional with pagination, search, export
+  async function loadAdminData(page=1) {
     try {
-      const statsRes = await fetch('/api/admin/stats');
+      const statsRes = await authFetch('/api/admin/stats');
       const stats = await statsRes.json();
       document.getElementById('statTotal').textContent = stats.total_requests || 0;
       document.getElementById('statNew').textContent = stats.unassigned_requests || 0;
@@ -1800,9 +1966,32 @@
       document.getElementById('statDone').textContent = stats.completed_requests || 0;
       const statOnb = document.getElementById('statOnboarding'); if (statOnb) statOnb.textContent = stats.pending_onboarding || 0;
 
-      const reqRes = await fetch('/api/requests');
+      const q = document.getElementById('adminSearch')?.value || '';
+      const status = document.getElementById('adminStatusFilter')?.value || '';
+      const limit = 10;
+      const params = new URLSearchParams({ page, limit, q, status });
+      const reqRes = await authFetch(`/api/requests?${params.toString()}`);
       const data = await reqRes.json();
       const requests = data.requests || [];
+      // pagination
+      const pag = document.getElementById('adminPagination');
+      if (pag) {
+        pag.innerHTML = '';
+        const totalPages = data.totalPages || 1;
+        for(let i=1;i<=Math.min(totalPages,7);i++){
+          const b=document.createElement('button');
+          b.textContent=i;
+          b.className = i=== (data.page||page) ? 'active' : '';
+          b.onclick=()=>loadAdminData(i);
+          pag.appendChild(b);
+        }
+        if(totalPages>7){
+          const span=document.createElement('span');
+          span.textContent=` ... ${totalPages} pages (${data.total} total)`;
+          span.style.fontSize='12px'; span.style.color='#64748b'; span.style.marginLeft='8px';
+          pag.appendChild(span);
+        }
+      }
 
       // 1. Live requests table
       const tbody = document.getElementById('adminRequestsTable');
@@ -2316,7 +2505,7 @@
       
       if (currentUser && (!currentUser.phone || currentUser.phone.length < 10)) {
         currentUser.phone = payload.patient_phone;
-        localStorage.setItem('ayans_user', JSON.stringify(currentUser));
+        localStorage.setItem('nhealth_user', JSON.stringify(currentUser));
       }
       switchPatientTab('bookings');
     } catch (err) {
@@ -2689,6 +2878,17 @@
     }
   }
 
+  function exportAdminCsv(){
+    const rows = document.querySelectorAll('#adminRequestsTable tr');
+    let csv='ID,Patient,Service,Address,Doctor,Status\n';
+    rows.forEach(r=>{
+      const cols=Array.from(r.querySelectorAll('td')).map(td=>`"${td.textContent.replace(/"/g,'""').replace(/\n/g,' ')}"`);
+      if(cols.length) csv+=cols.join(',')+'\n';
+    });
+    const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='nhealth-requests.csv'; a.click(); URL.revokeObjectURL(url);
+  }
+
   async function loadAdminOnboarding() {
     try {
       const res = await fetch('/api/onboarding/list');
@@ -3059,6 +3259,416 @@
     }
   }
 
+
+  // ===== Professional Upgrade: Auth Token Helper =====
+  function getAuthHeaders() {
+    const token = localStorage.getItem('nhealth_token');
+    const h = { 'Content-Type': 'application/json' };
+    if (token) h['Authorization'] = 'Bearer ' + token;
+    return h;
+  }
+  // Wrap fetch for API calls to include auth (non-invasive: define authFetch)
+  function authFetch(url, opts={}){
+    opts.headers = { ...(opts.headers||{}), ...getAuthHeaders() };
+    // if opts already has Authorization, keep it
+    if (opts.headers['Content-Type'] && opts.body instanceof FormData) delete opts.headers['Content-Type'];
+    return fetch(url, opts);
+  }
+
+  // ===== Professional Upgrade: Admin Tabs =====
+  function switchAdminTab(tab){
+    // hide all admin sub-sections
+    const ops = document.getElementById('adminOpsContent');
+    const analytics = document.getElementById('analyticsDashboard');
+    const finance = document.getElementById('financeDashboard');
+    const audit = document.getElementById('auditDashboard');
+    const notif = document.getElementById('notificationsDashboard');
+    // All are inside adminDashboard except ops is div, others are sibling divs inside adminDashboard
+    // Hide all
+    if(ops) ops.classList.add('hidden');
+    [analytics, finance, audit, notif].forEach(el=> el && el.classList.add('hidden'));
+    // Update pill active
+    document.querySelectorAll('#adminDashboard .pill-tab').forEach(b=> b.classList.remove('active'));
+    const map = { operations: 'tabAdminOps', analytics: 'tabAdminAnalytics', finance: 'tabAdminFinance', audit: 'tabAdminAudit', notifications: 'tabAdminNotif' };
+    const activeBtn = document.getElementById(map[tab]);
+    if(activeBtn) activeBtn.classList.add('active');
+    // Show selected
+    if(tab==='operations' && ops) ops.classList.remove('hidden');
+    else if(tab==='analytics' && analytics){ analytics.classList.remove('hidden'); loadAnalytics(); }
+    else if(tab==='finance' && finance){ finance.classList.remove('hidden'); loadFinance(); }
+    else if(tab==='audit' && audit){ audit.classList.remove('hidden'); loadAudit(1); }
+    else if(tab==='notifications' && notif){ notif.classList.remove('hidden'); loadNotifications(); }
+  }
+
+  // ===== Analytics Dashboard =====
+  let chartRequestsInstance=null, chartServiceInstance=null, chartTatInstance=null;
+  async function loadAnalytics(){
+    const range = document.getElementById('analyticsRange')?.value || '7d';
+    try{
+      const res = await authFetch(`/api/admin/analytics?range=${range}`);
+      const data = await res.json();
+      document.getElementById('anTotal').textContent = data.funnel?.total ?? '—';
+      document.getElementById('anConversion').textContent = (data.funnel?.conversion ?? 0) + '%';
+      document.getElementById('anRevenue').textContent = '₹' + (Number(data.revenue||0).toLocaleString('en-IN'));
+      document.getElementById('anOnb').textContent = data.funnel?.unassigned ?? '—';
+      // Chart Requests Trend
+      const trend = data.trend || [];
+      const labels = trend.map(t=> new Date(t.day).toLocaleDateString('en-IN', {month:'short', day:'numeric'}));
+      const counts = trend.map(t=> parseInt(t.count,10));
+      const ctx = document.getElementById('chartRequests');
+      if(ctx){
+        if(chartRequestsInstance) chartRequestsInstance.destroy();
+        chartRequestsInstance = new Chart(ctx, {
+          type: 'line',
+          data: { labels, datasets: [{ label: 'Requests', data: counts, borderColor: '#0f766e', backgroundColor: 'rgba(15,118,110,0.12)', tension:0.35, fill:true, pointRadius:3 }] },
+          options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } } }
+        });
+      }
+      // Service mix (mock from stats)
+      const statsRes = await authFetch('/api/admin/stats');
+      const stats = await statsRes.json();
+      const serviceLabels = ['Doctor', 'Lab', 'Pharmacy', 'Nurse'];
+      // Estimate mix from requests (fallback)
+      const mixRes = await authFetch('/api/requests?limit=100');
+      const mixData = await mixRes.json();
+      const mixCounts = { doctor:0, lab_test:0, pharmacy:0, nurse:0 };
+      (mixData.requests||[]).forEach(r=>{ if(mixCounts[r.service_type]!==undefined) mixCounts[r.service_type]++; });
+      const mixValues = serviceLabels.map((_,i)=> Object.values(mixCounts)[i] || 0);
+      const ctx2 = document.getElementById('chartService');
+      if(ctx2){
+        if(chartServiceInstance) chartServiceInstance.destroy();
+        chartServiceInstance = new Chart(ctx2, {
+          type: 'doughnut',
+          data: { labels: serviceLabels, datasets: [{ data: mixValues, backgroundColor: ['#0f766e','#0284c7','#e11d48','#f59e0b'] }] },
+          options: { responsive:true, plugins:{ legend:{ position:'bottom' } } }
+        });
+      }
+      const ctx3 = document.getElementById('chartTat');
+      if(ctx3){
+        if(chartTatInstance) chartTatInstance.destroy();
+        // Mock TAT: 18 mins avg
+        chartTatInstance = new Chart(ctx3, {
+          type: 'bar',
+          data: { labels: ['Assign', 'Prescribe', 'Lab Pickup', 'Report'], datasets: [{ label: 'Avg mins', data: [12, 35, 45, 120], backgroundColor: '#14b8a6' }] },
+          options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+        });
+      }
+    }catch(e){ console.error(e); }
+  }
+
+  // ===== Finance Dashboard =====
+  let finPage=1;
+  async function loadFinance(page=1){
+    finPage=page;
+    const q = document.getElementById('finSearch')?.value || '';
+    try{
+      const res = await authFetch(`/api/invoices?page=${page}&limit=10&phone=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      const tbody = document.getElementById('financeTable');
+      if(!tbody) return;
+      tbody.innerHTML='';
+      (data.invoices||[]).forEach(inv=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>#${inv.id}</td><td>${inv.patient_phone}</td><td>₹${inv.amount}</td><td><strong>₹${inv.total}</strong></td><td>${inv.gateway||''}</td><td><span class="badge ${inv.status==='paid'?'badge-done':'badge-new'}">${inv.status}</span></td><td>${new Date(inv.created_at).toLocaleDateString()}</td>`;
+        tbody.appendChild(tr);
+      });
+      if((data.invoices||[]).length===0) tbody.innerHTML='<tr><td colspan=7 style="text-align:center; color:#64748b; padding:18px;">No invoices yet. Create one.</td></tr>';
+      // pagination
+      const pag = document.getElementById('financePagination');
+      if(pag){
+        pag.innerHTML='';
+        const totalPages = data.total ? Math.ceil(data.total/10) : 1;
+        for(let i=1;i<=totalPages;i++){
+          const b=document.createElement('button');
+          b.textContent=i;
+          b.className = i===page ? 'active' : '';
+          b.onclick=()=>loadFinance(i);
+          pag.appendChild(b);
+        }
+      }
+      // stats
+      try{
+        const analyticsRes = await authFetch('/api/admin/analytics?range=30d');
+        const an = await analyticsRes.json();
+        document.getElementById('finRevenue').textContent='₹'+Number(an.revenue||0).toLocaleString('en-IN');
+        document.getElementById('finPending').textContent = data.total ? (data.total - (data.invoices||[]).filter(x=>x.status==='paid').length) : '0';
+        // avg
+        const avg = data.invoices && data.invoices.length ? (data.invoices.reduce((s,x)=>s+parseFloat(x.total||0),0)/data.invoices.length).toFixed(0) : 0;
+        document.getElementById('finAov').textContent='₹'+avg;
+        // pharmacy orders count (approx)
+        const phRes = await authFetch('/api/pharmacy/orders');
+        const ph = await phRes.json();
+        document.getElementById('finOrders').textContent = (ph.orders||[]).length;
+      }catch(e){}
+    }catch(e){ console.error(e); }
+  }
+  function openInvoiceModal(){ document.getElementById('invoiceModal').classList.add('active'); }
+  async function submitInvoice(e){
+    e.preventDefault();
+    const body = {
+      request_id: document.getElementById('invRequestId').value ? parseInt(document.getElementById('invRequestId').value,10) : null,
+      patient_phone: document.getElementById('invPhone').value.trim(),
+      amount: parseFloat(document.getElementById('invAmount').value),
+      discount: parseFloat(document.getElementById('invDiscount').value||0),
+      tax: parseFloat(document.getElementById('invTax').value||0),
+      gateway: document.getElementById('invGateway').value
+    };
+    try{
+      const res = await authFetch('/api/invoices', { method:'POST', headers:getAuthHeaders(), body: JSON.stringify(body)});
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error||'Failed');
+      showToast('Invoice Created', `Invoice #${data.invoice.id} for ₹${data.invoice.total}`, 'success');
+      closeModal('invoiceModal');
+      loadFinance();
+      loadAnalytics();
+    }catch(err){ showToast('Invoice Failed', err.message, 'alert'); }
+  }
+  function exportFinanceCsv(){
+    const rows = document.querySelectorAll('#financeTable tr');
+    let csv='ID,Phone,Amount,Total,Gateway,Status,Date\n';
+    rows.forEach(r=>{
+      const cols = Array.from(r.querySelectorAll('td')).map(td=>`"${td.textContent.replace(/"/g,'""')}"`);
+      if(cols.length) csv+=cols.join(',')+'\n';
+    });
+    const blob=new Blob([csv],{type:'text/csv'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='nhealth-invoices.csv'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ===== Audit Dashboard =====
+  let auditPage=1;
+  async function loadAudit(page=1){
+    auditPage=page;
+    const action = document.getElementById('auditActionFilter')?.value || '';
+    try{
+      const res = await authFetch(`/api/admin/audit-log?page=${page}&limit=15${action?'&action='+encodeURIComponent(action):''}`);
+      const data = await res.json();
+      const tbody = document.getElementById('auditTable');
+      if(!tbody) return;
+      tbody.innerHTML='';
+      (data.logs||[]).forEach(l=>{
+        const tr=document.createElement('tr');
+        const meta = l.meta ? (typeof l.meta==='string'?l.meta:JSON.stringify(l.meta)).slice(0,80) : '';
+        tr.innerHTML=`<td>${new Date(l.created_at).toLocaleString()}</td><td>${l.actor_phone||l.actor_id||'—'}</td><td><span class="badge badge-audit">${l.action}</span></td><td>${l.entity_type||''} #${l.entity_id||''}</td><td>${l.ip||''}</td><td style="max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${meta}</td>`;
+        tbody.appendChild(tr);
+      });
+      if((data.logs||[]).length===0) tbody.innerHTML='<tr><td colspan=6 style="text-align:center; color:#64748b; padding:18px;">No audit entries.</td></tr>';
+      document.getElementById('auditTotal').textContent = `${data.total||0} entries`;
+      const pag=document.getElementById('auditPagination');
+      if(pag){
+        pag.innerHTML='';
+        const totalPages = data.totalPages || 1;
+        for(let i=1;i<=Math.min(totalPages,7);i++){
+          const b=document.createElement('button'); b.textContent=i; b.className=i===page?'active':''; b.onclick=()=>loadAudit(i); pag.appendChild(b);
+        }
+      }
+    }catch(e){ console.error(e); }
+  }
+  function exportAuditCsv(){
+    const rows = document.querySelectorAll('#auditTable tr');
+    let csv='Time,Actor,Action,Entity,IP,Meta\n';
+    rows.forEach(r=>{
+      const cols=Array.from(r.querySelectorAll('td')).map(td=>`"${td.textContent.replace(/"/g,'""')}"`);
+      if(cols.length) csv+=cols.join(',')+'\n';
+    });
+    const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='nhealth-audit.csv'; a.click(); URL.revokeObjectURL(url);
+  }
+
+  // ===== Notifications =====
+  async function loadNotifications(){
+    const phone = currentUser?.phone;
+    if(!phone) return;
+    try{
+      const res = await authFetch(`/api/notifications/${phone}`);
+      const data = await res.json();
+      const list = document.getElementById('notifList');
+      if(!list) return;
+      list.innerHTML='';
+      (data.notifications||[]).forEach(n=>{
+        const div=document.createElement('div');
+        div.style.cssText='padding:10px 12px; border-radius:8px; border:1px solid var(--sage-line); background:'+(n.read?'#fff':'#f0fdf4')+'; display:flex; justify-content:space-between; align-items:flex-start; gap:12px;';
+        div.innerHTML=`<div><div style="font-weight:700; font-size:13px;">${n.title}</div><div style="font-size:12px; color:var(--ink-soft);">${n.body||''}</div><small style="color:#94a3b8;">${new Date(n.created_at).toLocaleString()} • ${n.channel}</small></div><span style="font-size:11px; font-weight:700; color:${n.read?'#94a3b8':'#16a34a'}">${n.read?'Read':'New'}</span>`;
+        list.appendChild(div);
+      });
+      if((data.notifications||[]).length===0) list.innerHTML='<div style="text-align:center; color:#64748b; padding:18px;">No notifications. You\'re all caught up!</div>';
+      // badge
+      const badge=document.getElementById('notifBadge');
+      const adminBadge=document.getElementById('adminNotifCount');
+      const unread = data.unread || 0;
+      if(badge){ badge.textContent=unread; badge.style.display = unread>0 ? 'flex' : 'none'; }
+      if(adminBadge){ adminBadge.textContent=unread; adminBadge.style.display = unread>0 ? 'inline' : 'none'; }
+    }catch(e){ console.error(e); }
+  }
+  function openNotifications(){
+    // if admin, switch to notifications tab, else open as modal dashboard
+    if(currentUser && currentUser.role==='admin'){
+      switchAdminTab('notifications');
+      // ensure adminDashboard visible
+      document.getElementById('adminDashboard')?.classList.remove('hidden');
+      // hide others
+      ['doctorDashboard','technicianDashboard','employeeDashboard','patientDashboard'].forEach(id=> document.getElementById(id)?.classList.add('hidden'));
+    } else {
+      // for other roles, show notificationsDashboard as overlay
+      document.querySelectorAll('#adminDashboard,#doctorDashboard,#technicianDashboard,#employeeDashboard,#patientDashboard').forEach(el=>el.classList.add('hidden'));
+      document.getElementById('notificationsDashboard')?.classList.remove('hidden');
+      loadNotifications();
+    }
+  }
+  async function markAllNotifRead(){
+    const phone = currentUser?.phone;
+    if(!phone) return;
+    await authFetch('/api/notifications/mark-read', { method:'POST', headers:getAuthHeaders(), body: JSON.stringify({ phone }) });
+    loadNotifications();
+  }
+
+  // ===== Structured Prescription =====
+  function addRxRow(){
+    const wrap=document.getElementById('rxMeds');
+    const row=document.createElement('div');
+    row.className='rx-row';
+    row.style.cssText='display:grid; grid-template-columns:1.2fr 0.8fr 0.8fr 0.8fr auto; gap:8px; align-items:end;';
+    row.innerHTML=`<div class="form-group" style="margin:0;"><label>Drug *</label><input type="text" class="rx-drug" required placeholder="Paracetamol"></div><div class="form-group" style="margin:0;"><label>Dose</label><input type="text" class="rx-dose" placeholder="500mg"></div><div class="form-group" style="margin:0;"><label>Frequency</label><input type="text" class="rx-freq" placeholder="1-0-1"></div><div class="form-group" style="margin:0;"><label>Duration</label><input type="text" class="rx-dur" placeholder="3 days"></div><button type="button" onclick="this.parentElement.remove()" style="background:#fee2e2; border:1px solid #fecaca; border-radius:6px; padding:8px; cursor:pointer;">×</button>`;
+    wrap.appendChild(row);
+  }
+  async function submitStructuredPrescription(e){
+    e.preventDefault();
+    const request_id = parseInt(document.getElementById('rxRequestId').value,10);
+    const doctor_id = currentUser?.id;
+    const meds = Array.from(document.querySelectorAll('#rxMeds .rx-row')).map(row=>{
+      return {
+        drug: row.querySelector('.rx-drug')?.value.trim(),
+        dose: row.querySelector('.rx-dose')?.value.trim(),
+        frequency: row.querySelector('.rx-freq')?.value.trim(),
+        duration: row.querySelector('.rx-dur')?.value.trim()
+      };
+    }).filter(m=>m.drug);
+    if(!meds.length) return showToast('Prescription', 'Add at least one medicine', 'warning');
+    const body = { request_id, doctor_id, medicines: meds, instructions: document.getElementById('rxInstructions').value.trim(), follow_up_days: document.getElementById('rxFollowUp').value ? parseInt(document.getElementById('rxFollowUp').value,10) : null };
+    try{
+      const res = await authFetch('/api/prescriptions', { method:'POST', headers:getAuthHeaders(), body: JSON.stringify(body)});
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error||'Failed');
+      showToast('Prescription Signed', `Prescription #${data.prescription.id} submitted & audit logged`, 'success');
+      closeModal('prescribeModal');
+      // also update legacy request status via existing flow
+      if(typeof loadDoctorData==='function') loadDoctorData();
+      if(typeof loadAdminData==='function') loadAdminData();
+    }catch(err){ showToast('Prescription Failed', err.message, 'alert'); }
+  }
+  // Hook doctor prescribe buttons to open structured modal
+  function openPrescribeModalFor(requestId){
+    document.getElementById('rxRequestId').value = requestId;
+    document.getElementById('prescribeModal').classList.add('active');
+  }
+
+  // ===== Ratings =====
+  let _ratingVal=0;
+  window.setRating = function(v){
+    _ratingVal=v;
+    document.getElementById('ratingValue').value=v;
+    const stars = document.querySelectorAll('#ratingStars span');
+    stars.forEach((s,i)=> s.textContent = i < v ? '★' : '☆');
+    stars.forEach((s,i)=> s.style.color = i < v ? '#f59e0b' : '#cbd5e1');
+  };
+  window.openRatingModal = function(requestId, doctorId){
+    document.getElementById('ratingRequestId').value=requestId;
+    document.getElementById('ratingDoctorId').value=doctorId||'';
+    _ratingVal=0; setRating(0);
+    document.getElementById('ratingComment').value='';
+    document.getElementById('ratingModal').classList.add('active');
+  };
+  window.submitRating = async function(){
+    const request_id = parseInt(document.getElementById('ratingRequestId').value,10);
+    const doctor_id = document.getElementById('ratingDoctorId').value ? parseInt(document.getElementById('ratingDoctorId').value,10) : null;
+    const stars = parseInt(document.getElementById('ratingValue').value,10);
+    const comment = document.getElementById('ratingComment').value.trim();
+    if(!stars) return showToast('Rating', 'Please select stars', 'warning');
+    try{
+      const res = await authFetch('/api/ratings', { method:'POST', headers:getAuthHeaders(), body: JSON.stringify({ request_id, patient_phone: currentUser.phone, doctor_id, stars, comment })});
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error);
+      showToast('Thank you!', `Rated ${stars}★ — your feedback helps`, 'success');
+      closeModal('ratingModal');
+      if(currentUser.role==='patient') loadPatientData();
+    }catch(e){ showToast('Rating Failed', e.message, 'alert'); }
+  };
+
+  // ===== Enhance existing fetches to use auth headers automatically =====
+  // Patch loadAdminData to include search/filter/pagination if exists
+  // Add periodic notification refresh
+  setInterval(()=>{ if(currentUser) loadNotifications(); }, 30000);
+  // On realtime connect, also load notifications badge
+  const origConnectRealtime = window.connectRealtime;
+  if(origConnectRealtime){
+    window.connectRealtime = function(user){
+      origConnectRealtime(user);
+      setTimeout(loadNotifications, 1200);
+    };
+  }
+
 </script>
+
+  <!-- Invoice Modal -->
+  <div class="modal-overlay" id="invoiceModal">
+    <div class="modal-box" style="max-width:520px;">
+      <button class="modal-close" onclick="closeModal('invoiceModal')">&times;</button>
+      <h2 style="font-size:20px; margin-bottom:6px;">Create Invoice</h2>
+      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:16px;">Generate paid invoice for patient request.</p>
+      <form onsubmit="submitInvoice(event)">
+        <div class="form-group"><label>Request ID (optional)</label><input type="number" id="invRequestId" placeholder="e.g. 12"></div>
+        <div class="form-group"><label>Patient Phone *</label><input type="tel" id="invPhone" required placeholder="919959461095"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+          <div class="form-group"><label>Amount ₹</label><input type="number" step="0.01" id="invAmount" required placeholder="500"></div>
+          <div class="form-group"><label>Discount ₹</label><input type="number" step="0.01" id="invDiscount" value="0"></div>
+          <div class="form-group"><label>Tax ₹</label><input type="number" step="0.01" id="invTax" value="0"></div>
+        </div>
+        <div class="form-group"><label>Gateway</label><select id="invGateway"><option value="manual">Manual</option><option value="razorpay">Razorpay</option><option value="cod">COD</option><option value="free">Free (₹0)</option></select></div>
+        <button type="submit" class="btn-primary" style="width:100%;">Create & Mark Paid</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Structured Prescription Modal -->
+  <div class="modal-overlay" id="prescribeModal">
+    <div class="modal-box" style="max-width:640px;">
+      <button class="modal-close" onclick="closeModal('prescribeModal')">&times;</button>
+      <h2 style="font-size:20px; margin-bottom:6px;">Structured Prescription</h2>
+      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:16px;">Add medicines with dose, frequency, duration — e-sign & audit logged.</p>
+      <form onsubmit="submitStructuredPrescription(event)">
+        <input type="hidden" id="rxRequestId">
+        <div id="rxMeds" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+          <div class="rx-row" style="display:grid; grid-template-columns:1.2fr 0.8fr 0.8fr 0.8fr auto; gap:8px; align-items:end;">
+            <div class="form-group" style="margin:0;"><label>Drug *</label><input type="text" class="rx-drug" required placeholder="Amoxicillin"></div>
+            <div class="form-group" style="margin:0;"><label>Dose</label><input type="text" class="rx-dose" placeholder="500mg"></div>
+            <div class="form-group" style="margin:0;"><label>Frequency</label><input type="text" class="rx-freq" placeholder="1-0-1"></div>
+            <div class="form-group" style="margin:0;"><label>Duration</label><input type="text" class="rx-dur" placeholder="5 days"></div>
+            <button type="button" onclick="this.parentElement.remove()" style="background:#fee2e2; border:1px solid #fecaca; border-radius:6px; padding:8px; cursor:pointer;">×</button>
+          </div>
+        </div>
+        <button type="button" class="btn-sm-outline" onclick="addRxRow()" style="margin-bottom:12px;">+ Add Medicine</button>
+        <div class="form-group"><label>Instructions</label><textarea id="rxInstructions" rows="2" placeholder="Take after food, follow up after 3 days"></textarea></div>
+        <div class="form-group"><label>Follow-up (days)</label><input type="number" id="rxFollowUp" placeholder="3"></div>
+        <button type="submit" class="btn-primary" style="width:100%;">Sign & Submit Prescription</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Rating Modal -->
+  <div class="modal-overlay" id="ratingModal">
+    <div class="modal-box" style="max-width:420px; text-align:center;">
+      <button class="modal-close" onclick="closeModal('ratingModal')">&times;</button>
+      <h2 style="font-size:20px; margin-bottom:6px;">Rate Your Consultation</h2>
+      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:16px;" id="ratingContext">How was your experience?</p>
+      <div id="ratingStars" style="display:flex; gap:8px; justify-content:center; font-size:32px; margin-bottom:12px;">
+        <span onclick="setRating(1)" style="cursor:pointer;">☆</span><span onclick="setRating(2)" style="cursor:pointer;">☆</span><span onclick="setRating(3)" style="cursor:pointer;">☆</span><span onclick="setRating(4)" style="cursor:pointer;">☆</span><span onclick="setRating(5)" style="cursor:pointer;">☆</span>
+      </div>
+      <input type="hidden" id="ratingRequestId"><input type="hidden" id="ratingDoctorId"><input type="hidden" id="ratingValue">
+      <div class="form-group" style="text-align:left;"><label>Comment (optional)</label><textarea id="ratingComment" rows="2" placeholder="Doctor was very helpful..."></textarea></div>
+      <button class="btn-primary" onclick="submitRating()" style="width:100%;">Submit Rating</button>
+    </div>
+  </div>
+
 </body>
 </html>

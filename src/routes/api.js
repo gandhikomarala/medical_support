@@ -7,6 +7,8 @@ const requestService = require('../services/requestService');
 const groq = require('../services/groq');
 const db = require('../db');
 const realtime = require('../services/realtime');
+const Joi = require('joi');
+const { authorize, logAudit } = require('../middleware/auth');
 
 // Setup multer file uploads for lab reports
 const uploadDir = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.join(__dirname, '..', '..', 'uploads');
@@ -193,17 +195,35 @@ router.get('/requests/:id', async (req, res) => {
   }
 });
 
-// List all requests
+// List all requests — paginated + search + filter (professional)
 router.get('/requests', async (req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT r.*, d.name as doctor_name, t.name as technician_name 
-       FROM requests r
-       LEFT JOIN doctors d ON r.assigned_doctor_id = d.id
-       LEFT JOIN technicians t ON r.assigned_technician_id = t.id
-       ORDER BY r.id DESC LIMIT 100`
-    );
-    res.json({ requests: rows });
+    const page = Math.max(1, parseInt(req.query.page,10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit,10) || 20));
+    const offset = (page-1)*limit;
+    const q = (req.query.q || '').trim();
+    const status = (req.query.status || '').trim();
+    const service = (req.query.service_type || '').trim();
+    const from = req.query.from;
+    const to = req.query.to;
+    const sort = req.query.sort === 'asc' ? 'ASC' : 'DESC';
+    let where = [];
+    let params = [];
+    let idx=1;
+    if (q) { where.push(`(LOWER(r.patient_name) LIKE LOWER($${idx}) OR LOWER(r.patient_phone) LIKE LOWER($${idx}) OR LOWER(r.patient_address) LIKE LOWER($${idx}) OR LOWER(r.notes) LIKE LOWER($${idx}))`); params.push(`%${q}%`); idx++; }
+    if (status) { where.push(`r.status = $${idx}`); params.push(status); idx++; }
+    if (service) { where.push(`r.service_type = $${idx}`); params.push(service); idx++; }
+    if (from) { where.push(`r.created_at >= $${idx}`); params.push(from); idx++; }
+    if (to) { where.push(`r.created_at <= $${idx}`); params.push(to); idx++; }
+    const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
+    // SQLite compatibility: replace ILIKE with LIKE for sqlite fallback (handled in db.js via LIKE)
+    let countSql = `SELECT COUNT(*) as total FROM requests r ${whereClause}`;
+    let dataSql = `SELECT r.*, d.name as doctor_name, t.name as technician_name FROM requests r LEFT JOIN doctors d ON r.assigned_doctor_id = d.id LEFT JOIN technicians t ON r.assigned_technician_id = t.id ${whereClause} ORDER BY r.id ${sort} LIMIT $${idx} OFFSET $${idx+1}`;
+    // For Postgres, ILIKE works; for SQLite fallback, LIKE is ok (db.js converts). Use ILIKE but fallback will handle.
+    const countRes = await db.query(countSql, params);
+    const total = parseInt(countRes.rows[0]?.total || countRes.rows[0]?.count || 0, 10);
+    const { rows } = await db.query(dataSql, [...params, limit, offset]);
+    res.json({ requests: rows, total, page, limit, totalPages: Math.ceil(total/limit) });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch requests' });
@@ -303,7 +323,7 @@ router.post('/admin/generate-meet', async (req, res) => {
 
   try {
     const crypto = require('crypto');
-    const roomId = 'ayans-telehealth-' + request_id + '-' + crypto.randomBytes(3).toString('hex');
+    const roomId = 'nhealth-telehealth-' + request_id + '-' + crypto.randomBytes(3).toString('hex');
     const meetUrl = custom_meet_link && custom_meet_link.trim().startsWith('http')
       ? custom_meet_link.trim()
       : `https://meet.jit.si/${roomId}#config.prejoinPageEnabled=false`;
@@ -337,13 +357,13 @@ router.post('/admin/generate-meet', async (req, res) => {
     if (doctorPhone) {
       await wa.sendText(
         doctorPhone,
-        `Ayans Medicare Telehealth Consultation Ready!\nPatient: ${reqData.patient_name}\nAddress: ${reqData.patient_address}\nJoin Secure Room: ${meetUrl}`
+        `Nhealth Telehealth Consultation Ready!\nPatient: ${reqData.patient_name}\nAddress: ${reqData.patient_address}\nJoin Secure Room: ${meetUrl}`
       );
     }
     if (reqData.patient_phone) {
       await wa.sendText(
         reqData.patient_phone,
-        `Ayans Medicare: Your private consultation room with Dr. ${doctorName} is ready!\nJoin Video Call: ${meetUrl}\nPlease do not share this private link.`
+        `Nhealth: Your private consultation room with Dr. ${doctorName} is ready!\nJoin Video Call: ${meetUrl}\nPlease do not share this private link.`
       );
     }
 
@@ -790,7 +810,7 @@ router.post('/onboarding/review', async (req, res) => {
         const wa = require('../services/whatsapp');
         await wa.sendText(
           record.candidate_phone,
-          `🎉 Congratulations ${record.candidate_name}! Your Ayans Medicare staff onboarding (submitted by ${record.submitted_by_name}) has been verified and APPROVED by the Admin.\n\nYou can now log into your portal at https://medicalsupport-sable.vercel.app/portal.html using your phone (${record.candidate_phone}) and default password '${defaultPass}'. Welcome to our healthcare network!`
+          `🎉 Congratulations ${record.candidate_name}! Your Nhealth staff onboarding (submitted by ${record.submitted_by_name}) has been verified and APPROVED by the Admin.\n\nYou can now log into your portal at https://medicalsupport-sable.vercel.app/portal.html using your phone (${record.candidate_phone}) and default password '${defaultPass}'. Welcome to our healthcare network!`
         );
         if (record.submitted_by_phone) {
           await wa.sendText(
@@ -973,6 +993,266 @@ router.get('/pharmacy/orders', async (req, res) => {
     console.error('Pharmacy list error:', err);
     res.status(500).json({ error: 'Failed to fetch pharmacy orders.' });
   }
+});
+
+
+// ==========================================
+// 10. PROFESSIONAL UPGRADE — ANALYTICS
+// ==========================================
+router.get('/admin/analytics', async (req, res) => {
+  try {
+    const range = req.query.range || '7d';
+    let days = 7;
+    if (range === '30d') days = 30;
+    if (range === '90d') days = 90;
+    const totalRes = await db.query('SELECT COUNT(*) as count FROM requests');
+    const newRes = await db.query("SELECT COUNT(*) as count FROM requests WHERE status = 'new'");
+    const completedRes = await db.query("SELECT COUNT(*) as count FROM requests WHERE status = 'completed'");
+    // Revenue from invoices or fallback amount
+    let revenue = 0;
+    try {
+      const revRes = await db.query("SELECT COALESCE(SUM(total),0) as sum FROM invoices WHERE status = 'paid'");
+      revenue = parseFloat(revRes.rows[0]?.sum || 0);
+    } catch(e) {
+      const amtRes = await db.query("SELECT COALESCE(SUM(amount),0) as sum FROM requests WHERE status = 'completed'");
+      revenue = parseFloat(amtRes.rows[0]?.sum || 0);
+    }
+    // Trend last `days` days
+    const trendRes = await db.query(
+      `SELECT DATE(created_at) as day, COUNT(*) as count FROM requests WHERE created_at >= now() - ($1 || ' days')::interval GROUP BY day ORDER BY day ASC`,
+      [String(days)]
+    ).catch(async () => {
+      // SQLite fallback
+      const r = await db.query(`SELECT DATE(created_at) as day, COUNT(*) as count FROM requests WHERE DATE(created_at) >= DATE('now', '-' || $1 || ' days') GROUP BY day ORDER BY day ASC`, [String(days)]);
+      return r;
+    });
+    const funnel = {
+      total: parseInt(totalRes.rows[0]?.count || 0, 10),
+      unassigned: parseInt(newRes.rows[0]?.count || 0, 10),
+      completed: parseInt(completedRes.rows[0]?.count || 0, 10),
+      conversion: totalRes.rows[0]?.count ? ((parseInt(completedRes.rows[0]?.count||0)/parseInt(totalRes.rows[0]?.count||1))*100).toFixed(1) : 0
+    };
+    res.json({ revenue, funnel, trend: trendRes.rows, range });
+  } catch (err) {
+    console.error('Analytics error', err);
+    res.status(500).json({ error: 'Analytics failed' });
+  }
+});
+
+// Audit log — paginated
+router.get('/admin/audit-log', async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page,10)||1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit,10)||20));
+    const offset = (page-1)*limit;
+    const action = (req.query.action||'').trim();
+    let where = '';
+    let params = [];
+    if (action) { where = 'WHERE action = $1'; params = [action]; }
+    const countRes = await db.query(`SELECT COUNT(*) as total FROM audit_log ${where}`, params);
+    const total = parseInt(countRes.rows[0]?.total || countRes.rows[0]?.count || 0, 10);
+    const dataRes = await db.query(`SELECT * FROM audit_log ${where} ORDER BY id DESC LIMIT $${params.length+1} OFFSET $${params.length+2}`, [...params, limit, offset]);
+    res.json({ logs: dataRes.rows, total, page, limit, totalPages: Math.ceil(total/limit) });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Audit log failed' }); }
+});
+
+// Invoices — list with pagination
+router.get('/invoices', async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page,10)||1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit,10)||20));
+    const offset = (page-1)*limit;
+    const phone = (req.query.phone||'').trim();
+    let where = '';
+    let params = [];
+    if (phone) { where = 'WHERE patient_phone LIKE $1'; params = [`%${phone.replace(/[^0-9]/g,'')}%`]; }
+    const countRes = await db.query(`SELECT COUNT(*) as total FROM invoices ${where}`, params);
+    const total = parseInt(countRes.rows[0]?.total || countRes.rows[0]?.count || 0, 10);
+    const { rows } = await db.query(`SELECT * FROM invoices ${where} ORDER BY id DESC LIMIT $${params.length+1} OFFSET $${params.length+2}`, [...params, limit, offset]);
+    res.json({ invoices: rows, total, page, limit });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Invoices failed' }); }
+});
+
+router.post('/invoices', async (req, res) => {
+  const schema = Joi.object({
+    request_id: Joi.number().integer().allow(null),
+    patient_phone: Joi.string().required(),
+    amount: Joi.number().min(0).required(),
+    discount: Joi.number().min(0).default(0),
+    tax: Joi.number().min(0).default(0),
+    gateway: Joi.string().valid('razorpay','cod','manual','free').default('manual')
+  });
+  const { error, value } = schema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+  const total = (parseFloat(value.amount) - parseFloat(value.discount) + parseFloat(value.tax)).toFixed(2);
+  try {
+    const { rows } = await db.query(
+      `INSERT INTO invoices (request_id, patient_phone, amount, discount, tax, total, status, gateway) VALUES ($1,$2,$3,$4,$5,$6,'paid',$7) RETURNING *`,
+      [value.request_id, value.patient_phone, value.amount, value.discount, value.tax, total, value.gateway]
+    );
+    await logAudit({ actor: req.user, action: 'invoice:create', entity_type: 'invoice', entity_id: rows[0]?.id, meta: value, ip: req.ip });
+    res.status(201).json({ success: true, invoice: rows[0] });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Invoice failed' }); }
+});
+
+// Ratings
+router.post('/ratings', async (req, res) => {
+  const schema = Joi.object({
+    request_id: Joi.number().integer().required(),
+    patient_phone: Joi.string().required(),
+    doctor_id: Joi.number().integer().allow(null),
+    stars: Joi.number().integer().min(1).max(5).required(),
+    comment: Joi.string().max(500).allow('', null)
+  });
+  const { error, value } = schema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+  try {
+    const { rows } = await db.query(
+      `INSERT INTO ratings (request_id, patient_phone, doctor_id, stars, comment) VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+      [value.request_id, value.patient_phone.replace(/[^0-9]/g,''), value.doctor_id, value.stars, value.comment]
+    );
+    await logAudit({ actor: req.user, action: 'rating:create', entity_type: 'rating', entity_id: rows[0].id, ip: req.ip });
+    res.status(201).json({ success: true, rating: rows[0] });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Rating failed' }); }
+});
+router.get('/ratings', async (req, res) => {
+  try {
+    const doctor_id = req.query.doctor_id;
+    const phone = req.query.phone;
+    let where = '';
+    let params = [];
+    if (doctor_id) { where = 'WHERE doctor_id = $1'; params = [doctor_id]; }
+    else if (phone) { where = 'WHERE patient_phone = $1'; params = [phone]; }
+    const { rows } = await db.query(`SELECT * FROM ratings ${where} ORDER BY id DESC LIMIT 50`, params);
+    const avgRes = doctor_id ? await db.query('SELECT AVG(stars) as avg, COUNT(*) as count FROM ratings WHERE doctor_id = $1', [doctor_id]) : { rows: [] };
+    res.json({ ratings: rows, avg: avgRes.rows[0]?.avg || null, count: avgRes.rows[0]?.count || 0 });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Ratings fetch failed' }); }
+});
+
+// Notifications
+router.get('/notifications/:phone', async (req, res) => {
+  try {
+    const phone = req.params.phone.replace(/[^0-9]/g,'');
+    const { rows } = await db.query('SELECT * FROM notifications WHERE user_phone = $1 ORDER BY id DESC LIMIT 30', [phone]);
+    const unreadRes = await db.query('SELECT COUNT(*) as count FROM notifications WHERE user_phone = $1 AND read = FALSE', [phone]);
+    // sqlite uses 0/1 for boolean
+    const unread = parseInt(unreadRes.rows[0]?.count || 0,10);
+    res.json({ notifications: rows, unread });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Notifications failed' }); }
+});
+router.post('/notifications/mark-read', async (req, res) => {
+  const { phone, ids } = req.body;
+  if (!phone) return res.status(400).json({ error: 'phone required' });
+  const clean = phone.replace(/[^0-9]/g,'');
+  try {
+    if (Array.isArray(ids) && ids.length) {
+      await db.query(`UPDATE notifications SET read = TRUE WHERE user_phone = $1 AND id = ANY($2)`, [clean, ids]).catch(async()=>{
+        // sqlite fallback
+        for(const id of ids) await db.query('UPDATE notifications SET read = 1 WHERE user_phone = $1 AND id = $2', [clean, id]);
+      });
+    } else {
+      await db.query('UPDATE notifications SET read = TRUE WHERE user_phone = $1', [clean]).catch(async()=>{
+        await db.query('UPDATE notifications SET read = 1 WHERE user_phone = $1', [clean]);
+      });
+    }
+    res.json({ success: true });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Mark read failed' }); }
+});
+// Helper to create notification (internal)
+router.post('/notifications', async (req, res) => {
+  const schema = Joi.object({
+    user_phone: Joi.string().required(),
+    channel: Joi.string().valid('wa','sms','email','in_app').default('in_app'),
+    title: Joi.string().required(),
+    body: Joi.string().allow('', null)
+  });
+  const { error, value } = schema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+  try {
+    const { rows } = await db.query('INSERT INTO notifications (user_phone, channel, title, body, read) VALUES ($1,$2,$3,$4,FALSE) RETURNING *', [value.user_phone.replace(/[^0-9]/g,''), value.channel, value.title, value.body]);
+    try { const rt = require('../services/realtime'); rt.broadcast(`user:${value.user_phone.replace(/[^0-9]/g,'')}`, 'notification:new', { notification: rows[0] }); } catch(e){}
+    res.status(201).json({ success: true, notification: rows[0] });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Notify failed' }); }
+});
+
+// Zones
+router.get('/zones', async (req, res) => {
+  try {
+    const { rows } = await db.query('SELECT * FROM zones WHERE active = TRUE ORDER BY city, pincode');
+    res.json({ zones: rows });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Zones failed' }); }
+});
+
+// Doctor slots
+router.get('/doctor/slots', async (req, res) => {
+  try {
+    const doctor_id = req.query.doctor_id;
+    const date = req.query.date;
+    if (!doctor_id || !date) return res.status(400).json({ error: 'doctor_id and date required' });
+    const { rows } = await db.query('SELECT * FROM doctor_slots WHERE doctor_id = $1 AND slot_date = $2 ORDER BY start_time', [doctor_id, date]);
+    res.json({ slots: rows });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Slots failed' }); }
+});
+router.post('/doctor/slots', async (req, res) => {
+  const schema = Joi.object({
+    doctor_id: Joi.number().integer().required(),
+    slot_date: Joi.string().required(),
+    start_time: Joi.string().required(),
+    end_time: Joi.string().required()
+  });
+  const { error, value } = schema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+  try {
+    const { rows } = await db.query('INSERT INTO doctor_slots (doctor_id, slot_date, start_time, end_time) VALUES ($1,$2,$3,$4) RETURNING *', [value.doctor_id, value.slot_date, value.start_time, value.end_time]);
+    res.status(201).json({ success: true, slot: rows[0] });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Slot create failed' }); }
+});
+
+// Prescriptions — structured
+router.post('/prescriptions', async (req, res) => {
+  const schema = Joi.object({
+    request_id: Joi.number().integer().required(),
+    doctor_id: Joi.number().integer().required(),
+    medicines: Joi.array().items(Joi.object({ drug: Joi.string().required(), dose: Joi.string().allow('',null), frequency: Joi.string().allow('',null), duration: Joi.string().allow('',null), instructions: Joi.string().allow('',null) })).min(1).required(),
+    instructions: Joi.string().allow('', null),
+    follow_up_days: Joi.number().integer().allow(null)
+  });
+  const { error, value } = schema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+  try {
+    const { rows } = await db.query('INSERT INTO prescriptions (request_id, doctor_id, medicines, instructions, follow_up_days) VALUES ($1,$2,$3,$4,$5) RETURNING *', [value.request_id, value.doctor_id, JSON.stringify(value.medicines), value.instructions, value.follow_up_days]);
+    // also update request
+    await db.query("UPDATE requests SET prescription_text = $1, status = 'prescribed', updated_at = now() WHERE id = $2", [JSON.stringify(value.medicines), value.request_id]);
+    await logAudit({ actor: req.user, action: 'prescription:create', entity_type: 'request', entity_id: value.request_id, meta: value, ip: req.ip });
+    res.status(201).json({ success: true, prescription: rows[0] });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Prescription failed' }); }
+});
+router.get('/prescriptions/:request_id', async (req, res) => {
+  try {
+    const { rows } = await db.query('SELECT * FROM prescriptions WHERE request_id = $1 ORDER BY id DESC LIMIT 5', [req.params.request_id]);
+    res.json({ prescriptions: rows });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Fetch failed' }); }
+});
+
+// Onboarding list paginated (upgrade existing)
+router.get('/onboarding/list-paginated', async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page,10)||1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit,10)||10));
+    const offset = (page-1)*limit;
+    const status = req.query.status;
+    const q = (req.query.q||'').trim();
+    let where = [];
+    let params = [];
+    let idx=1;
+    if (status && status!=='all') { where.push(`status = $${idx}`); params.push(status); idx++; }
+    if (q) { where.push(`(LOWER(candidate_name) LIKE LOWER($${idx}) OR candidate_phone LIKE $${idx})`); params.push(`%${q}%`); idx++; }
+    const whereClause = where.length ? 'WHERE '+where.join(' AND ') : '';
+    const countRes = await db.query(`SELECT COUNT(*) as total FROM staff_onboarding ${whereClause}`, params);
+    const total = parseInt(countRes.rows[0]?.total || countRes.rows[0]?.count || 0, 10);
+    const { rows } = await db.query(`SELECT * FROM staff_onboarding ${whereClause} ORDER BY id DESC LIMIT $${idx} OFFSET $${idx+1}`, [...params, limit, offset]);
+    res.json({ requests: rows, candidates: rows, total, page, limit, totalPages: Math.ceil(total/limit) });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'List failed' }); }
 });
 
 module.exports = router;

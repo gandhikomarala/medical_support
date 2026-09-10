@@ -91,7 +91,7 @@ async function assistantReply(patientMessage, contextSummary) {
         {
           role: 'system',
           content:
-            'You are Ayans Medicare\'s WhatsApp assistant. Answer briefly and warmly about home healthcare ' +
+            'You are Nhealth\'s WhatsApp assistant. Answer briefly and warmly about home healthcare ' +
             'booking status, services (doctor visits, nursing, lab tests, pharmacy), and general next steps. ' +
             'Never give medical advice or diagnoses. If unsure, say a coordinator will follow up shortly. ' +
             `Context: ${contextSummary || 'no active request on file'}`,
@@ -103,7 +103,7 @@ async function assistantReply(patientMessage, contextSummary) {
       console.warn('Groq assistantReply failed:', err.message);
     }
   }
-  return 'Hi! Thank you for reaching out to Ayans Medicare. A coordinator is reviewing your message and will update you shortly.';
+  return 'Hi! Thank you for reaching out to Nhealth. A coordinator is reviewing your message and will update you shortly.';
 }
 
 module.exports = { parsePrescriptionMessage, parseVisitTime, assistantReply };

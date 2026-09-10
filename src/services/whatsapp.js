@@ -27,7 +27,7 @@ async function sendText(toPhone, text) {
     channel: 'whatsapp',
     source: process.env.GUPSHUP_SOURCE_NUMBER || '919959461095',
     destination: toPhone,
-    'src.name': process.env.GUPSHUP_APP_NAME || 'AyansMedicare',
+    'src.name': process.env.GUPSHUP_APP_NAME || 'Nhealth',
     message: JSON.stringify({ type: 'text', text }),
   });
   const res = await client().post(GUPSHUP_SEND_URL, body);
@@ -44,7 +44,7 @@ async function sendMedia(toPhone, mediaUrl, caption) {
     channel: 'whatsapp',
     source: process.env.GUPSHUP_SOURCE_NUMBER || '919959461095',
     destination: toPhone,
-    'src.name': process.env.GUPSHUP_APP_NAME || 'AyansMedicare',
+    'src.name': process.env.GUPSHUP_APP_NAME || 'Nhealth',
     message: JSON.stringify({ type: 'image', originalUrl: mediaUrl, previewUrl: mediaUrl, caption }),
   });
   const res = await client().post(GUPSHUP_SEND_URL, body);

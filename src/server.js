@@ -5,6 +5,8 @@ require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const apiRoutes = require('./routes/api');
 const authRoutes = require('./routes/auth');
@@ -12,11 +14,18 @@ const webhookRoutes = require('./routes/webhook');
 const requestService = require('./services/requestService');
 const realtime = require('./services/realtime');
 const db = require('./db');
+const { authMiddleware } = require('./middleware/auth');
 
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet({ crossOriginEmbedderPolicy: false }));
+app.use(cors({ origin: true, credentials: true }));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+// Global JWT attach (non-blocking)
+app.use(authMiddleware);
+// Rate limiter for APIs
+const apiLimiter = rateLimit({ windowMs: 60*1000, max: 120, standardHeaders: true, legacyHeaders: false });
+app.use('/api/', apiLimiter);
 
 // Serve static frontend files from /public if directory exists
 const publicPath = path.join(__dirname, '..', 'public');
@@ -41,7 +50,7 @@ app.get('/health', (req, res) => {
   const rtStats = realtime.getStats();
   res.json({
     ok: true,
-    service: 'Ayans Medicare Backend',
+    service: 'Nhealth Backend',
     database: db.isSqlite ? 'SQLite (local)' : 'PostgreSQL',
     realtime: rtStats,
     timestamp: new Date().toISOString()
@@ -75,7 +84,7 @@ if (require.main === module && !process.env.VERCEL) {
 
   server.listen(PORT, () => {
     console.log('======================================================');
-    console.log(` Ayans Medicare server is running on http://localhost:${PORT}`);
+    console.log(` Nhealth server is running on http://localhost:${PORT}`);
     console.log(` Website Frontend: http://localhost:${PORT}/`);
     console.log(` Management Portal: http://localhost:${PORT}/portal.html`);
     console.log(` Real-time WebSocket: ws://localhost:${PORT}/ws`);

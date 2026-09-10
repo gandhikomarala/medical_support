@@ -1,4 +1,4 @@
--- Ayans Medicare: core schema
+-- Nhealth — Healthcare at Home: core schema
 -- Run this once against your Postgres database before starting the server.
 
 CREATE TABLE IF NOT EXISTS doctors (
@@ -117,4 +117,116 @@ CREATE TABLE IF NOT EXISTS pharmacy_orders (
   status TEXT DEFAULT 'pending',
   created_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- ================= Professional Upgrade: Advanced Tables =================
+
+CREATE TABLE IF NOT EXISTS audit_log (
+  id SERIAL PRIMARY KEY,
+  actor_id INTEGER REFERENCES users(id),
+  actor_phone TEXT,
+  action TEXT NOT NULL,             -- e.g. 'request:assign', 'onboarding:approve', 'prescription:submit'
+  entity_type TEXT,                 -- 'request' | 'onboarding' | 'user' | 'vitals' | 'pharmacy'
+  entity_id INTEGER,
+  meta JSONB,
+  ip TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action);
+CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at DESC);
+
+CREATE TABLE IF NOT EXISTS prescriptions (
+  id SERIAL PRIMARY KEY,
+  request_id INTEGER REFERENCES requests(id) ON DELETE CASCADE,
+  doctor_id INTEGER REFERENCES doctors(id),
+  medicines JSONB NOT NULL,         -- [{drug, dose, frequency, duration, instructions}]
+  instructions TEXT,
+  follow_up_days INTEGER,
+  signed_at TIMESTAMPTZ DEFAULT now(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS lab_orders (
+  id SERIAL PRIMARY KEY,
+  request_id INTEGER REFERENCES requests(id) ON DELETE CASCADE,
+  test_code TEXT NOT NULL,          -- e.g. 'CBC', 'HBA1C', 'LIPID'
+  test_name TEXT,
+  status TEXT DEFAULT 'pending',    -- pending | sample_collected | reported
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_lab_orders_request ON lab_orders(request_id);
+
+CREATE TABLE IF NOT EXISTS lab_reports (
+  id SERIAL PRIMARY KEY,
+  request_id INTEGER REFERENCES requests(id) ON DELETE CASCADE,
+  file_url TEXT NOT NULL,
+  values JSONB,                     -- structured values if parsed
+  reviewed_by INTEGER REFERENCES doctors(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS ratings (
+  id SERIAL PRIMARY KEY,
+  request_id INTEGER REFERENCES requests(id) ON DELETE CASCADE,
+  patient_phone TEXT NOT NULL,
+  doctor_id INTEGER REFERENCES doctors(id),
+  stars INTEGER NOT NULL CHECK (stars BETWEEN 1 AND 5),
+  comment TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_ratings_doctor ON ratings(doctor_id);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id SERIAL PRIMARY KEY,
+  user_phone TEXT NOT NULL,
+  channel TEXT NOT NULL,            -- wa | sms | email | in_app
+  title TEXT NOT NULL,
+  body TEXT,
+  read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_notifications_phone ON notifications(user_phone, read);
+
+CREATE TABLE IF NOT EXISTS invoices (
+  id SERIAL PRIMARY KEY,
+  request_id INTEGER REFERENCES requests(id),
+  patient_phone TEXT NOT NULL,
+  amount NUMERIC(10,2) NOT NULL,
+  discount NUMERIC(10,2) DEFAULT 0,
+  tax NUMERIC(10,2) DEFAULT 0,
+  total NUMERIC(10,2) NOT NULL,
+  status TEXT DEFAULT 'pending',    -- pending | paid | refunded
+  gateway TEXT,                     -- razorpay | cod | manual
+  gateway_id TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS doctor_slots (
+  id SERIAL PRIMARY KEY,
+  doctor_id INTEGER REFERENCES doctors(id) ON DELETE CASCADE,
+  slot_date DATE NOT NULL,
+  start_time TEXT NOT NULL,         -- '09:00'
+  end_time TEXT NOT NULL,           -- '09:30'
+  booked BOOLEAN DEFAULT FALSE,
+  request_id INTEGER REFERENCES requests(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_slots_doctor_date ON doctor_slots(doctor_id, slot_date);
+
+CREATE TABLE IF NOT EXISTS zones (
+  pincode TEXT PRIMARY KEY,
+  city TEXT NOT NULL,
+  district TEXT,
+  active BOOLEAN DEFAULT TRUE,
+  delivery_fee INTEGER DEFAULT 0,
+  lat NUMERIC(9,6),
+  lng NUMERIC(9,6)
+);
+
+INSERT INTO zones (pincode, city, district, active) VALUES
+ ('520001', 'Vijayawada', 'NTR', TRUE),
+ ('520002', 'Vijayawada', 'NTR', TRUE),
+ ('522001', 'Guntur', 'Guntur', TRUE),
+ ('522002', 'Guntur', 'Guntur', TRUE),
+ ('522503', 'Bapatla', 'Bapatla', TRUE)
+ON CONFLICT (pincode) DO NOTHING;
 

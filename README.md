@@ -1,6 +1,6 @@
-# Ayans Medicare — Full-Stack Healthcare Platform & WhatsApp Automation
+# Nhealth — Healthcare at Home | Full-Stack Healthcare Platform & WhatsApp Automation
 
-Ayans Medicare provides home healthcare services (Doctor at Home, Nursing, Lab Tests, and Pharmacy Delivery) across Vijayawada, Bapatla, and Guntur districts.
+Nhealth provides home healthcare services (Doctor at Home, Nursing, Lab Tests, and Pharmacy Delivery) across Vijayawada, Bapatla, and Guntur districts.
 
 This repository contains the complete full-stack platform:
 1. **Modern Frontend Website**: Clean, accessible landing page with an interactive booking modal and direct WhatsApp links.
@@ -38,7 +38,7 @@ This repository contains the complete full-stack platform:
 ## Project Structure
 
 ```
-ayans-healthcare/
+nhealth/
 ├── public/
 │   └── index.html             # Website frontend with interactive booking modal
 ├── src/

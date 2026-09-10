@@ -1,0 +1,16 @@
+<svg viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="rightGrad2" x1="240" y1="180" x2="380" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#083C96"/>
+      <stop offset="30%" stop-color="#0A6FE3"/>
+      <stop offset="100%" stop-color="#14C9B5"/>
+    </linearGradient>
+  </defs>
+  <!-- N ribbon scaled to 0-420 -->
+  <path d="M 95 110 C 80 110, 65 102, 86 84 L 150 38 C 158 28, 184 31, 184 48 L 184 60 C 184 60, 165 54, 150 62 L 108 102 C 104 107, 100 110, 95 110Z" fill="#14C9B5"/>
+  <path d="M 184 48 C 194 49, 204 53, 210 64 L 228 95 C 236 108, 250 115, 268 115 C 246 120, 228 117, 218 105 L 200 78 C 192 62, 184 60, 184 48Z" fill="#0B5BD3"/>
+  <path d="M 268 115 C 290 115, 308 104, 320 92 L 378 42 C 388 31, 410 30, 418 42 C 425 54, 405 61, 395 70 L 325 98 C 310 108, 286 118, 268 115Z" fill="url(#rightGrad2)"/>
+  <!-- plus -->
+  <rect x="360" y="18" width="48" height="18" rx="6" fill="#14B9A6"/>
+  <rect x="370" y="8" width="18" height="48" rx="6" fill="#14B9A6"/>
+</svg>
