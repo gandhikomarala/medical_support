@@ -7,25 +7,28 @@
 <link rel="icon" type="image/png" href="/logo.png">
 <link rel="icon" type="image/svg+xml" href="/logo.svg">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
   :root {
-    --ink: #16302B;
-    --ink-soft: #3E5C55;
-    --paper: #FCFBF8;
-    --sage: #E6EEE7;
-    --sage-line: #CDDBD0;
+    --ink: #0f172a;
+    --ink-soft: #475569;
+    --paper: #f8fafc;
+    --sage: #ecfdf5;
+    --sage-line: #e2e8f0;
     --wa: #25D366;
-    --wa-dark: #1DA851;
-    --clay: #C96A4E;
+    --wa-dark: #047857;
+    --primary: #059669;
+    --primary-light: #10b981;
+    --clay: #e11d48;
     --card-bg: #FFFFFF;
+    --border: #e2e8f0;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: var(--paper);
     color: var(--ink);
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.5;
     min-height: 100vh;
     display: flex;
@@ -49,7 +52,7 @@
     justify-content: space-between;
   }
   .brand {
-    font-family: 'Fraunces', serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 22px;
     font-weight: 600;
     text-decoration: none;
@@ -95,12 +98,12 @@
   /* Auth Box */
   .auth-card {
     max-width: 480px;
-    margin: 40px auto;
+    margin: 48px auto;
     background: #fff;
-    border: 1px solid var(--sage-line);
+    border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+    padding: 36px 32px;
+    box-shadow: 0 16px 36px -8px rgba(15,23,42,0.08);
   }
   .auth-tabs {
     display: flex;
@@ -142,22 +145,28 @@
     background: #fff;
   }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    outline: 2px solid var(--wa);
-    border-color: var(--wa);
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
   }
   .btn-primary {
     width: 100%;
-    background: var(--wa-dark);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
     color: #fff;
     border: none;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 600;
+    padding: 13px 18px;
+    border-radius: 10px;
+    font-weight: 700;
     font-size: 15px;
     cursor: pointer;
-    transition: background 0.15s;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    transition: all 0.2s ease;
   }
-  .btn-primary:hover { background: #14793a; }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #047857 0%, #064e3b 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(5, 150, 105, 0.35);
+  }
 
   /* Quick Demo Chips */
   .demo-chips {
@@ -193,7 +202,7 @@
     gap: 16px;
   }
   .dashboard-header h1 {
-    font-family: 'Fraunces', serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 28px;
     font-weight: 600;
   }
@@ -771,7 +780,7 @@
       <div style="display:inline-block; background:var(--sage); padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; color:var(--wa-dark); margin-bottom:8px;">
         NHEALTH — HEALTHCARE AT HOME
       </div>
-      <h2 style="font-family:'Fraunces',serif; font-size:24px; font-weight:700; color:var(--ink); margin:0 0 4px;">Sign In to Medical Portal</h2>
+      <h2 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:24px; font-weight:800; color:#0f172a; margin:0 0 4px; letter-spacing:-0.02em;">Sign In to Medical Portal</h2>
       <p style="font-size:13.5px; color:var(--ink-soft); margin:0;">
         Access your zero-fee consultations, test reports, vitals, or staff operations.
       </p>
