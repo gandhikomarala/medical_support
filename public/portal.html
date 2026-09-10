@@ -90,6 +90,8 @@
     padding: 32px 20px;
   }
 
+  .demo-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); filter: brightness(0.97); }
+  .demo-btn:active { transform: translateY(0); }
   /* Auth Box */
   .auth-card {
     max-width: 480px;
@@ -805,22 +807,49 @@
         <input type="password" id="loginPassword" required placeholder="Enter password">
       </div>
 
+      
       <button type="submit" class="btn-primary" id="loginBtn">Log In</button>
-
-      <div class="demo-chips" style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:10px; padding:12px 14px; margin-top:20px;">
-        <div style="font-size:12px; font-weight:700; color:#475569; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-          <span>⚡ One-Click Demo Logins:</span>
-          <span style="font-size:11px; color:#059669; font-weight:600;">(Click any role to log in instantly)</span>
-        </div>
-        <div class="chip-group" style="gap:6px;">
-          <div class="chip" style="background:#e0f2fe; color:#0369a1; font-weight:600;" onclick="fillDemo('patient', '919876500000', 'patient123')">👤 Patient (Ramesh)</div>
-          <div class="chip" style="background:#dcfce7; color:#15803d; font-weight:600;" onclick="fillDemo('doctor', '919959461095', 'doctor123')">🩺 Doctor (Dr. Rao)</div>
-          <div class="chip" style="background:#f3e8ff; color:#7e22ce; font-weight:600;" onclick="fillDemo('technician', '919876543211', 'tech123')">🔬 Tech (Priya)</div>
-          <div class="chip" style="background:#fef3c7; color:#b45309; font-weight:600;" onclick="fillDemo('employee', '919876543200', 'staff123')">💼 HR (Sneha HR)</div>
-          <div class="chip" style="background:#fee2e2; color:#b91c1c; font-weight:600;" onclick="fillDemo('admin', 'admin', 'admin123')">🛡️ Admin (Coordinator)</div>
-        </div>
-      </div>
     </form>
+
+    <!-- 1-Click Instant Demo Portals (Independent from form for 100% reliable execution) -->
+    <div class="demo-box" style="margin-top:24px; background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:12px; padding:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:#1e293b;">
+          <span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; background:#dcfce7; border-radius:6px; color:#15803d;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </span>
+          <span>1-Click Instant Demo Portals</span>
+        </div>
+        <span style="font-size:11px; color:#059669; font-weight:600; background:#ecfdf5; padding:3px 8px; border-radius:12px; border:1px solid #a7f3d0;">
+          Instant Access
+        </span>
+      </div>
+      <p style="font-size:11.5px; color:#64748b; margin:0 0 12px; line-height:1.4;">
+        Click any verified role below to log in directly to their dedicated dashboard:
+      </p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:7px;">
+        <button type="button" class="demo-btn" style="background:#f0f9ff; border:1px solid #bae6fd; color:#0369a1; padding:9px 10px; border-radius:8px; font-size:11.5px; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; text-align:left; transition:all 0.15s;" onclick="fillDemo('patient', '919876500000', 'patient123', this)">
+          <span style="display:inline-flex; align-items:center; color:#0284c7;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+          <span>Patient (Ramesh)</span>
+        </button>
+        <button type="button" class="demo-btn" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:9px 10px; border-radius:8px; font-size:11.5px; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; text-align:left; transition:all 0.15s;" onclick="fillDemo('doctor', '919959461095', 'doctor123', this)">
+          <span style="display:inline-flex; align-items:center; color:#16a34a;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M4.5 3v5a4.5 4.5 0 0 0 9 0V3"></path><circle cx="18" cy="10" r="3"></circle><line x1="9" y1="12.5" x2="9" y2="17"></line><path d="M9 17a4 4 0 0 0 4 4h1a4 4 0 0 0 4-4v-4"></path></svg></span>
+          <span>Doctor (Dr. Rao)</span>
+        </button>
+        <button type="button" class="demo-btn" style="background:#faf5ff; border:1px solid #e9d5ff; color:#7e22ce; padding:9px 10px; border-radius:8px; font-size:11.5px; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; text-align:left; transition:all 0.15s;" onclick="fillDemo('technician', '919876543211', 'tech123', this)">
+          <span style="display:inline-flex; align-items:center; color:#9333ea;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M6 18h8"></path><path d="M3 22h18"></path><path d="M14 22a7 7 0 1 0-7-7"></path><path d="M9 14h2"></path><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"></path><path d="M12 6V3a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3"></path></svg></span>
+          <span>Tech (Priya)</span>
+        </button>
+        <button type="button" class="demo-btn" style="background:#fffbeb; border:1px solid #fde68a; color:#b45309; padding:9px 10px; border-radius:8px; font-size:11.5px; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; text-align:left; transition:all 0.15s;" onclick="fillDemo('employee', '919876543200', 'staff123', this)">
+          <span style="display:inline-flex; align-items:center; color:#d97706;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></span>
+          <span>HR (Sneha HR)</span>
+        </button>
+        <button type="button" class="demo-btn" style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:9px 10px; border-radius:8px; font-size:11.5px; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; text-align:left; transition:all 0.15s;" onclick="fillDemo('admin', 'admin', 'admin123', this)">
+          <span style="display:inline-flex; align-items:center; color:#dc2626;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg></span>
+          <span>Admin (Coordinator)</span>
+        </button>
+      </div>
+    </div>
 
     <!-- Register Form -->
     <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
@@ -868,8 +897,8 @@
     </div>
     <div class="pill-tabs" style="margin-bottom:18px;">
       <button class="pill-tab active" onclick="switchAdminTab('operations')" id="tabAdminOps">📋 Operations</button>
-      <button class="pill-tab" onclick="switchAdminTab('analytics')" id="tabAdminAnalytics">📊 Analytics</button>
-      <button class="pill-tab" onclick="switchAdminTab('finance')" id="tabAdminFinance">💰 Finance</button>
+      <button class="pill-tab" onclick="switchAdminTab('analytics')" id="tabAdminAnalytics"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Analytics</button>
+      <button class="pill-tab" onclick="switchAdminTab('finance')" id="tabAdminFinance"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg> Finance</button>
       <button class="pill-tab" onclick="switchAdminTab('audit')" id="tabAdminAudit">🛡️ Audit</button>
       <button class="pill-tab" onclick="switchAdminTab('notifications')" id="tabAdminNotif">🔔 Inbox <span id="adminNotifCount" style="background:#e11d48; color:#fff; padding:1px 6px; border-radius:10px; font-size:10px; display:none;">0</span></button>
     </div>
@@ -1535,7 +1564,7 @@
   <div class="modal-overlay" id="orderPharmacyModal">
     <div class="modal-box" style="max-width:550px;">
       <button class="modal-close" onclick="closeModal('orderPharmacyModal')">&times;</button>
-      <h2 style="font-size:20px; margin-bottom:6px;">📦 Request Doorstep Medicine Delivery</h2>
+      <h2 style="font-size:20px; margin-bottom:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg> Request Doorstep Medicine Delivery</h2>
       <p style="font-size:13px; color:var(--ink-soft); margin-bottom:16px;">
         Get your prescribed medicines delivered directly to your home via our licensed partner pharmacies. <strong>Free Delivery!</strong>
       </p>
@@ -1764,21 +1793,34 @@
     document.getElementById('specialtyGroup').style.display = (role === 'doctor') ? 'block' : 'none';
   }
 
-  function fillDemo(role, identifier, pwd) {
-    quickLogin(role, identifier, pwd);
+  function fillDemo(role, identifier, pwd, btnEl) {
+    if (window.event) window.event.preventDefault();
+    quickLogin(role, identifier, pwd, btnEl);
   }
 
-  async function quickLogin(role, identifier, pwd) {
-    document.getElementById('loginRole').value = role;
-    document.getElementById('loginIdentifier').value = identifier;
-    document.getElementById('loginPassword').value = pwd;
-
+  async function quickLogin(role, identifier, pwd, btnEl) {
+    const roleSelect = document.getElementById('loginRole');
+    const idInput = document.getElementById('loginIdentifier');
+    const pwdInput = document.getElementById('loginPassword');
     const alertBox = document.getElementById('authAlert');
-    alertBox.style.display = 'none';
+    const submitBtn = document.getElementById('loginBtn');
 
-    const btn = document.getElementById('loginBtn');
-    btn.disabled = true;
-    btn.textContent = `Logging in as ${role.toUpperCase()}...`;
+    if (roleSelect) roleSelect.value = role;
+    if (idInput) idInput.value = identifier;
+    if (pwdInput) pwdInput.value = pwd;
+    if (alertBox) alertBox.style.display = 'none';
+
+    let originalBtnHtml = '';
+    if (btnEl) {
+      originalBtnHtml = btnEl.innerHTML;
+      btnEl.disabled = true;
+      btnEl.style.opacity = '0.7';
+      btnEl.innerHTML = `<span style="display:inline-block; animation:spin 1s linear infinite;">⟳</span> Connecting...`;
+    }
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = `Authenticating as ${role.toUpperCase()}...`;
+    }
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -1791,46 +1833,78 @@
 
       currentUser = data.user;
       localStorage.setItem('nhealth_user', JSON.stringify(currentUser));
-      if (data.token) localStorage.setItem('nhealth_token', data.token);
+      localStorage.setItem('ayans_user', JSON.stringify(currentUser));
+      if (data.token) {
+        localStorage.setItem('nhealth_token', data.token);
+        localStorage.setItem('ayans_token', data.token);
+      }
       showDashboard(currentUser);
+      showToast('Portal Login Successful', `Signed in as ${currentUser.name} (${currentUser.role.toUpperCase()})`, 'success');
     } catch (err) {
-      alertBox.className = 'alert alert-error';
-      alertBox.textContent = err.message;
-      alertBox.style.display = 'block';
+      console.error('[auth] Quick login error:', err);
+      if (alertBox) {
+        alertBox.className = 'alert alert-error';
+        alertBox.textContent = err.message || 'Login failed. Please verify credentials.';
+        alertBox.style.display = 'block';
+      }
+      showToast('Login Error', err.message || 'Failed to authenticate.', 'warning');
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Log In';
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log In';
+      }
+      if (btnEl) {
+        btnEl.disabled = false;
+        btnEl.style.opacity = '1';
+        btnEl.innerHTML = originalBtnHtml;
+      }
     }
   }
 
   async function handleLogin(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
     const alert = document.getElementById('authAlert');
-    alert.style.display = 'none';
+    if (alert) alert.style.display = 'none';
 
-    const body = {
-      role: document.getElementById('loginRole').value,
-      identifier: document.getElementById('loginIdentifier').value.trim(),
-      password: document.getElementById('loginPassword').value.trim()
-    };
+    const role = document.getElementById('loginRole').value;
+    const identifier = document.getElementById('loginIdentifier').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const submitBtn = document.getElementById('loginBtn');
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging In...';
+    }
 
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify({ role, identifier, password })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
       currentUser = data.user;
       localStorage.setItem('nhealth_user', JSON.stringify(currentUser));
-      if (data.token) localStorage.setItem('nhealth_token', data.token);
+      localStorage.setItem('ayans_user', JSON.stringify(currentUser));
+      if (data.token) {
+        localStorage.setItem('nhealth_token', data.token);
+        localStorage.setItem('ayans_token', data.token);
+      }
       showDashboard(currentUser);
+      showToast('Welcome back', `Signed in as ${currentUser.name}`, 'success');
     } catch (err) {
-      alert.className = 'alert alert-error';
-      alert.textContent = err.message;
-      alert.style.display = 'block';
+      if (alert) {
+        alert.className = 'alert alert-error';
+        alert.textContent = err.message;
+        alert.style.display = 'block';
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log In';
+      }
     }
   }
 
@@ -2067,7 +2141,7 @@
             <td>${statusBadge(r.status)}</td>
             <td>
               ${r.meet_link ? `
-                <a href="${r.meet_link}" target="_blank" class="meet-btn">🎥 Join Consultation Room</a>
+                <a href="${r.meet_link}" target="_blank" class="meet-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2"></rect></svg> Join Video Room</a>
               ` : '<span style="color:var(--ink-soft); font-size:12px;">Waiting for coordinator meet link</span>'}
             </td>
             <td>
@@ -2546,7 +2620,7 @@
             </td>
             <td>
               ${r.meet_link ? `
-                <a href="${r.meet_link}" target="_blank" class="meet-btn">🎥 Join Secure Video Call</a>
+                <a href="${r.meet_link}" target="_blank" class="meet-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2"></rect></svg> Join Secure Video Call</a>
                 <small style="display:block; color:#14793a; font-size:11px; margin-top:2px;">Private & Encrypted</small>
               ` : (r.doctor_name ? '<span style="color:var(--ink-soft); font-size:12px;">Doctor Assigned • Room Link Sending Soon</span>' : '<span style="color:#999; font-size:12px;">Awaiting Doctor Acceptance</span>')}
             </td>
@@ -3670,5 +3744,6 @@
     </div>
   </div>
 
+  <div id="toastContainer"></div>
 </body>
 </html>
