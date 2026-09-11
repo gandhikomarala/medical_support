@@ -506,6 +506,34 @@
     color: var(--ink);
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   }
+  .dash-badge {
+    display: inline-block;
+    background: #059669;
+    color: #ffffff;
+    padding: 1px 7px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .dash-shortcut-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .dash-shortcut-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    border-color: #cbd5e1;
+  }
+
   .pulse-indicator {
     display: inline-block;
     width: 8px;
@@ -928,7 +956,7 @@
       </div>
       <button class="btn-sm" onclick="openAddStaffModal()">+ Register Doctor / Tech</button>
     </div>
-    <div class="pill-tabs" style="margin-bottom:18px;">
+    <div class="pill-tabs" id="adminDashboardNavTabs" style="margin-bottom:18px;">
       <button class="pill-tab active" onclick="switchAdminTab('operations')" id="tabAdminOps"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect width="16" height="18" x="4" y="4" rx="2"></rect><path d="M8 2h8a1 1 0 0 1 1 1v1H7V3a1 1 0 0 1 1-1Z"></path><path d="m9 14 2 2 4-4"></path></svg> Operations</button>
       <button class="pill-tab" onclick="switchAdminTab('analytics')" id="tabAdminAnalytics"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Analytics</button>
       <button class="pill-tab" onclick="switchAdminTab('finance')" id="tabAdminFinance"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg> Finance</button>
@@ -937,135 +965,150 @@
     </div>
 
     <div id="adminOpsContent">
-    <div class="stats-grid">
-      <div class="stat-card"><div class="val" id="statTotal">0</div><div class="lbl">Total Requests</div></div>
-      <div class="stat-card"><div class="val" id="statNew" style="color:#d97706;">0</div><div class="lbl">Unassigned</div></div>
-      <div class="stat-card"><div class="val" id="statActiveDoc" style="color:#2563eb;">0</div><div class="lbl">Doctor Visits</div></div>
-      <div class="stat-card"><div class="val" id="statActiveLab" style="color:#7c3aed;">0</div><div class="lbl">Lab Pickups</div></div>
-      <div class="stat-card"><div class="val" id="statDone" style="color:#16a34a;">0</div><div class="lbl">Completed</div></div>
-      <div class="stat-card" style="border-top:3px solid #e11d48;"><div class="val" id="statOnboarding" style="color:#e11d48;">0</div><div class="lbl">Staff Onboarding Queue</div></div>
-    </div>
-    <!-- Real-Time Activity Feed -->
-    <div class="activity-feed-card">
-      <div class="activity-feed-header">
-        <h3>
-          <span style="color:#15803d;">⚡</span> Real-Time Live Activity Feed
-        </h3>
-        <span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">Auto-syncing across network</span>
+      <div class="pill-tabs" id="adminOpsSubTabs" style="margin-bottom:18px;">
+        <button class="pill-tab active" onclick="switchAdminOpsSubTab('dispatches')" id="subTabAdminDispatches">
+          🚑 Patient Dispatches & Stream
+        </button>
+        <button class="pill-tab" onclick="switchAdminOpsSubTab('meets')" id="subTabAdminMeets">
+          📹 Telehealth Video Consultations
+        </button>
+        <button class="pill-tab" onclick="switchAdminOpsSubTab('onboarding')" id="subTabAdminOnboarding">
+          📋 Staff Verification & Approvals <span id="adminOnboardBadge" class="dash-badge" style="background:#e11d48; display:none;">0</span>
+        </button>
       </div>
-      <div class="activity-feed-list" id="adminActivityFeed">
-        <div class="activity-item">
-          <span>🛡️ System connected to Nhealth Real-time Hub. Ready for live events.</span>
-          <small style="color:var(--ink-soft);">Just now</small>
+
+      <!-- Subview 1: Patient Dispatches & Stream -->
+      <div id="adminOpsDispatchesView">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="val" id="statTotal">0</div><div class="lbl">Total Requests</div></div>
+          <div class="stat-card"><div class="val" id="statNew" style="color:#d97706;">0</div><div class="lbl">Unassigned</div></div>
+          <div class="stat-card"><div class="val" id="statActiveDoc" style="color:#2563eb;">0</div><div class="lbl">Doctor Visits</div></div>
+          <div class="stat-card"><div class="val" id="statActiveLab" style="color:#7c3aed;">0</div><div class="lbl">Lab Pickups</div></div>
+          <div class="stat-card"><div class="val" id="statDone" style="color:#16a34a;">0</div><div class="lbl">Completed</div></div>
+          <div class="stat-card" style="border-top:3px solid #e11d48;"><div class="val" id="statOnboarding" style="color:#e11d48;">0</div><div class="lbl">Staff Onboarding Queue</div></div>
+        </div>
+
+        <!-- Real-Time Activity Feed -->
+        <div class="activity-feed-card">
+          <div class="activity-feed-header">
+            <h3><span style="color:#15803d;">⚡</span> Real-Time Live Activity Feed</h3>
+            <span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">Auto-syncing across network</span>
+          </div>
+          <div class="activity-feed-list" id="adminActivityFeed">
+            <div class="activity-item">
+              <span>🛡️ System connected to Nhealth Real-time Hub. Ready for live events.</span>
+              <small style="color:var(--ink-soft);">Just now</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-table">
+          <div class="table-header-bar">
+            <h2>Live Patient Requests</h2>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="text" id="adminSearch" placeholder="Search patient, phone, address" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px; min-width:180px;" oninput="loadAdminData(1)">
+              <select id="adminStatusFilter" onchange="loadAdminData(1)" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;">
+                <option value="">All status</option>
+                <option value="new">New</option>
+                <option value="doctor_assigned">Doctor Assigned</option>
+                <option value="prescribed">Prescribed</option>
+                <option value="lab_requested">Lab Requested</option>
+                <option value="completed">Completed</option>
+              </select>
+              <button class="btn-sm-outline" onclick="loadAdminData(1)">Search</button>
+              <button class="btn-sm-outline" onclick="exportAdminCsv()">Export CSV</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Patient</th>
+                  <th>Service</th>
+                  <th>Address</th>
+                  <th>Assigned Doctor</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminRequestsTable"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="adminPagination"></div>
         </div>
       </div>
-    </div>
 
-    <div class="card-table">
-      <div class="table-header-bar">
-        <h2>Live Patient Requests</h2>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <input type="text" id="adminSearch" placeholder="Search patient, phone, address" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px; min-width:180px;" oninput="loadAdminData(1)">
-          <select id="adminStatusFilter" onchange="loadAdminData(1)" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;">
-            <option value="">All status</option>
-            <option value="new">New</option>
-            <option value="doctor_assigned">Doctor Assigned</option>
-            <option value="prescribed">Prescribed</option>
-            <option value="lab_requested">Lab Requested</option>
-            <option value="completed">Completed</option>
-          </select>
-          <button class="btn-sm-outline" onclick="loadAdminData(1)">Search</button>
-          <button class="btn-sm-outline" onclick="exportAdminCsv()">Export CSV</button>
+      <!-- Subview 2: Mediated Video Consultations & Private Meeting Generator -->
+      <div id="adminOpsMeetsView" class="hidden">
+        <div class="card-table" style="border-top: 3px solid #2563eb;">
+          <div class="table-header-bar">
+            <div>
+              <h2>Mediated Video Consultations & Private Meet Generator</h2>
+              <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">
+                Generate secure private meeting rooms and dispatch links to patient & doctor WhatsApp with zero direct contact exposure.
+              </p>
+            </div>
+            <button class="btn-sm-outline" onclick="loadAdminData()">Refresh</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Patient</th>
+                  <th>Assigned Doctor</th>
+                  <th>Service & Fee</th>
+                  <th>Status</th>
+                  <th>Private Meeting Link</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminMeetTable"></tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Patient</th>
-              <th>Service</th>
-              <th>Address</th>
-              <th>Assigned Doctor</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="adminRequestsTable"></tbody>
-        </table>
-      </div>
-      <div class="pagination" id="adminPagination"></div>
-    </div>
 
-    <!-- Mediated Video Consultations & Private Meeting Generator -->
-    <div class="card-table" style="border-top: 3px solid #2563eb;">
-      <div class="table-header-bar">
-        <div>
-          <h2>Mediated Video Consultations & Private Meet Generator</h2>
-          <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">
-            Generate secure private meeting rooms and dispatch links to patient & doctor WhatsApp with zero direct contact exposure.
-          </p>
-        </div>
-        <button class="btn-sm-outline" onclick="loadAdminData()">Refresh</button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Patient</th>
-              <th>Assigned Doctor</th>
-              <th>Service & Fee</th>
-              <th>Status</th>
-              <th>Private Meeting Link</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="adminMeetTable"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Staff Onboarding & Recruiter Attribution Queue -->
-    <div class="card-table" style="border-top: 3px solid #7c3aed; margin-top: 24px;">
-      <div class="table-header-bar">
-        <div>
-          <h2>Staff Onboarding & Recruiter Attribution Queue</h2>
-          <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">
-            Review medical credentials submitted by HR Specialists before activating staff into portal & WhatsApp dispatch.
-          </p>
-        </div>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <input type="text" id="onboardSearch" placeholder="Search candidate" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;" oninput="loadAdminOnboarding(1)">
-          <select id="onboardStatusFilter" onchange="loadAdminOnboarding(1)" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;">
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-          <button class="btn-sm-outline" onclick="loadAdminOnboarding(1)">Search</button>
+      <!-- Subview 3: Staff Onboarding & Recruiter Attribution Queue -->
+      <div id="adminOpsOnboardingView" class="hidden">
+        <div class="card-table" style="border-top: 3px solid #7c3aed;">
+          <div class="table-header-bar">
+            <div>
+              <h2>Staff Onboarding & Recruiter Attribution Queue</h2>
+              <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">
+                Review medical credentials submitted by HR Specialists before activating staff into portal & WhatsApp dispatch.
+              </p>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="text" id="onboardSearch" placeholder="Search candidate" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;" oninput="loadAdminOnboarding(1)">
+              <select id="onboardStatusFilter" onchange="loadAdminOnboarding(1)" style="padding:8px 12px; border:1px solid var(--sage-line); border-radius:8px; font-size:13px;">
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <button class="btn-sm-outline" onclick="loadAdminOnboarding(1)">Search</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Candidate Name</th>
+                  <th>Role & Specialty</th>
+                  <th>Medical License & Exp</th>
+                  <th>Hired / Onboarded By (Employee)</th>
+                  <th>Verification Notes</th>
+                  <th>Status</th>
+                  <th>Admin Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminOnboardingTable"></tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>Candidate Name</th>
-              <th>Role & Specialty</th>
-              <th>Medical License & Exp</th>
-              <th>Hired / Onboarded By (Employee)</th>
-              <th>Verification Notes</th>
-              <th>Status</th>
-              <th>Admin Action</th>
-            </tr>
-          </thead>
-          <tbody id="adminOnboardingTable"></tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
-
     </div> <!-- end adminOpsContent -->
     <!-- ================= ANALYTICS DASHBOARD (New) ================= -->
   <div id="analyticsDashboard" class="hidden">
@@ -1159,64 +1202,98 @@
     <div class="dashboard-header">
       <div>
         <h1 id="docWelcome">Doctor Consultation Portal</h1>
-        <p style="color:var(--ink-soft); font-size:14px;">Claim available patient requests and conduct mediated consultations.</p>
+        <p style="color:var(--ink-soft); font-size:14px;">Review assigned patients, launch secure tele-consultations, and issue digital prescriptions.</p>
       </div>
-      <button class="btn-sm-outline" onclick="loadDoctorData()">Refresh</button>
+      <button class="btn-sm-outline" onclick="loadDoctorData()">↻ Refresh Consultations</button>
     </div>
 
-    <!-- Available Stream Section -->
-    <div class="card-table" style="border: 2px solid #93c5fd; margin-bottom: 24px;">
-      <div class="table-header-bar" style="background: #eff6ff;">
-        <div>
-          <h2 style="color: #1d4ed8; display:flex; align-items:center;">
-            <span class="pulse-indicator"></span>
-            Available Patient Request Stream (First-Come, First-Served)
-          </h2>
-          <p style="font-size:12.5px; color:#3b82f6; margin:4px 0 0;">
-            Patients currently waiting for consultation. Click Accept to claim the patient. Direct contact is mediated through the portal.
-          </p>
+    <!-- Doctor Metrics Grid -->
+    <div class="stats-grid" style="margin-bottom: 20px;">
+      <div class="stat-card" style="border-top: 3px solid #2563eb;">
+        <div class="val" id="docStatAssigned" style="color:#2563eb;">0</div>
+        <div class="lbl">My Assigned Patients</div>
+      </div>
+      <div class="stat-card" style="border-top: 3px solid #d97706;">
+        <div class="val" id="docStatAvailable" style="color:#d97706;">0</div>
+        <div class="lbl">Available in Stream</div>
+      </div>
+      <div class="stat-card" style="border-top: 3px solid #16a34a;">
+        <div class="val" id="docStatCompleted" style="color:#16a34a;">0</div>
+        <div class="lbl">Completed Today</div>
+      </div>
+    </div>
+
+    <!-- Doctor Sub-Tabs -->
+    <div class="pill-tabs" id="docSubTabs" style="margin-bottom: 20px;">
+      <button class="pill-tab active" id="tabDocAssigned" onclick="switchDoctorTab('assigned')">
+        🩺 My Assigned Patients & Consultations <span id="docBadgeAssigned" class="dash-badge" style="display:none;">0</span>
+      </button>
+      <button class="pill-tab" id="tabDocAvailable" onclick="switchDoctorTab('available')">
+        ⚡ Available Patient Request Stream <span id="docBadgeAvailable" class="dash-badge" style="background:#d97706; display:none;">0</span>
+      </button>
+    </div>
+
+    <!-- View 1: Assigned Patients -->
+    <div id="docViewAssigned">
+      <div class="card-table">
+        <div class="table-header-bar">
+          <div>
+            <h2>My Assigned Patients & Consultations</h2>
+            <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">Conduct consultations, join encrypted video calls, and submit prescriptions.</p>
+          </div>
+          <button class="btn-sm-outline" onclick="loadDoctorData()">Refresh</button>
         </div>
-        <button class="btn-sm-outline" onclick="loadAvailableRequests()">Refresh Stream</button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Patient Name</th>
-              <th>Service Needed</th>
-              <th>Fee</th>
-              <th>Location</th>
-              <th>Symptoms / Chief Complaint</th>
-              <th>Preferred Time</th>
-              <th>Instant Action</th>
-            </tr>
-          </thead>
-          <tbody id="availableRequestsTable"></tbody>
-        </table>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Patient Name</th>
+                <th>Address</th>
+                <th>Notes</th>
+                <th>Status</th>
+                <th>Private Video Room</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="doctorRequestsTable"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Assigned Patients Section -->
-    <div class="card-table">
-      <div class="table-header-bar">
-        <h2>My Assigned Patients & Consultations</h2>
-      </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Patient Name</th>
-              <th>Address</th>
-              <th>Notes</th>
-              <th>Status</th>
-              <th>Private Video Room</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="doctorRequestsTable"></tbody>
-        </table>
+    <!-- View 2: Available Stream -->
+    <div id="docViewAvailable" class="hidden">
+      <div class="card-table" style="border: 2px solid #93c5fd;">
+        <div class="table-header-bar" style="background: #eff6ff;">
+          <div>
+            <h2 style="color: #1d4ed8; display:flex; align-items:center;">
+              <span class="pulse-indicator"></span>
+              Available Patient Request Stream (First-Come, First-Served)
+            </h2>
+            <p style="font-size:12.5px; color:#3b82f6; margin:4px 0 0;">
+              Patients currently waiting for consultation. Click Accept to claim the patient. Direct contact is mediated through the portal.
+            </p>
+          </div>
+          <button class="btn-sm-outline" onclick="loadAvailableRequests()">Refresh Stream</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Patient Name</th>
+                <th>Service Needed</th>
+                <th>Fee</th>
+                <th>Location</th>
+                <th>Symptoms / Chief Complaint</th>
+                <th>Preferred Time</th>
+                <th>Instant Action</th>
+              </tr>
+            </thead>
+            <tbody id="availableRequestsTable"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -1226,35 +1303,94 @@
     <div class="dashboard-header">
       <div>
         <h1 id="techWelcome">Diagnostics & Lab Technician Portal</h1>
-        <p style="color:var(--ink-soft); font-size:14px;">Manage sample pickups, schedule arrival times, and upload reports.</p>
+        <p style="color:var(--ink-soft); font-size:14px;">Manage sample pickups, schedule arrival times, and upload certified reports.</p>
       </div>
-      <button class="btn-sm-outline" onclick="loadTechnicianData()">Refresh</button>
+      <button class="btn-sm-outline" onclick="loadTechnicianData()">↻ Refresh</button>
     </div>
 
-    <div class="card-table">
-      <div class="table-header-bar">
-        <h2>Lab Tests & Sample Collection Tasks</h2>
+    <!-- Tech Metrics Grid -->
+    <div class="stats-grid" style="margin-bottom: 20px;">
+      <div class="stat-card" style="border-top: 3px solid #7c3aed;">
+        <div class="val" id="techStatTotal" style="color:#7c3aed;">0</div>
+        <div class="lbl">Assigned Pickups</div>
       </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Patient</th>
-              <th>Address</th>
-              <th>Tests Needed</th>
-              <th>Visit Time</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="techTasksTable"></tbody>
-        </table>
+      <div class="stat-card" style="border-top: 3px solid #d97706;">
+        <div class="val" id="techStatPending" style="color:#d97706;">0</div>
+        <div class="lbl">Pending Arrival Schedule</div>
+      </div>
+      <div class="stat-card" style="border-top: 3px solid #16a34a;">
+        <div class="val" id="techStatCompleted" style="color:#16a34a;">0</div>
+        <div class="lbl">Reports Uploaded</div>
+      </div>
+    </div>
+
+    <!-- Tech Sub-Tabs -->
+    <div class="pill-tabs" id="techSubTabs" style="margin-bottom: 20px;">
+      <button class="pill-tab active" id="tabTechTasks" onclick="switchTechnicianTab('tasks')">
+        🧪 Lab Tests & Sample Collection Tasks <span id="techBadgeTasks" class="dash-badge" style="background:#7c3aed; display:none;">0</span>
+      </button>
+      <button class="pill-tab" id="tabTechUpload" onclick="switchTechnicianTab('upload')">
+        📄 Report Upload Instructions & Guidelines
+      </button>
+    </div>
+
+    <!-- View 1: Tasks -->
+    <div id="techViewTasks">
+      <div class="card-table">
+        <div class="table-header-bar">
+          <div>
+            <h2>Lab Tests & Sample Collection Tasks</h2>
+            <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">View assigned tests, record patient visit time, and upload test reports.</p>
+          </div>
+          <button class="btn-sm-outline" onclick="loadTechnicianData()">Refresh</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Address</th>
+                <th>Tests Needed</th>
+                <th>Visit Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="techTasksTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 2: Report Upload Center -->
+    <div id="techViewUpload" class="hidden">
+      <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <h3 style="margin:0 0 8px; font-size:18px; color:var(--ink); display:flex; align-items:center; gap:8px;">
+          <span>📄</span> Certified Diagnostic Report Upload Center
+        </h3>
+        <p style="font-size:13.5px; color:var(--ink-soft); margin-bottom:16px;">
+          Follow standard Nhealth diagnostic workflow to complete sample analysis and deliver certified PDF reports to patients and doctors.
+        </p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; margin-bottom:20px;">
+          <div style="background:#f8fafc; border-left:4px solid #7c3aed; padding:14px 18px; border-radius:8px;">
+            <div style="font-weight:700; color:#1e293b; font-size:14px; margin-bottom:4px;">1. Doorstep Phlebotomy</div>
+            <div style="font-size:12.5px; color:var(--ink-soft);">Collect vacutainer blood / urine samples following cold-chain protocol.</div>
+          </div>
+          <div style="background:#f8fafc; border-left:4px solid #2563eb; padding:14px 18px; border-radius:8px;">
+            <div style="font-weight:700; color:#1e293b; font-size:14px; margin-bottom:4px;">2. NABL Lab Processing</div>
+            <div style="font-size:12.5px; color:var(--ink-soft);">Perform automated biochemistry / hematology analysis and verify reference intervals.</div>
+          </div>
+          <div style="background:#f8fafc; border-left:4px solid #16a34a; padding:14px 18px; border-radius:8px;">
+            <div style="font-weight:700; color:#1e293b; font-size:14px; margin-bottom:4px;">3. Instant Upload & Dispatch</div>
+            <div style="font-size:12.5px; color:var(--ink-soft);">Click "Upload Report" on any completed test in your tasks list to deliver PDF directly to patient WhatsApp & portal.</div>
+          </div>
+        </div>
+        <button class="btn-sm" onclick="switchTechnicianTab('tasks')">← Go to Assigned Sample Collection Tasks</button>
       </div>
     </div>
   </div>
 
-  
   <!-- ================= EMPLOYEE / HR ONBOARDING DASHBOARD ================= -->
   <div id="employeeDashboard" class="hidden">
     <div class="dashboard-header">
@@ -1266,12 +1402,74 @@
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
         <span style="background:#f1f5f9; padding:6px 14px; border-radius:8px; font-size:13px; font-weight:600; color:#334155; border:1px solid #e2e8f0;">
-          👤 Onboarding Specialist: <span id="empBadgeName" style="color:#0284c7;">Sneha HR</span>
+          👤 Specialist: <span id="empBadgeName" style="color:#0284c7;">Sneha HR</span>
         </span>
       </div>
     </div>
 
-    <!-- Onboard Candidate Form -->
+    <!-- Employee Metrics Grid -->
+    <div class="stats-grid" style="margin-bottom: 20px;">
+      <div class="stat-card" style="border-top: 3px solid #0284c7;">
+        <div class="val" id="empStatTotal" style="color:#0284c7;">0</div>
+        <div class="lbl">Total Recruited</div>
+      </div>
+      <div class="stat-card" style="border-top: 3px solid #d97706;">
+        <div class="val" id="empStatPending" style="color:#d97706;">0</div>
+        <div class="lbl">Pending Admin Approval</div>
+      </div>
+      <div class="stat-card" style="border-top: 3px solid #16a34a;">
+        <div class="val" id="empStatApproved" style="color:#16a34a;">0</div>
+        <div class="lbl">Active & Verified Staff</div>
+      </div>
+    </div>
+
+    <!-- Employee Sub-Tabs -->
+    <div class="pill-tabs" id="empSubTabs" style="margin-bottom: 20px;">
+      <button class="pill-tab active" id="tabEmpRoster" onclick="switchEmployeeTab('roster')">
+        👥 Recruited Staff Roster <span id="empBadgeRoster" class="dash-badge" style="background:#0284c7; display:none;">0</span>
+      </button>
+      <button class="pill-tab" id="tabEmpOnboard" onclick="switchEmployeeTab('onboard')">
+        ➕ Onboard New Medical Professional
+      </button>
+    </div>
+
+    <!-- View 1: Recruited Roster (Default) -->
+    <div id="empViewRoster">
+      <div class="card-table">
+        <div class="table-header-bar">
+          <div>
+            <h2>My Recruited Candidates & Status</h2>
+            <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">
+              Real-time status of candidates you submitted to the Admin approval queue.
+            </p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-sm" onclick="switchEmployeeTab('onboard')">+ Onboard Candidate</button>
+            <button class="btn-sm-outline" onclick="loadEmployeeData()">Refresh List</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Role & Specialty</th>
+                <th>License No</th>
+                <th>Experience</th>
+                <th>Submitted Date</th>
+                <th>Status</th>
+                <th>Admin Feedback</th>
+              </tr>
+            </thead>
+            <tbody id="empCandidatesTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 2: Onboard Form -->
+    <div id="empViewOnboard" class="hidden">
+      <!-- Onboard Candidate Form -->
     <div class="form-card" style="max-width: 100%; margin-bottom: 24px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 24px;">
       <div style="margin-bottom:18px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
         <h3 style="margin:0; font-size:18px; color:var(--ink);">Onboard New Medical Professional</h3>
@@ -1347,34 +1545,6 @@
         </button>
       </form>
     </div>
-
-    <!-- My Recruited Candidates List -->
-    <div class="card-table">
-      <div class="table-header-bar">
-        <div>
-          <h2>My Recruited Candidates & Status</h2>
-          <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">
-            Real-time status of candidates you submitted to the Admin approval queue.
-          </p>
-        </div>
-        <button class="btn-sm-outline" onclick="loadEmployeeData()">Refresh List</button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>Candidate</th>
-              <th>Role & Specialty</th>
-              <th>License No</th>
-              <th>Experience</th>
-              <th>Submitted Date</th>
-              <th>Status</th>
-              <th>Admin Feedback</th>
-            </tr>
-          </thead>
-          <tbody id="empCandidatesTable"></tbody>
-        </table>
-      </div>
     </div>
   </div>
 
@@ -1385,17 +1555,128 @@
         <h1 id="patWelcome">Patient Healthcare Portal</h1>
         <p style="color:var(--ink-soft); font-size:14px;">Select from verified medical services, track doctor assignments, and join private video consults.</p>
       </div>
-      <button class="btn-sm" onclick="switchPatientTab('catalog')">+ Book New Care</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-sm" onclick="switchPatientTab('catalog')">+ Consult Doctor (₹0 Fee)</button>
+        <button class="btn-sm-outline" onclick="switchPatientTab('vitals')">+ Record Vitals</button>
+      </div>
     </div>
 
-    <div class="pill-tabs">
-      <button class="pill-tab active" id="tabBtnCatalog" onclick="switchPatientTab('catalog')">🩺 Doctor Consults & Health Packages</button>
-      <button class="pill-tab" id="tabBtnBookings" onclick="switchPatientTab('bookings')">📅 My Consultations & Orders</button>
-      <button class="pill-tab" id="tabBtnVitals" onclick="switchPatientTab('vitals')">📊 My Health Vitals (BP, Sugar, BMI)</button>
+    <!-- Patient Main Tabs -->
+    <div class="pill-tabs" id="patMainTabs" style="margin-bottom: 20px;">
+      <button class="pill-tab active" id="tabBtnOverview" onclick="switchPatientTab('overview')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Overview
+      </button>
+      <button class="pill-tab" id="tabBtnBookings" onclick="switchPatientTab('bookings')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> My Consultations & Prescriptions <span id="patBookingsCountBadge" class="dash-badge" style="display:none;">0</span>
+      </button>
+      <button class="pill-tab" id="tabBtnCatalog" onclick="switchPatientTab('catalog')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path></svg> Find Doctors & Services
+      </button>
+      <button class="pill-tab" id="tabBtnVitals" onclick="switchPatientTab('vitals')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> Health Vitals & Monitor
+      </button>
     </div>
 
-    <!-- Catalog View -->
-    <div id="patientCatalogView">
+    <!-- View 1: Patient Overview (Default) -->
+    <div id="patientOverviewView">
+      <!-- Active Appointment Highlight Card -->
+      <div id="patNextConsultCard" style="background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:12px; padding:18px 22px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div style="background:#dbeafe; width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px;">🩺</div>
+          <div>
+            <div style="font-weight:700; color:#1e40af; font-size:15px;" id="patOverviewHighlightTitle">Free Doctor Consultations Available</div>
+            <div style="font-size:13px; color:#3b82f6;" id="patOverviewHighlightSub">Consult with verified MBBS doctors and specialists at ₹0 doctor fee.</div>
+          </div>
+        </div>
+        <div id="patOverviewHighlightAction">
+          <button class="btn-sm" onclick="switchPatientTab('catalog')">Consult a Doctor Now</button>
+        </div>
+      </div>
+
+      <!-- Patient Quick Stats -->
+      <div class="stats-grid" style="margin-bottom:20px;">
+        <div class="stat-card" style="border-top:3px solid #059669; cursor:pointer;" onclick="switchPatientTab('bookings')">
+          <div class="val" id="patStatConsults" style="color:#059669;">0</div>
+          <div class="lbl">My Consultations</div>
+        </div>
+        <div class="stat-card" style="border-top:3px solid #2563eb; cursor:pointer;" onclick="switchPatientTab('bookings')">
+          <div class="val" id="patStatPrescriptions" style="color:#2563eb;">0</div>
+          <div class="lbl">Prescriptions Issued</div>
+        </div>
+        <div class="stat-card" style="border-top:3px solid #7c3aed; cursor:pointer;" onclick="switchPatientTab('vitals')">
+          <div class="val" id="patStatBp" style="color:#7c3aed;">--/--</div>
+          <div class="lbl">Latest Blood Pressure</div>
+        </div>
+        <div class="stat-card" style="border-top:3px solid #d97706; cursor:pointer;" onclick="switchPatientTab('vitals')">
+          <div class="val" id="patStatSugar" style="color:#d97706;">--</div>
+          <div class="lbl">Fasting Blood Sugar</div>
+        </div>
+      </div>
+
+      <!-- Quick Action Shortcuts -->
+      <div style="margin-bottom:24px;">
+        <h3 style="margin:0 0 12px; font-size:16px; font-weight:700; color:var(--ink);">Quick Healthcare Actions</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px;">
+          <div class="dash-shortcut-card" onclick="switchPatientTab('catalog')">
+            <div style="background:#dcfce7; width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">🩺</div>
+            <div>
+              <div style="font-weight:700; font-size:14px; color:#166534;">Consult Doctor (₹0 Fee)</div>
+              <div style="font-size:12px; color:var(--ink-soft);">Instant connection with MBBS doctors</div>
+            </div>
+          </div>
+          <div class="dash-shortcut-card" onclick="switchPatientTab('bookings')">
+            <div style="background:#dbeafe; width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">📅</div>
+            <div>
+              <div style="font-weight:700; font-size:14px; color:#1e40af;">My Appointments & Rx</div>
+              <div style="font-size:12px; color:var(--ink-soft);">Join video room & view prescriptions</div>
+            </div>
+          </div>
+          <div class="dash-shortcut-card" onclick="document.getElementById('recordVitalsModal').classList.add('active')">
+            <div style="background:#f3e8ff; width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">📊</div>
+            <div>
+              <div style="font-weight:700; font-size:14px; color:#6b21a8;">Log Health Vitals</div>
+              <div style="font-size:12px; color:var(--ink-soft);">Record BP, Glucose, Pulse & BMI</div>
+            </div>
+          </div>
+          <div class="dash-shortcut-card" onclick="switchPatientTab('catalog')">
+            <div style="background:#fef3c7; width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">🧪</div>
+            <div>
+              <div style="font-weight:700; font-size:14px; color:#92400e;">Book Lab Diagnostics</div>
+              <div style="font-size:12px; color:var(--ink-soft);">Doorstep blood & sample collection</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Consultations Summary Card -->
+      <div class="card-table">
+        <div class="table-header-bar">
+          <div>
+            <h2>Recent Consultations & Orders</h2>
+            <p style="font-size:12.5px; color:var(--ink-soft); margin:2px 0 0;">Summary of your active and past consultations.</p>
+          </div>
+          <button class="btn-sm-outline" onclick="switchPatientTab('bookings')">View All Consultations →</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Service</th>
+                <th>Assigned Doctor</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="patOverviewRecentTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 2: Catalog View -->
+    <div id="patientCatalogView" class="hidden">
+      
 
       <!-- Zero-Fee Doctor Consultation Banner -->
       <div style="background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 20px 24px; border-radius: 14px; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);">
@@ -1444,8 +1725,12 @@
     </div>
 
     
-    <!-- Patient Health Vitals View (MFine Inspired) -->
+    <!-- Patient Health Vitals View (MFine Inspire
+    </div>
+
+    <!-- View 3: Vitals View -->
     <div id="patientVitalsView" class="hidden">
+      
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 18px; flex-wrap:wrap; gap:12px;">
         <div>
           <h2 style="font-size:20px; font-weight:700; margin:0 0 4px;">My Health Vitals & Wellness Monitor</h2>
@@ -1510,8 +1795,12 @@
       </div>
     </div>
 
-    <!-- Bookings View -->
+    <!-- Bookings Vi
+    </div>
+
+    <!-- View 4: Bookings View -->
     <div id="patientBookingsView" class="hidden">
+      
       <div class="card-table">
         <div class="table-header-bar">
           <h2>My Bookings & Telehealth Consultations</h2>
@@ -1535,12 +1824,11 @@
           </table>
         </div>
       </div>
+    
     </div>
   </div>
 
-  
-
-</main>
+  </main>
   <!-- Record Vitals Modal -->
   <div class="modal-overlay" id="recordVitalsModal">
     <div class="modal-box" style="max-width:550px;">
@@ -2151,6 +2439,8 @@
     connectRealtime(user);
     if (user.role === 'admin') {
       document.getElementById('adminDashboard').classList.remove('hidden');
+      switchAdminTab('operations');
+      switchAdminOpsSubTab('dispatches');
       loadAdminData();
       loadAdminOnboarding();
     } else if (user.role === 'employee') {
@@ -2161,19 +2451,22 @@
       if (badge) badge.textContent = user.name;
       const check = document.getElementById('empCheckName');
       if (check) check.textContent = user.name;
+      switchEmployeeTab('roster');
       loadEmployeeData();
     } else if (user.role === 'doctor') {
       document.getElementById('doctorDashboard').classList.remove('hidden');
       document.getElementById('docWelcome').textContent = `Welcome, ${user.name}`;
+      switchDoctorTab('assigned');
       loadDoctorData();
     } else if (user.role === 'technician') {
       document.getElementById('technicianDashboard').classList.remove('hidden');
       document.getElementById('techWelcome').textContent = `Welcome, ${user.name}`;
+      switchTechnicianTab('tasks');
       loadTechnicianData();
     } else {
       document.getElementById('patientDashboard').classList.remove('hidden');
       document.getElementById('patWelcome').textContent = `Welcome, ${user.name}`;
-      loadPatientData();
+      switchPatientTab('overview');
     }
   }
 
@@ -2309,6 +2602,24 @@
   }
 
   // Doctor Data Loader
+  function switchDoctorTab(tab) {
+    const isAssigned = tab === 'assigned';
+    const isAvailable = tab === 'available';
+
+    document.getElementById('docViewAssigned')?.classList.toggle('hidden', !isAssigned);
+    document.getElementById('docViewAvailable')?.classList.toggle('hidden', !isAvailable);
+
+    document.getElementById('tabDocAssigned')?.classList.toggle('active', isAssigned);
+    document.getElementById('tabDocAvailable')?.classList.toggle('active', isAvailable);
+
+    if (isAssigned) {
+      loadDoctorData();
+    } else if (isAvailable) {
+      loadAvailableRequests();
+    }
+  }
+
+  // Doctor Data Loader
   async function loadDoctorData() {
     loadAvailableRequests();
     try {
@@ -2317,8 +2628,22 @@
       const tbody = document.getElementById('doctorRequestsTable');
       tbody.innerHTML = '';
       const list = data.requests || [];
+
+      // Update doctor metrics & badges
+      const countAssigned = list.filter(r => r.status === 'doctor_assigned').length;
+      const countDone = list.filter(r => r.status === 'prescribed' || r.status === 'completed').length;
+      const statAssigned = document.getElementById('docStatAssigned');
+      if (statAssigned) statAssigned.textContent = countAssigned;
+      const statDone = document.getElementById('docStatCompleted');
+      if (statDone) statDone.textContent = countDone;
+      const badgeAssigned = document.getElementById('docBadgeAssigned');
+      if (badgeAssigned) {
+        badgeAssigned.textContent = countAssigned;
+        badgeAssigned.style.display = countAssigned > 0 ? 'inline-block' : 'none';
+      }
+
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">You have no assigned patients yet. Check the Available Patient Stream above!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">You have no assigned patients yet. Check the Available Patient Stream tab!</td></tr>';
       } else {
         list.forEach(r => {
           const tr = document.createElement('tr');
@@ -2353,6 +2678,16 @@
       const tbody = document.getElementById('availableRequestsTable');
       tbody.innerHTML = '';
       const list = data.requests || [];
+
+      // Update available stream metric & badge
+      const statAvail = document.getElementById('docStatAvailable');
+      if (statAvail) statAvail.textContent = list.length;
+      const badgeAvail = document.getElementById('docBadgeAvailable');
+      if (badgeAvail) {
+        badgeAvail.textContent = list.length;
+        badgeAvail.style.display = list.length > 0 ? 'inline-block' : 'none';
+      }
+
       if (list.length === 0) {
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--ink-soft); padding:20px;">No unassigned requests in stream right now. New requests will appear automatically.</td></tr>';
       } else {
@@ -2397,35 +2732,71 @@
   }
 
   // Technician Data Loader
+  function switchTechnicianTab(tab) {
+    const isTasks = tab === 'tasks';
+    const isUpload = tab === 'upload';
+
+    document.getElementById('techViewTasks')?.classList.toggle('hidden', !isTasks);
+    document.getElementById('techViewUpload')?.classList.toggle('hidden', !isUpload);
+
+    document.getElementById('tabTechTasks')?.classList.toggle('active', isTasks);
+    document.getElementById('tabTechUpload')?.classList.toggle('active', isUpload);
+
+    if (isTasks) {
+      loadTechnicianData();
+    }
+  }
+
+  // Technician Data Loader
   async function loadTechnicianData() {
     try {
       const res = await fetch(`/api/technician/my-tasks/${currentUser.phone}`);
       const data = await res.json();
       const tbody = document.getElementById('techTasksTable');
       tbody.innerHTML = '';
-      (data.tasks || []).forEach(r => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>#${r.id}</strong></td>
-          <td>${r.patient_name}<br><small>${r.patient_phone}</small></td>
-          <td>${r.patient_address}</td>
-          <td><strong>${r.lab_tests_needed || 'Blood / Diagnostic Tests'}</strong></td>
-          <td>${r.technician_visit_time || '<em style="color:#999;">Not Set</em>'}</td>
-          <td>${statusBadge(r.status)}</td>
-          <td>
-            <div style="display:flex; gap:6px;">
-              <button class="btn-sm-outline btn-sm" onclick="openScheduleModal(${r.id})">Set Time</button>
-              <button class="btn-sm" onclick="openUploadModal(${r.id})">Upload Report</button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
+      const list = data.tasks || [];
+
+      // Update technician metrics & badge
+      const pendingCount = list.filter(t => !t.scheduled_time || t.status === 'lab_assigned').length;
+      const doneCount = list.filter(t => t.status === 'completed' || t.report_url).length;
+      const statTotal = document.getElementById('techStatTotal');
+      if (statTotal) statTotal.textContent = list.length;
+      const statPending = document.getElementById('techStatPending');
+      if (statPending) statPending.textContent = pendingCount;
+      const statCompleted = document.getElementById('techStatCompleted');
+      if (statCompleted) statCompleted.textContent = doneCount;
+      const badgeTasks = document.getElementById('techBadgeTasks');
+      if (badgeTasks) {
+        badgeTasks.textContent = list.length;
+        badgeTasks.style.display = list.length > 0 ? 'inline-block' : 'none';
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">You have no assigned lab tasks.</td></tr>';
+      } else {
+        list.forEach(t => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>#${t.id}</strong></td>
+            <td>${t.patient_name}<br><small style="color:var(--ink-soft);">${t.patient_phone}</small></td>
+            <td>${t.patient_address}</td>
+            <td>${t.notes || 'Routine Blood/Urine Analysis'}</td>
+            <td>${t.scheduled_time || '<em style="color:var(--ink-soft);">Not Scheduled</em>'}</td>
+            <td>${statusBadge(t.status)}</td>
+            <td>
+              ${t.status === 'lab_assigned' ? 
+                `<button class="btn-sm" onclick="openScheduleModal(${t.id})">Set Arrival Time</button>` : 
+                (t.status === 'scheduled' ? 
+                  `<button class="btn-sm" onclick="openUploadModal(${t.id})">Upload Report</button>` : 
+                  '<span style="font-size:12px; color:var(--ink-soft);">Report Uploaded</span>')}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
     } catch (e) { console.error(e); }
   }
 
-  
-  // Quick 1-Click Symptom Booking (Zero Consultation Fee)
   function quickSymptomBooking(symptomText, suggestedDoctor) {
     document.getElementById('bookModalTitle').textContent = 'Book Zero-Fee Consultation (' + suggestedDoctor + ')';
     document.getElementById('bookModalPrice').textContent = '₹0 FREE';
@@ -2517,7 +2888,7 @@
       if (vitals.length > 0) {
         const latest = vitals[0];
         if (latest.systolic && latest.diastolic) {
-          document.getElementById('vitalBpVal').innerHTML = latest.systolic + '/' + latest.diastolic + ' <span class="vital-unit">mmHg</span>';
+          document.getElementById('vitalBpVal').innerHTML = latest.systolic + '/' + latest.diastolic + ' <span class="vital-unit">mmHg</span>'; const patBpStat = document.getElementById('patStatBp'); if (patBpStat) patBpStat.textContent = latest.systolic + '/' + latest.diastolic;
           const bpStatus = document.getElementById('vitalBpStatus');
           if (latest.systolic < 120 && latest.diastolic < 80) {
             bpStatus.className = 'vital-status status-normal';
@@ -2532,7 +2903,7 @@
         }
 
         if (latest.blood_sugar_fasting) {
-          document.getElementById('vitalSugarFastingVal').innerHTML = latest.blood_sugar_fasting + ' <span class="vital-unit">mg/dL</span>';
+          document.getElementById('vitalSugarFastingVal').innerHTML = latest.blood_sugar_fasting + ' <span class="vital-unit">mg/dL</span>'; const patSugarStat = document.getElementById('patStatSugar'); if (patSugarStat) patSugarStat.textContent = latest.blood_sugar_fasting + ' mg/dL';
           const sStatus = document.getElementById('vitalSugarFastingStatus');
           if (latest.blood_sugar_fasting < 100) {
             sStatus.className = 'vital-status status-normal';
@@ -2665,21 +3036,25 @@
   let globalServices = [];
 
   function switchPatientTab(tab) {
+    const isOverview = tab === 'overview';
     const isCatalog = tab === 'catalog';
     const isBookings = tab === 'bookings';
     const isVitals = tab === 'vitals';
 
-    document.getElementById('patientCatalogView').classList.toggle('hidden', !isCatalog);
-    document.getElementById('patientBookingsView').classList.toggle('hidden', !isBookings);
-    const vitalsView = document.getElementById('patientVitalsView');
-    if (vitalsView) vitalsView.classList.toggle('hidden', !isVitals);
+    document.getElementById('patientOverviewView')?.classList.toggle('hidden', !isOverview);
+    document.getElementById('patientCatalogView')?.classList.toggle('hidden', !isCatalog);
+    document.getElementById('patientBookingsView')?.classList.toggle('hidden', !isBookings);
+    document.getElementById('patientVitalsView')?.classList.toggle('hidden', !isVitals);
 
-    document.getElementById('tabBtnCatalog').classList.toggle('active', isCatalog);
-    document.getElementById('tabBtnBookings').classList.toggle('active', isBookings);
-    const tabVitals = document.getElementById('tabBtnVitals');
-    if (tabVitals) tabVitals.classList.toggle('active', isVitals);
+    document.getElementById('tabBtnOverview')?.classList.toggle('active', isOverview);
+    document.getElementById('tabBtnCatalog')?.classList.toggle('active', isCatalog);
+    document.getElementById('tabBtnBookings')?.classList.toggle('active', isBookings);
+    document.getElementById('tabBtnVitals')?.classList.toggle('active', isVitals);
 
-    if (isCatalog) {
+    if (isOverview) {
+      loadPatientData();
+      loadPatientVitals();
+    } else if (isCatalog) {
       loadServicesCatalog();
     } else if (isBookings) {
       loadPatientData();
@@ -2789,6 +3164,66 @@
       const tbody = document.getElementById('patientBookingsTable');
       tbody.innerHTML = '';
       const list = data.bookings || [];
+
+      // Update Patient Consultations Badge and Stats
+      const badgeBookings = document.getElementById('patBookingsCountBadge');
+      if (badgeBookings) {
+        badgeBookings.textContent = list.length;
+        badgeBookings.style.display = list.length > 0 ? 'inline-block' : 'none';
+      }
+      const statConsults = document.getElementById('patStatConsults');
+      if (statConsults) statConsults.textContent = list.length;
+
+      const rxCount = list.filter(r => r.status === 'prescribed' || r.status === 'completed').length;
+      const statRx = document.getElementById('patStatPrescriptions');
+      if (statRx) statRx.textContent = rxCount;
+
+      // Populate Patient Overview Highlight
+      const activeConsult = list.find(r => r.status === 'doctor_assigned' || (r.meet_link && r.status !== 'completed'));
+      const highlightTitle = document.getElementById('patOverviewHighlightTitle');
+      const highlightSub = document.getElementById('patOverviewHighlightSub');
+      const highlightAction = document.getElementById('patOverviewHighlightAction');
+
+      if (activeConsult) {
+        if (highlightTitle) highlightTitle.textContent = activeConsult.doctor_name ? ('Active Consultation: Dr. ' + activeConsult.doctor_name) : 'Doctor Claimed Consultation';
+        if (highlightSub) highlightSub.textContent = activeConsult.meet_link ? 'Secure Video Consultation Room is ready! Click below to join your doctor now.' : 'Doctor assigned. Encrypted video room link is generating.';
+        if (highlightAction) {
+          if (activeConsult.meet_link) {
+            highlightAction.innerHTML = `<a href="${activeConsult.meet_link}" target="_blank" class="meet-btn" style="padding:8px 16px; font-weight:700;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2"></rect></svg> Join Video Call</a>`;
+          } else {
+            highlightAction.innerHTML = `<button class="btn-sm" onclick="switchPatientTab('bookings')">View Appointment</button>`;
+          }
+        }
+      } else {
+        if (highlightTitle) highlightTitle.textContent = 'Free Doctor Consultations Available';
+        if (highlightSub) highlightSub.textContent = 'Consult with verified MBBS doctors and specialists at ₹0 doctor fee.';
+        if (highlightAction) highlightAction.innerHTML = `<button class="btn-sm" onclick="switchPatientTab('catalog')">Consult a Doctor Now</button>`;
+      }
+
+      // Populate Patient Overview Recent Table
+      const overviewTable = document.getElementById('patOverviewRecentTable');
+      if (overviewTable) {
+        overviewTable.innerHTML = '';
+        if (list.length === 0) {
+          overviewTable.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--ink-soft); padding:16px;">No consultations yet. Click "+ Consult Doctor" to begin!</td></tr>';
+        } else {
+          const recent = list.slice(0, 3);
+          recent.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><strong>#${r.id}</strong></td>
+              <td><strong>${r.service_type}</strong></td>
+              <td>${r.doctor_name ? ('Dr. ' + r.doctor_name) : '<span style="color:#d97706; font-size:12px;">Waiting for doctor</span>'}</td>
+              <td>${statusBadge(r.status)}</td>
+              <td>
+                ${r.meet_link ? `<a href="${r.meet_link}" target="_blank" class="meet-btn" style="font-size:11px; padding:4px 8px;">Join Video</a>` : `<button class="btn-sm-outline" style="font-size:11px; padding:3px 8px;" onclick="switchPatientTab('bookings')">Details</button>`}
+              </td>
+            `;
+            overviewTable.appendChild(tr);
+          });
+        }
+      }
+
       if (list.length === 0) {
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--ink-soft); padding:20px;">No bookings found. Click Explore Services Catalog to book your first doctor visit!</td></tr>';
       } else {
@@ -3109,36 +3544,73 @@
     }
   }
 
+  function switchEmployeeTab(tab) {
+    const isRoster = tab === 'roster';
+    const isOnboard = tab === 'onboard';
+
+    document.getElementById('empViewRoster')?.classList.toggle('hidden', !isRoster);
+    document.getElementById('empViewOnboard')?.classList.toggle('hidden', !isOnboard);
+
+    document.getElementById('tabEmpRoster')?.classList.toggle('active', isRoster);
+    document.getElementById('tabEmpOnboard')?.classList.toggle('active', isOnboard);
+
+    if (isRoster) {
+      loadEmployeeData();
+    }
+  }
+
+  // Employee Data Loader
   async function loadEmployeeData() {
-    if (!currentUser || currentUser.role !== 'employee') return;
+    if (!currentUser || !currentUser.phone) return;
     try {
-      const res = await fetch(`/api/onboarding/list?submitted_by_phone=${currentUser.phone}`);
+      const res = await fetch(`/api/employee/my-candidates/${currentUser.phone}`);
       const data = await res.json();
       const tbody = document.getElementById('empCandidatesTable');
       if (!tbody) return;
       tbody.innerHTML = '';
       const list = data.candidates || [];
-      if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">No candidates submitted yet. Fill out the form above to onboard staff.</td></tr>';
-        return;
+
+      // Update employee metrics & badge
+      const pendingCount = list.filter(c => c.status === 'pending').length;
+      const approvedCount = list.filter(c => c.status === 'approved' || c.status === 'active').length;
+      const statTotal = document.getElementById('empStatTotal');
+      if (statTotal) statTotal.textContent = list.length;
+      const statPending = document.getElementById('empStatPending');
+      if (statPending) statPending.textContent = pendingCount;
+      const statApproved = document.getElementById('empStatApproved');
+      if (statApproved) statApproved.textContent = approvedCount;
+      const badgeRoster = document.getElementById('empBadgeRoster');
+      if (badgeRoster) {
+        badgeRoster.textContent = list.length;
+        badgeRoster.style.display = list.length > 0 ? 'inline-block' : 'none';
       }
-      list.forEach(c => {
-        const tr = document.createElement('tr');
-        const statusClass = c.status === 'approved' ? 'badge-done' : (c.status === 'rejected' ? 'badge-new' : 'badge-doctor');
-        tr.innerHTML = `
-          <td><strong>${c.candidate_name}</strong><br><small style="color:var(--ink-soft);">${c.candidate_phone} ${c.candidate_email ? ' | ' + c.candidate_email : ''}</small></td>
-          <td><strong>${c.role.toUpperCase()}</strong><br><small style="color:var(--brand);">${c.specialty || ''}</small></td>
-          <td><code>${c.license_number || 'N/A'}</code></td>
-          <td>${c.experience_years || 0} yrs</td>
-          <td>${new Date(c.created_at).toLocaleDateString()}</td>
-          <td><span class="badge ${statusClass}">${c.status.toUpperCase()}</span></td>
-          <td><small style="color:var(--ink-soft);">${c.admin_notes || 'Pending Admin verification'}</small></td>
-        `;
-        tbody.appendChild(tr);
-      });
-    } catch (e) {
-      console.error('Error loading employee candidates:', e);
-    }
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:20px;">No candidates submitted yet. Click "+ Onboard Candidate" to submit medical staff for Admin approval!</td></tr>';
+      } else {
+        list.forEach(c => {
+          const tr = document.createElement('tr');
+          const submittedAt = c.created_at ? new Date(c.created_at).toLocaleDateString() : 'Today';
+          let statusBadge = '<span class="badge badge-new">Pending Review</span>';
+          if (c.status === 'approved' || c.status === 'active') {
+            statusBadge = '<span class="badge badge-done">Verified & Active</span>';
+          } else if (c.status === 'rejected') {
+            statusBadge = '<span class="badge" style="background:#fee2e2; color:#991b1b;">Rejected</span>';
+          }
+
+          tr.innerHTML = `
+            <td><strong>${c.name}</strong><br><small style="color:var(--ink-soft);">${c.phone}</small></td>
+            <td><span class="badge badge-doctor">${(c.role || 'staff').toUpperCase()}</span><br><small>${c.specialty || 'General'}</small></td>
+            <td>${c.medical_license_no || 'Pending'}</td>
+            <td>${c.experience_years ? (c.experience_years + ' yrs') : 'N/A'}</td>
+            <td>${submittedAt}</td>
+            <td>${statusBadge}</td>
+            <td><small style="color:var(--ink-soft);">${c.admin_feedback || 'Under verification by Admin'}</small></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    } catch (e) { console.error('Error loading employee candidates:', e); }
   }
 
   function exportAdminCsv(){
@@ -3539,6 +4011,25 @@
   }
 
   // ===== Professional Upgrade: Admin Tabs =====
+  function switchAdminOpsSubTab(subTab) {
+    const isDispatches = subTab === 'dispatches';
+    const isMeets = subTab === 'meets';
+    const isOnboard = subTab === 'onboarding';
+
+    document.getElementById('adminOpsDispatchesView')?.classList.toggle('hidden', !isDispatches);
+    document.getElementById('adminOpsMeetsView')?.classList.toggle('hidden', !isMeets);
+    document.getElementById('adminOpsOnboardingView')?.classList.toggle('hidden', !isOnboard);
+
+    document.getElementById('subTabAdminDispatches')?.classList.toggle('active', isDispatches);
+    document.getElementById('subTabAdminMeets')?.classList.toggle('active', isMeets);
+    document.getElementById('subTabAdminOnboarding')?.classList.toggle('active', isOnboard);
+
+    if (isDispatches) loadAdminData(1);
+    else if (isMeets) loadAdminData();
+    else if (isOnboard) loadAdminOnboarding(1);
+  }
+
+  // ===== Professional Upgrade: Admin Tabs =====
   function switchAdminTab(tab){
     // hide all admin sub-sections
     const ops = document.getElementById('adminOpsContent');
@@ -3546,17 +4037,19 @@
     const finance = document.getElementById('financeDashboard');
     const audit = document.getElementById('auditDashboard');
     const notif = document.getElementById('notificationsDashboard');
-    // All are inside adminDashboard except ops is div, others are sibling divs inside adminDashboard
     // Hide all
     if(ops) ops.classList.add('hidden');
     [analytics, finance, audit, notif].forEach(el=> el && el.classList.add('hidden'));
-    // Update pill active
-    document.querySelectorAll('#adminDashboard .pill-tab').forEach(b=> b.classList.remove('active'));
+    // Update pill active only on top level admin nav
+    document.querySelectorAll('#adminDashboardNavTabs .pill-tab').forEach(b=> b.classList.remove('active'));
     const map = { operations: 'tabAdminOps', analytics: 'tabAdminAnalytics', finance: 'tabAdminFinance', audit: 'tabAdminAudit', notifications: 'tabAdminNotif' };
     const activeBtn = document.getElementById(map[tab]);
     if(activeBtn) activeBtn.classList.add('active');
     // Show selected
-    if(tab==='operations' && ops) ops.classList.remove('hidden');
+    if(tab==='operations' && ops) {
+      ops.classList.remove('hidden');
+      switchAdminOpsSubTab('dispatches');
+    }
     else if(tab==='analytics' && analytics){ analytics.classList.remove('hidden'); loadAnalytics(); }
     else if(tab==='finance' && finance){ finance.classList.remove('hidden'); loadFinance(); }
     else if(tab==='audit' && audit){ audit.classList.remove('hidden'); loadAudit(1); }
