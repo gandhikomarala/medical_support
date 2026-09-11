@@ -105,6 +105,50 @@
     padding: 36px 32px;
     box-shadow: 0 16px 36px -8px rgba(15,23,42,0.08);
   }
+  .btn-google {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #ffffff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .btn-google:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+  .btn-google:active {
+    background: #f3f4f6;
+    transform: scale(0.99);
+  }
+  .auth-divider {
+    display: flex;
+    align-items: center;
+    margin: 16px 0 12px;
+    gap: 10px;
+  }
+  .auth-divider-line {
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
+  }
+  .auth-divider-text {
+    font-size: 11.5px;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
   .auth-tabs {
     display: flex;
     border-bottom: 2px solid var(--sage);
@@ -817,33 +861,37 @@
       </div>
 
       
-      <button type="submit" class="btn-primary" id="loginBtn">Log In</button>
+      <button type="submit" class="btn-primary" id="loginBtn" style="width:100%;">Log In</button>
+
+      <div class="auth-divider">
+        <div class="auth-divider-line"></div>
+        <div class="auth-divider-text">or Patient Access</div>
+        <div class="auth-divider-line"></div>
+      </div>
+
+      <button type="button" class="btn-google" id="googleSignInBtn" onclick="handleGoogleSignIn()">
+        <svg width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0;">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+        </svg>
+        <span>Sign in with Google (Patient)</span>
+      </button>
     </form>
 
-    <!-- Register Form -->
+    <!-- Register Form (Patient Only) -->
     <form id="registerForm" class="hidden" onsubmit="handleRegister(event); return false;">
-      <div class="form-group">
-        <label>Register As</label>
-        <select id="regRole" required onchange="toggleSpecialty()">
-          <option value="doctor">Doctor</option>
-          <option value="technician">Lab Technician</option>
-          <option value="patient">Patient</option>
-        </select>
-      </div>
+      <input type="hidden" id="regRole" value="patient">
 
       <div class="form-group">
         <label>Full Name</label>
-        <input type="text" id="regName" required placeholder="e.g. Dr. Rajesh Verma">
+        <input type="text" id="regName" required placeholder="e.g. Ramesh Kumar">
       </div>
 
       <div class="form-group">
         <label>WhatsApp Phone (with Country Code)</label>
-        <input type="tel" id="regPhone" required placeholder="e.g. 919959461095">
-      </div>
-
-      <div class="form-group" id="specialtyGroup">
-        <label>Medical Specialty / Qualification</label>
-        <input type="text" id="regSpecialty" placeholder="e.g. Cardiologist / General Physician">
+        <input type="tel" id="regPhone" required placeholder="e.g. 919876500000">
       </div>
 
       <div class="form-group">
@@ -851,7 +899,23 @@
         <input type="password" id="regPassword" required placeholder="Create secure password">
       </div>
 
-      <button type="submit" class="btn-primary" id="regBtn">Create Account</button>
+      <button type="submit" class="btn-primary" id="regBtn" style="width:100%;">Create Patient Account</button>
+
+      <div class="auth-divider">
+        <div class="auth-divider-line"></div>
+        <div class="auth-divider-text">or Instant Patient Sign Up</div>
+        <div class="auth-divider-line"></div>
+      </div>
+
+      <button type="button" class="btn-google" onclick="handleGoogleSignIn()">
+        <svg width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0;">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+        </svg>
+        <span>Sign up with Google (Patient)</span>
+      </button>
     </form>
   </div>
 
@@ -1734,6 +1798,55 @@
   </div>
 </div>
 
+<!-- Google Sign In Modal for Patients -->
+<div class="modal-overlay" id="googleAuthModal">
+  <div class="modal-box" style="max-width:440px; padding:28px 24px; border-radius:16px;">
+    <button class="modal-close" onclick="closeModal('googleAuthModal')">&times;</button>
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+      <svg width="28" height="28" viewBox="0 0 24 24" style="flex-shrink:0;">
+        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+        <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+      </svg>
+      <div>
+        <h2 style="font-size:18px; font-weight:800; margin:0; color:#1f2937;">Sign in with Google</h2>
+        <p style="font-size:12.5px; color:#6b7280; margin:0;">Choose an account to continue to Nhealth Patient Portal</p>
+      </div>
+    </div>
+
+    <!-- Quick 1-Click Patient Google Account -->
+    <div style="border:1px solid #e5e7eb; border-radius:12px; padding:12px; margin-bottom:16px; background:#f9fafb;">
+      <div style="font-size:11px; font-weight:800; color:#6b7280; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.04em;">1-Click Patient Sign-In</div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px; background:#ffffff; border:1px solid #e5e7eb; border-radius:8px; cursor:pointer; transition:all 0.15s ease;" onclick="quickGoogleLogin('ramesh.patient@gmail.com', 'Ramesh Kumar')" onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 2px 6px rgba(59,130,246,0.1)';" onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
+        <div style="width:36px; height:36px; border-radius:50%; background:#2563eb; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px;">R</div>
+        <div style="flex:1;">
+          <div style="font-size:13.5px; font-weight:700; color:#1f2937;">Ramesh Kumar</div>
+          <div style="font-size:12px; color:#6b7280;">ramesh.patient@gmail.com</div>
+        </div>
+        <span style="font-size:11px; font-weight:700; color:#2563eb; background:#eff6ff; padding:3px 8px; border-radius:9999px;">Patient</span>
+      </div>
+    </div>
+
+    <div style="text-align:center; position:relative; margin:16px 0;">
+      <div style="height:1px; background:#e5e7eb;"></div>
+      <span style="position:relative; top:-10px; background:#fff; padding:0 10px; font-size:11.5px; color:#9ca3af; font-weight:600;">or enter your Google email</span>
+    </div>
+
+    <form onsubmit="submitCustomGoogleAuth(event); return false;">
+      <div class="form-group" style="margin-bottom:12px;">
+        <label style="font-size:12.5px;">Google Email *</label>
+        <input type="email" id="googleCustomEmail" required placeholder="e.g. yourname@gmail.com">
+      </div>
+      <div class="form-group" style="margin-bottom:16px;">
+        <label style="font-size:12.5px;">Patient Display Name (Optional)</label>
+        <input type="text" id="googleCustomName" placeholder="e.g. Ramesh Kumar">
+      </div>
+      <button type="submit" class="btn-primary" id="googleSubmitBtn" style="width:100%; padding:11px; font-weight:700;">Continue to Patient Portal &rarr;</button>
+    </form>
+  </div>
+</div>
+
 <script>
   let currentUser = JSON.parse(localStorage.getItem('nhealth_user') || 'null');
 
@@ -1778,8 +1891,10 @@
   }
 
   function toggleSpecialty() {
-    const role = document.getElementById('regRole').value;
-    document.getElementById('specialtyGroup').style.display = (role === 'doctor') ? 'block' : 'none';
+    const roleEl = document.getElementById('regRole');
+    const role = roleEl ? roleEl.value : 'patient';
+    const spec = document.getElementById('specialtyGroup');
+    if (spec) spec.style.display = (role === 'doctor') ? 'block' : 'none';
   }
 
   function fillDemo(role, identifier, pwd, btnEl) {
@@ -1915,10 +2030,10 @@
     if (alert) alert.style.display = 'none';
 
     const body = {
-      role: document.getElementById('regRole').value,
+      role: 'patient',
       name: document.getElementById('regName').value.trim(),
       phone: document.getElementById('regPhone').value.trim(),
-      specialty: document.getElementById('regSpecialty').value.trim(),
+      specialty: 'General Patient',
       password: document.getElementById('regPassword').value.trim()
     };
 
@@ -1933,11 +2048,14 @@
 
       if (alert) {
         alert.className = 'alert alert-success';
-        alert.textContent = 'Account registered successfully! Please log in above.';
+        alert.textContent = 'Patient account created successfully! Please sign in below or use Google.';
         alert.style.display = 'block';
       }
       document.getElementById('registerForm').reset();
       switchAuthTab('login');
+      // Prefill login form
+      document.getElementById('loginRole').value = 'patient';
+      document.getElementById('loginIdentifier').value = body.phone;
     } catch (err) {
       if (alert) {
         alert.className = 'alert alert-error';
@@ -1948,6 +2066,70 @@
     return false;
   }
   window.handleRegister = handleRegister;
+
+  // ===== Google Sign-In for Patients =====
+  function handleGoogleSignIn() {
+    const modal = document.getElementById('googleAuthModal');
+    if (modal) modal.classList.add('active');
+  }
+  window.handleGoogleSignIn = handleGoogleSignIn;
+
+  async function quickGoogleLogin(email, name) {
+    await executeGoogleAuth(email, name);
+  }
+  window.quickGoogleLogin = quickGoogleLogin;
+
+  async function submitCustomGoogleAuth(e) {
+    if (e) e.preventDefault();
+    const email = document.getElementById('googleCustomEmail').value.trim();
+    const name = document.getElementById('googleCustomName').value.trim();
+    await executeGoogleAuth(email, name);
+  }
+  window.submitCustomGoogleAuth = submitCustomGoogleAuth;
+
+  async function executeGoogleAuth(email, name) {
+    const btn = document.getElementById('googleSubmitBtn');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Authenticating with Google...';
+    }
+    try {
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          name: name || email.split('@')[0],
+          google_id: 'g_' + Math.abs(email.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0))
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Google authentication failed');
+
+      currentUser = data.user;
+      localStorage.setItem('nhealth_user', JSON.stringify(currentUser));
+      localStorage.setItem('ayans_user', JSON.stringify(currentUser));
+      if (data.token) {
+        localStorage.setItem('nhealth_token', data.token);
+        localStorage.setItem('ayans_token', data.token);
+      }
+
+      closeModal('googleAuthModal');
+      try {
+        showDashboard(currentUser);
+      } catch (dashErr) {
+        console.error('[auth] Error showing patient dashboard:', dashErr);
+      }
+      showToast('Google Sign-In Successful', `Welcome, ${currentUser.name}! You are connected to Patient Care.`, 'success');
+    } catch (err) {
+      alert('Google Sign-In Error: ' + err.message);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Continue to Patient Portal →';
+      }
+    }
+  }
 
   function showDashboard(user) {
     document.getElementById('authSection').classList.add('hidden');

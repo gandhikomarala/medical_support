@@ -22,13 +22,13 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net", "https://accounts.google.com", "https://apis.google.com"],
         scriptSrcAttr: ["'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
-        imgSrc: ["'self'", "data:", "blob:", "https:"],
-        connectSrc: ["'self'", "https:", "wss:", "ws:"],
-        frameSrc: ["'self'", "https://meet.jit.si"],
+        imgSrc: ["'self'", "data:", "blob:", "https:", "https://*.googleusercontent.com"],
+        connectSrc: ["'self'", "https:", "wss:", "ws:", "https://accounts.google.com"],
+        frameSrc: ["'self'", "https://meet.jit.si", "https://accounts.google.com"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: []
       }

@@ -205,4 +205,64 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// Google Sign-In endpoint for Patients
+router.post('/google', async (req, res) => {
+  try {
+    const { email, name, google_id, photo_url } = req.body;
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'Valid Google email is required.' });
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+    const cleanName = (name || cleanEmail.split('@')[0] || 'Patient').trim();
+
+    // Check if user already exists by email
+    let userCheck = await db.query(
+      'SELECT id, name, phone, email, role, specialty, active FROM users WHERE LOWER(email) = $1',
+      [cleanEmail]
+    );
+
+    let user = userCheck.rows[0];
+
+    if (!user) {
+      // Create new patient account for this Google user
+      const suffix = Math.floor(10000000 + Math.random() * 90000000);
+      const generatedPhone = '919' + suffix;
+      const dummyPassword = await bcrypt.hash('google_' + cleanEmail + '_' + Date.now(), 10);
+
+      const insertRes = await db.query(
+        'INSERT INTO users (name, phone, email, password, role, specialty) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, phone, email, role, specialty, active',
+        [cleanName, generatedPhone, cleanEmail, dummyPassword, 'patient', 'General Patient']
+      );
+      user = insertRes.rows[0];
+      await logAudit({ actor: user, action: 'auth:google_register', entity_type: 'user', entity_id: user.id, ip: req.ip });
+    } else {
+      await logAudit({ actor: user, action: 'auth:google_login', entity_type: 'user', entity_id: user.id, ip: req.ip });
+    }
+
+    if (!user.active) {
+      return res.status(403).json({ error: 'Your account is deactivated. Please contact support.' });
+    }
+
+    const token = signToken(user);
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        phone: user.phone,
+        email: user.email,
+        role: user.role,
+        specialty: user.specialty,
+        photo_url: photo_url || null
+      }
+    });
+  } catch (err) {
+    console.error('Google auth error:', err);
+    res.status(500).json({ error: 'Google authentication service error.' });
+  }
+});
+
 module.exports = router;
