@@ -794,7 +794,7 @@
     <div id="authAlert" class="alert"></div>
 
     <!-- Login Form -->
-    <form id="loginForm" onsubmit="handleLogin(event)">
+    <form id="loginForm" onsubmit="handleLogin(event); return false;">
       <div class="form-group">
         <label>Portal Role</label>
         <select id="loginRole" required>
@@ -821,7 +821,7 @@
     </form>
 
     <!-- Register Form -->
-    <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+    <form id="registerForm" class="hidden" onsubmit="handleRegister(event); return false;">
       <div class="form-group">
         <label>Register As</label>
         <select id="regRole" required onchange="toggleSpecialty()">
@@ -1738,8 +1738,28 @@
   let currentUser = JSON.parse(localStorage.getItem('nhealth_user') || 'null');
 
   window.addEventListener('DOMContentLoaded', () => {
+    const lForm = document.getElementById('loginForm');
+    if (lForm) {
+      lForm.addEventListener('submit', (e) => {
+        if (e) { e.preventDefault(); if (e.stopPropagation) e.stopPropagation(); }
+        handleLogin(e);
+        return false;
+      });
+    }
+    const rForm = document.getElementById('registerForm');
+    if (rForm) {
+      rForm.addEventListener('submit', (e) => {
+        if (e) { e.preventDefault(); if (e.stopPropagation) e.stopPropagation(); }
+        handleRegister(e);
+        return false;
+      });
+    }
     if (currentUser) {
-      showDashboard(currentUser);
+      try {
+        showDashboard(currentUser);
+      } catch (err) {
+        console.error('[auth] Error showing initial dashboard:', err);
+      }
     }
   });
 
@@ -1831,7 +1851,10 @@
   }
 
   async function handleLogin(e) {
-    if (e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+    }
     const alert = document.getElementById('authAlert');
     if (alert) alert.style.display = 'none';
 
@@ -1861,7 +1884,11 @@
         localStorage.setItem('nhealth_token', data.token);
         localStorage.setItem('ayans_token', data.token);
       }
-      showDashboard(currentUser);
+      try {
+        showDashboard(currentUser);
+      } catch (dashErr) {
+        console.error('[auth] Error showing dashboard:', dashErr);
+      }
       showToast('Welcome back', `Signed in as ${currentUser.name}`, 'success');
     } catch (err) {
       if (alert) {
@@ -1875,12 +1902,17 @@
         submitBtn.textContent = 'Log In';
       }
     }
+    return false;
   }
+  window.handleLogin = handleLogin;
 
   async function handleRegister(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+    }
     const alert = document.getElementById('authAlert');
-    alert.style.display = 'none';
+    if (alert) alert.style.display = 'none';
 
     const body = {
       role: document.getElementById('regRole').value,
@@ -1899,17 +1931,23 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
 
-      alert.className = 'alert alert-success';
-      alert.textContent = 'Account registered successfully! Please log in above.';
-      alert.style.display = 'block';
+      if (alert) {
+        alert.className = 'alert alert-success';
+        alert.textContent = 'Account registered successfully! Please log in above.';
+        alert.style.display = 'block';
+      }
       document.getElementById('registerForm').reset();
       switchAuthTab('login');
     } catch (err) {
-      alert.className = 'alert alert-error';
-      alert.textContent = err.message;
-      alert.style.display = 'block';
+      if (alert) {
+        alert.className = 'alert alert-error';
+        alert.textContent = err.message;
+        alert.style.display = 'block';
+      }
     }
+    return false;
   }
+  window.handleRegister = handleRegister;
 
   function showDashboard(user) {
     document.getElementById('authSection').classList.add('hidden');
