@@ -1197,6 +1197,8 @@
     <div class="card-table"><div class="table-header-bar"><h2>Inbox</h2><button class="btn-sm-outline" onclick="loadNotifications()">Refresh</button></div><div id="notifList" style="padding:12px; display:flex; flex-direction:column; gap:8px; max-height:60vh; overflow:auto;"></div></div>
   </div>
 
+  </div> <!-- end adminDashboard -->
+
   <!-- ================= DOCTOR DASHBOARD ================= -->
   <div id="doctorDashboard" class="hidden">
     <div class="dashboard-header">
@@ -2420,6 +2422,8 @@
   }
 
   function showDashboard(user) {
+    currentUser = user;
+    if (!user) return;
     document.getElementById('authSection').classList.add('hidden');
     document.getElementById('userNav').classList.remove('hidden');
     document.getElementById('userPill').textContent = `${user.name} (${user.role.toUpperCase()})`;
@@ -2749,6 +2753,7 @@
 
   // Technician Data Loader
   async function loadTechnicianData() {
+    if (!currentUser || !currentUser.phone) return;
     try {
       const res = await fetch(`/api/technician/my-tasks/${currentUser.phone}`);
       const data = await res.json();
