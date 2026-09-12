@@ -143,6 +143,9 @@ function initSqlite() {
     );
 
     CREATE INDEX IF NOT EXISTS idx_requests_status ON requests(status);
+    CREATE INDEX IF NOT EXISTS idx_requests_patient_phone ON requests(patient_phone);
+    CREATE INDEX IF NOT EXISTS idx_requests_assigned_doc ON requests(assigned_doctor_id);
+    CREATE INDEX IF NOT EXISTS idx_requests_assigned_tech ON requests(assigned_technician_id);
     CREATE INDEX IF NOT EXISTS idx_message_log_request ON message_log(request_id);
 
     CREATE TABLE IF NOT EXISTS audit_log (

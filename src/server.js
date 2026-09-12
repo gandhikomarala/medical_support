@@ -1,4 +1,5 @@
 const path = require('path');
+const zlib = require('zlib');
 const fs = require('fs');
 const http = require('http');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
@@ -37,6 +38,49 @@ app.use(
   })
 );
 app.use(cors({ origin: true, credentials: true }));
+
+// High-Speed GZIP Compression Middleware (HTML, JSON, JS, CSS)
+app.use((req, res, next) => {
+  const accept = req.headers['accept-encoding'] || '';
+  if (!accept.includes('gzip')) return next();
+  if (req.headers['upgrade'] || req.url.startsWith('/ws')) return next();
+
+  const origSend = res.send;
+  const origJson = res.json;
+
+  res.send = function (body) {
+    if ((typeof body === 'string' || Buffer.isBuffer(body)) && !res.getHeader('Content-Encoding')) {
+      if (body.length > 512) {
+        try {
+          const zipped = zlib.gzipSync(body, { level: 6 });
+          res.setHeader('Content-Encoding', 'gzip');
+          res.removeHeader('Content-Length');
+          return origSend.call(this, zipped);
+        } catch (e) {}
+      }
+    }
+    return origSend.call(this, body);
+  };
+
+  res.json = function (obj) {
+    if (!res.getHeader('Content-Encoding')) {
+      try {
+        const jsonStr = JSON.stringify(obj);
+        if (jsonStr.length > 512) {
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          res.setHeader('Content-Encoding', 'gzip');
+          res.removeHeader('Content-Length');
+          const zipped = zlib.gzipSync(jsonStr, { level: 6 });
+          return origSend.call(this, zipped);
+        }
+      } catch (e) {}
+    }
+    return origJson.call(this, obj);
+  };
+
+  next();
+});
+
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 // Global JWT attach (non-blocking)
@@ -48,7 +92,18 @@ app.use('/api/', apiLimiter);
 // Serve static frontend files from /public if directory exists
 const publicPath = path.join(__dirname, '..', 'public');
 if (fs.existsSync(publicPath)) {
-  app.use(express.static(publicPath));
+  app.use(express.static(publicPath, {
+    maxAge: '1d',
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'public, max-age=1800, stale-while-revalidate=86400');
+      } else {
+        res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+      }
+    }
+  }));
 }
 
 // Serve uploaded patient reports from /uploads
@@ -83,6 +138,7 @@ app.get('*', (req, res) => {
   const file = req.path.startsWith('/portal') ? 'portal.html' : 'index.html';
   const filePath = path.join(publicPath, file);
   if (fs.existsSync(filePath)) {
+    res.setHeader('Cache-Control', 'public, max-age=1800, stale-while-revalidate=86400');
     return res.sendFile(filePath);
   }
   res.redirect('/');
