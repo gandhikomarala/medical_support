@@ -615,33 +615,61 @@ router.get('/technician/my-tasks/:phone', async (req, res) => {
 });
 
 router.post('/technician/set-time', async (req, res) => {
-  const { request_id, technician_phone, visit_time } = req.body;
+  const { request_id, technician_phone, visit_time, send_whatsapp_advisory } = req.body;
   if (!request_id || !visit_time) {
     return res.status(400).json({ error: 'request_id and visit_time are required' });
   }
 
   try {
-    const cleanPhone = technician_phone.replace(/[^0-9]/g, '');
-    const { rows: techRows } = await db.query('SELECT id FROM technicians WHERE phone LIKE $1', [`%${cleanPhone}%`]);
-    const techId = techRows[0]?.id;
+    const cleanPhone = technician_phone ? technician_phone.replace(/[^0-9]/g, '') : '';
+    const { rows: techRows } = await db.query('SELECT id, name, phone FROM technicians WHERE phone LIKE $1', [`%${cleanPhone}%`]);
+    const tech = techRows[0];
+    const techId = tech?.id;
 
     const { rows } = await db.query(
       `UPDATE requests 
        SET technician_visit_time = $1, assigned_technician_id = COALESCE($2, assigned_technician_id), 
-           status = 'technician_assigned', updated_at = now() 
+           status = 'scheduled', updated_at = now() 
        WHERE id = $3 RETURNING *`,
       [visit_time, techId, request_id]
     );
 
     const timeReq = rows[0];
+
+    // WhatsApp Notification to Patient
+    if (send_whatsapp_advisory !== false && timeReq && timeReq.patient_phone) {
+      const techName = tech ? tech.name : 'Certified Phlebotomist';
+      const techContact = tech ? tech.phone : (technician_phone || '');
+      const testsStr = (timeReq.lab_tests_needed || '').toLowerCase();
+      const hasFasting = testsStr.includes('sugar') || testsStr.includes('fasting') || testsStr.includes('fbs') || testsStr.includes('lipid') || testsStr.includes('cholesterol');
+      const fastingNotice = hasFasting
+        ? '\n⚠️ Fasting Protocol: 10-12 hours overnight fasting recommended before sample collection (plain water is permitted).'
+        : '';
+
+      const msg = `Hello ${timeReq.patient_name},\nYour home lab sample collection has been confirmed for *${visit_time}*.\n👨‍⚕️ Phlebotomist: ${techName} (${techContact})\n🧪 Tests: ${timeReq.lab_tests_needed || 'Diagnostic Panel'}${fastingNotice}\n\nOur phlebotomist will arrive with sterile single-use vacutainers and cold-chain storage. Thank you for choosing Nhealth!`;
+
+      try {
+        const wa = require('../services/whatsapp');
+        await wa.sendText(timeReq.patient_phone, msg);
+      } catch (waErr) {
+        console.warn('WhatsApp advisory error:', waErr.message);
+      }
+    }
+
     try {
       realtime.broadcast('role:admin', 'technician:time_set', { request: timeReq });
+      realtime.broadcast('role:technician', 'technician:time_set', { request: timeReq });
       realtime.broadcast(`user:${String(timeReq.patient_phone).replace(/[^0-9]/g, '')}`, 'technician:time_set', { request: timeReq });
     } catch (e) {}
-    res.json({ success: true, message: 'Visit time scheduled', request: timeReq });
+
+    res.json({
+      success: true,
+      message: `Sample pickup scheduled for ${visit_time}! Patient notified.`,
+      request: timeReq
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to set visit time' });
+    res.status(500).json({ error: 'Failed to schedule visit time' });
   }
 });
 

@@ -882,6 +882,73 @@
     color: #b91c1c;
   }
 
+
+  /* Advanced Phlebotomy Dispatch Modal */
+  #scheduleModal .modal-box {
+    max-width: 660px;
+    padding: 24px 28px;
+  }
+  .slot-btn {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    outline: none;
+  }
+  .slot-btn:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+  }
+  .slot-btn.active {
+    background: #0d9488;
+    border-color: #0f766e;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
+  }
+  .date-tab-btn {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    outline: none;
+  }
+  .date-tab-btn:hover {
+    background: #e2e8f0;
+  }
+  .date-tab-btn.active {
+    background: #0f766e;
+    color: #ffffff;
+    border-color: #0f766e;
+  }
+  .tube-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #334155;
+  }
+
 </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
@@ -2140,18 +2207,153 @@
 <div class="modal-overlay" id="scheduleModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('scheduleModal')">&times;</button>
-    <h2 style="font-size:20px; margin-bottom:8px;">Schedule Sample Pickup Time</h2>
+    
+    <!-- Modal Header -->
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
+      <div style="width:42px; height:42px; border-radius:10px; background:linear-gradient(135deg, #0d9488, #059669); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; flex-shrink:0;">
+        🚚
+      </div>
+      <div>
+        <h2 style="font-size:18px; font-weight:700; color:var(--ink); margin:0 0 2px 0;">Home Sample Collection Dispatch Pad</h2>
+        <p style="font-size:12px; color:var(--ink-soft); margin:0;">Confirm arrival window, check vacutainer kit, and dispatch patient ETA.</p>
+      </div>
+    </div>
+
+    <!-- 1. Patient Navigation & Direct Contact Card -->
+    <div id="schedulePatientCard" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 14px; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+        <div>
+          <div style="font-size:13.5px; font-weight:700; color:var(--ink);" id="schedulePatientName">Patient: Loading...</div>
+          <div style="font-size:12px; color:var(--ink-soft); margin-top:2px;" id="schedulePatientAddress">Address: Loading...</div>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <a id="scheduleMapBtn" href="#" target="_blank" class="btn-sm" style="background:#0284c7; color:#fff; text-decoration:none; padding:4px 9px; font-size:11px; display:inline-flex; align-items:center; gap:3px;">
+            📍 Maps Route
+          </a>
+          <a id="scheduleCallBtn" href="#" class="btn-sm" style="background:#f1f5f9; color:var(--ink); border:1px solid #cbd5e1; text-decoration:none; padding:4px 9px; font-size:11px; display:inline-flex; align-items:center; gap:3px;">
+            📞 Call
+          </a>
+          <a id="scheduleWaBtn" href="#" target="_blank" class="btn-sm" style="background:#22c55e; color:#fff; text-decoration:none; padding:4px 9px; font-size:11px; display:inline-flex; align-items:center; gap:3px;">
+            💬 WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Diagnostic Tests & Vacutainer Kit Checklist -->
+    <div style="background:#f0fdfa; border:1px solid #99f6e4; border-radius:10px; padding:10px 14px; margin-bottom:12px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
+        <span style="font-size:12.5px; font-weight:700; color:#0f766e; display:flex; align-items:center; gap:5px;">
+          <span>🧪</span> Ordered Tests & Required Phlebotomy Kit
+        </span>
+        <span id="scheduleFastingPill" style="display:none; font-size:11px; background:#fef3c7; color:#92400e; border:1px solid #fde68a; padding:1px 7px; border-radius:12px; font-weight:600;">
+          ⚠️ 10-12h Fasting Required
+        </span>
+      </div>
+      <div id="scheduleTestsList" style="font-size:12px; color:#134e4a; font-weight:600; margin-bottom:6px;">
+        Loading tests...
+      </div>
+      <div id="scheduleTubesGrid" style="display:flex; flex-wrap:wrap; gap:5px;">
+        <!-- Populated dynamically with vacutainer tube pills -->
+      </div>
+    </div>
+
     <form onsubmit="submitSchedule(event)">
       <input type="hidden" id="scheduleReqId">
-      <div class="form-group">
-        <label>Expected Arrival Time *</label>
-        <input type="text" id="scheduleTime" required placeholder="e.g. Today, 5:30 PM or Tomorrow 8:00 AM">
+      
+      <!-- 3. Date Selection Tabs -->
+      <div style="margin-bottom:12px;">
+        <label style="font-weight:600; font-size:12.5px; display:block; margin-bottom:5px;">
+          📅 Select Collection Date *
+        </label>
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <button type="button" class="date-tab-btn active" id="dateTabToday" onclick="selectScheduleDate('today')">Today</button>
+          <button type="button" class="date-tab-btn" id="dateTabTomorrow" onclick="selectScheduleDate('tomorrow')">Tomorrow</button>
+          <button type="button" class="date-tab-btn" id="dateTabCustom" onclick="selectScheduleDate('custom')">Other Date...</button>
+          <input type="date" id="scheduleCustomDate" style="display:none; font-size:12px; padding:4px 8px; border:1px solid #cbd5e1; border-radius:6px;" onchange="updateScheduledTimeString()">
+        </div>
       </div>
-      <button type="submit" class="btn-primary">Confirm Visit Time</button>
+
+      <!-- 4. Interactive Time Slot Grid -->
+      <div style="margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+          <label style="font-weight:600; font-size:12.5px; margin:0;">
+            ⏰ Select Arrival Window *
+          </label>
+          <button type="button" onclick="toggleCustomTimeInput()" style="background:none; border:none; color:var(--teal); font-size:11.5px; cursor:pointer; text-decoration:underline;">
+            Type custom time
+          </button>
+        </div>
+
+        <div id="quickSlotsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:6px;">
+          <!-- Morning Fasting Slots -->
+          <button type="button" class="slot-btn" data-slot="06:30 - 07:30 AM" onclick="selectTimeSlot(this)">
+            <span>🌅 06:30 - 07:30 AM</span>
+          </button>
+          <button type="button" class="slot-btn active" data-slot="07:30 - 08:30 AM" onclick="selectTimeSlot(this)">
+            <span>🌅 07:30 - 08:30 AM</span>
+          </button>
+          <button type="button" class="slot-btn" data-slot="08:30 - 09:30 AM" onclick="selectTimeSlot(this)">
+            <span>🌅 08:30 - 09:30 AM</span>
+          </button>
+          
+          <!-- Daytime Slots -->
+          <button type="button" class="slot-btn" data-slot="09:30 - 10:30 AM" onclick="selectTimeSlot(this)">
+            <span>☀️ 09:30 - 10:30 AM</span>
+          </button>
+          <button type="button" class="slot-btn" data-slot="11:00 AM - 12:00 PM" onclick="selectTimeSlot(this)">
+            <span>☀️ 11:00 AM - 12:00 PM</span>
+          </button>
+          <button type="button" class="slot-btn" data-slot="02:30 - 03:30 PM" onclick="selectTimeSlot(this)">
+            <span>☀️ 02:30 - 03:30 PM</span>
+          </button>
+
+          <!-- Evening Slots -->
+          <button type="button" class="slot-btn" data-slot="04:30 - 05:30 PM" onclick="selectTimeSlot(this)">
+            <span>🌆 04:30 - 05:30 PM</span>
+          </button>
+          <button type="button" class="slot-btn" data-slot="06:00 - 07:00 PM" onclick="selectTimeSlot(this)">
+            <span>🌆 06:00 - 07:00 PM</span>
+          </button>
+
+          <!-- Express Urgent Slot -->
+          <button type="button" class="slot-btn" data-slot="Immediate (Within 30-45 Mins)" onclick="selectTimeSlot(this)" style="border-color:#fca5a5; background:#fff1f2; color:#991b1b;">
+            <span>⚡ In 30-45 Mins</span>
+          </button>
+        </div>
+
+        <!-- Custom time manual field (hidden by default) -->
+        <div id="customTimeWrapper" style="display:none; margin-top:6px;">
+          <input type="text" id="scheduleCustomTimeInput" placeholder="e.g. Today at 4:15 PM or Tomorrow 8:00 AM" style="width:100%; font-size:12.5px; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px;" oninput="document.getElementById('scheduleTime').value = this.value; updatePreviewText(this.value);">
+        </div>
+
+        <!-- Hidden input to hold final computed scheduled string -->
+        <input type="hidden" id="scheduleTime" required value="Tomorrow (13 Sep), 07:30 - 08:30 AM">
+        
+        <div id="selectedSlotPreview" style="margin-top:8px; font-size:12px; font-weight:600; color:#0f766e; background:#f0fdf4; border:1px solid #bbf7d0; padding:5px 10px; border-radius:6px;">
+          Selected Window: <span id="selectedSlotText">—</span>
+        </div>
+      </div>
+
+      <!-- 5. Automated WhatsApp Advisory Toggle -->
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 12px; margin-bottom:16px; display:flex; align-items:flex-start; gap:9px;">
+        <input type="checkbox" id="sendWaAdvisory" checked style="width:17px; height:17px; accent-color:#0d9488; margin-top:2px; cursor:pointer;">
+        <label for="sendWaAdvisory" style="cursor:pointer; font-size:12px; color:var(--ink); margin:0; line-height:1.4;">
+          <strong>📲 Send Instant WhatsApp Confirmation to Patient</strong><br>
+          <span style="color:var(--ink-soft); font-size:11px;">Alerts patient with your arrival ETA, phlebotomist contact details, and fasting preparation protocol.</span>
+        </label>
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button type="button" class="btn-sm" onclick="closeModal('scheduleModal')" style="background:#f1f5f9; color:var(--ink-soft); border:1px solid #e2e8f0; padding:8px 16px; font-weight:600; border-radius:6px;">Cancel</button>
+        <button type="submit" class="btn-primary" id="scheduleSubmitBtn" style="padding:8px 20px; font-weight:600; border-radius:6px; display:flex; align-items:center; gap:6px;">
+          <span>Confirm & Dispatch Pickup 🚀</span>
+        </button>
+      </div>
     </form>
   </div>
 </div>
-
 <!-- Technician Upload Report Modal -->
 <div class="modal-overlay" id="uploadModal">
   <div class="modal-box">
@@ -2908,9 +3110,10 @@
       const tbody = document.getElementById('techTasksTable');
       tbody.innerHTML = '';
       const list = data.tasks || [];
+      currentTechnicianTasks = list;
 
       // Update technician metrics & badge
-      const pendingCount = list.filter(t => !t.scheduled_time || t.status === 'lab_assigned').length;
+      const pendingCount = list.filter(t => (!t.technician_visit_time && !t.scheduled_time) || t.status === 'lab_requested' || t.status === 'lab_assigned').length;
       const doneCount = list.filter(t => t.status === 'completed' || t.report_url).length;
       const statTotal = document.getElementById('techStatTotal');
       if (statTotal) statTotal.textContent = list.length;
@@ -2937,7 +3140,7 @@
               ${t.lab_tests_needed ? `<div style="background:#f0fdfa; border:1px solid #99f6e4; color:#0f766e; font-weight:600; font-size:12px; padding:3px 8px; border-radius:6px; margin-bottom:4px; display:inline-block;">🧪 ${t.lab_tests_needed}</div><br>` : ''}
               <small style="color:var(--ink-soft);">${t.notes || 'Routine Blood/Urine Sample'}</small>
             </td>
-            <td>${t.scheduled_time || '<em style="color:var(--ink-soft);">Not Scheduled</em>'}</td>
+            <td>${t.technician_visit_time || t.scheduled_time || '<em style="color:var(--ink-soft);">Not Scheduled</em>'}</td>
             <td>${statusBadge(t.status)}</td>
             <td>
               ${t.status === 'lab_requested' ?
@@ -3587,23 +3790,226 @@
   }
 
   // Schedule Submission
+  let currentTechnicianTasks = [];
+  let currentSelectedDateMode = 'today';
+  let currentSelectedSlot = '07:30 - 08:30 AM';
+
+  function analyzePhlebotomyKit(testsText) {
+    const t = (testsText || '').toLowerCase();
+    const tubes = [];
+    let fastingRequired = false;
+
+    // EDTA (Purple / Lavender cap)
+    if (t.includes('cbc') || t.includes('blood count') || t.includes('dengue') || t.includes('platelet') || t.includes('hemoglobin') || t.includes('esr')) {
+      tubes.push({ cap: '🟣 Lavender/Purple (K2-EDTA)', test: 'CBC / Dengue / Hematology' });
+    }
+
+    // Fluoride (Grey cap)
+    if (t.includes('fasting') || t.includes('sugar') || t.includes('glucose') || t.includes('fbs') || t.includes('diabetes') || t.includes('hba1c')) {
+      fastingRequired = true;
+      tubes.push({ cap: '⚪ Grey (Sodium Fluoride)', test: 'Fasting Glucose / Glycolysis Inhibitor' });
+    }
+
+    // SST / Gel Clot Activator (Yellow / Gold cap)
+    if (t.includes('thyroid') || t.includes('lipid') || t.includes('cholesterol') || t.includes('lft') || t.includes('liver') || t.includes('kft') || t.includes('kidney') || t.includes('creatinine') || t.includes('vitamin') || t.includes('crp') || t.includes('electrolyte')) {
+      if (t.includes('lipid') || t.includes('cholesterol')) fastingRequired = true;
+      tubes.push({ cap: '🟡 Gold/Yellow (SST Gel Activator)', test: 'Biochemistry, Lipid, Liver & Thyroid' });
+    }
+
+    // Fallback if none matched specifically
+    if (tubes.length === 0) {
+      tubes.push({ cap: '🔴 Red Cap (Plain Silica)', test: 'General Diagnostic Serum Panel' });
+    }
+
+    // Cold chain pack
+    tubes.push({ cap: '🧊 Cold-Chain Gel Pack', test: 'Temperature Controlled Carrier (2-8°C)' });
+
+    return { tubes, fastingRequired };
+  }
+
   function openScheduleModal(reqId) {
     document.getElementById('scheduleReqId').value = reqId;
+    const task = (currentTechnicianTasks || []).find(t => String(t.id) === String(reqId));
+
+    if (task) {
+      document.getElementById('schedulePatientName').textContent = 'Patient: ' + (task.patient_name || 'Patient') + ' • Case #' + task.id + ' (' + (task.patient_phone || '') + ')';
+      document.getElementById('schedulePatientAddress').textContent = '📍 Address: ' + (task.patient_address || 'Address not provided');
+
+      // Setup Navigation & Contact links
+      const cleanPhone = String(task.patient_phone || '').replace(/[^0-9]/g, '');
+      const mapBtn = document.getElementById('scheduleMapBtn');
+      if (mapBtn) mapBtn.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(task.patient_address || '');
+      const callBtn = document.getElementById('scheduleCallBtn');
+      if (callBtn) callBtn.href = 'tel:' + (task.patient_phone || '');
+      const waBtn = document.getElementById('scheduleWaBtn');
+      if (waBtn) waBtn.href = 'https://wa.me/' + cleanPhone;
+
+      // Kit analysis
+      const testsStr = task.lab_tests_needed || task.notes || 'Routine Blood & Urine Panel';
+      document.getElementById('scheduleTestsList').textContent = testsStr;
+
+      const kit = analyzePhlebotomyKit(testsStr);
+      const fastingPill = document.getElementById('scheduleFastingPill');
+      if (fastingPill) fastingPill.style.display = kit.fastingRequired ? 'inline-block' : 'none';
+
+      const tubesGrid = document.getElementById('scheduleTubesGrid');
+      if (tubesGrid) {
+        tubesGrid.innerHTML = kit.tubes.map(tb => '<span class="tube-badge" title="' + tb.test + '">' + tb.cap + '</span>').join('');
+      }
+    }
+
+    // Smart default date: If after 5 PM, default to Tomorrow, else Today
+    const currentHour = new Date().getHours();
+    selectScheduleDate(currentHour >= 17 ? 'tomorrow' : 'today');
+
+    // Default slot
+    currentSelectedSlot = '07:30 - 08:30 AM';
+    const slotBtns = document.querySelectorAll('#quickSlotsContainer .slot-btn');
+    slotBtns.forEach(b => {
+      if (b.dataset.slot === '07:30 - 08:30 AM') b.classList.add('active');
+      else b.classList.remove('active');
+    });
+
+    document.getElementById('customTimeWrapper').style.display = 'none';
+    updateScheduledTimeString();
+
     document.getElementById('scheduleModal').classList.add('active');
   }
+
+  function selectScheduleDate(mode) {
+    currentSelectedDateMode = mode;
+    document.querySelectorAll('.date-tab-btn').forEach(b => b.classList.remove('active'));
+    const customInput = document.getElementById('scheduleCustomDate');
+
+    if (mode === 'today') {
+      const b = document.getElementById('dateTabToday');
+      if (b) b.classList.add('active');
+      if (customInput) customInput.style.display = 'none';
+    } else if (mode === 'tomorrow') {
+      const b = document.getElementById('dateTabTomorrow');
+      if (b) b.classList.add('active');
+      if (customInput) customInput.style.display = 'none';
+    } else {
+      const b = document.getElementById('dateTabCustom');
+      if (b) b.classList.add('active');
+      if (customInput) {
+        customInput.style.display = 'inline-block';
+        if (!customInput.value) {
+          const d = new Date();
+          d.setDate(d.getDate() + 2);
+          customInput.value = d.toISOString().split('T')[0];
+        }
+      }
+    }
+    updateScheduledTimeString();
+  }
+
+  function selectTimeSlot(btn) {
+    document.querySelectorAll('#quickSlotsContainer .slot-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSelectedSlot = btn.dataset.slot;
+    document.getElementById('customTimeWrapper').style.display = 'none';
+    updateScheduledTimeString();
+  }
+
+  function toggleCustomTimeInput() {
+    const wrapper = document.getElementById('customTimeWrapper');
+    if (!wrapper) return;
+    if (wrapper.style.display === 'none') {
+      wrapper.style.display = 'block';
+      document.querySelectorAll('#quickSlotsContainer .slot-btn').forEach(b => b.classList.remove('active'));
+      currentSelectedSlot = '';
+      const inp = document.getElementById('scheduleCustomTimeInput');
+      if (inp) inp.focus();
+    } else {
+      wrapper.style.display = 'none';
+    }
+  }
+
+  function updatePreviewText(val) {
+    const previewText = document.getElementById('selectedSlotText');
+    if (previewText) previewText.textContent = val;
+  }
+
+  function updateScheduledTimeString() {
+    let dateStr = 'Today';
+    const now = new Date();
+    if (currentSelectedDateMode === 'tomorrow') {
+      const tom = new Date(now);
+      tom.setDate(tom.getDate() + 1);
+      dateStr = 'Tomorrow (' + tom.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) + ')';
+    } else if (currentSelectedDateMode === 'today') {
+      dateStr = 'Today (' + now.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) + ')';
+    } else {
+      const customVal = document.getElementById('scheduleCustomDate') ? document.getElementById('scheduleCustomDate').value : '';
+      if (customVal) {
+        const d = new Date(customVal + 'T00:00:00');
+        dateStr = d.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' });
+      }
+    }
+
+    let fullTime = '';
+    if (currentSelectedSlot) {
+      if (currentSelectedSlot.startsWith('Immediate')) {
+        fullTime = '🚨 Immediate Dispatch (Within 30-45 Mins)';
+      } else {
+        fullTime = dateStr + ', ' + currentSelectedSlot;
+      }
+    } else {
+      const customTime = document.getElementById('scheduleCustomTimeInput') ? document.getElementById('scheduleCustomTimeInput').value.trim() : '';
+      fullTime = customTime || (dateStr + ', 07:30 - 08:30 AM');
+    }
+
+    const inputField = document.getElementById('scheduleTime');
+    if (inputField) inputField.value = fullTime;
+    const preview = document.getElementById('selectedSlotPreview');
+    const previewText = document.getElementById('selectedSlotText');
+    if (preview && previewText) {
+      preview.style.display = 'block';
+      previewText.textContent = fullTime;
+    }
+  }
+
   async function submitSchedule(e) {
     e.preventDefault();
     const reqId = document.getElementById('scheduleReqId').value;
     const time = document.getElementById('scheduleTime').value.trim();
+    const sendWa = document.getElementById('sendWaAdvisory') ? document.getElementById('sendWaAdvisory').checked : true;
+    const btn = document.getElementById('scheduleSubmitBtn');
 
-    const res = await fetch('/api/technician/set-time', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ request_id: reqId, visit_time: time })
-    });
-    if (res.ok) {
-      closeModal('scheduleModal');
-      loadTechnicianData();
+    if (!time) {
+      alert('Please select an arrival time window.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>Scheduling & Notifying...</span>';
+
+    try {
+      const res = await fetch('/api/technician/set-time', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          request_id: reqId,
+          technician_phone: currentUser ? currentUser.phone : '',
+          visit_time: time,
+          send_whatsapp_advisory: sendWa
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        closeModal('scheduleModal');
+        loadTechnicianData();
+        alert(data.message || ('Sample pickup successfully scheduled for ' + time + '!'));
+      } else {
+        alert(data.error || 'Failed to schedule visit time.');
+      }
+    } catch (err) {
+      console.error('Submit schedule error:', err);
+      alert('Failed to submit scheduled arrival time.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span>Confirm & Dispatch Pickup 🚀</span>';
     }
   }
 
