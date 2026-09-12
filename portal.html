@@ -883,71 +883,159 @@
   }
 
 
-  /* Advanced Phlebotomy Dispatch Modal */
-  #scheduleModal .modal-box {
-    max-width: 660px;
+  
+  /* Realistic Enterprise Clinical UI */
+  #scheduleModal .modal-box,
+  #prescribeModal .modal-box {
+    max-width: 640px;
     padding: 24px 28px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
   }
-  .slot-btn {
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    color: #334155;
-    padding: 8px 10px;
+  .clinical-icon-badge {
+    width: 38px;
+    height: 38px;
     border-radius: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    text-align: center;
-    display: inline-flex;
+    background: #f0fdfa;
+    border: 1px solid #ccfbf1;
+    color: #0f766e;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    outline: none;
+    flex-shrink: 0;
   }
-  .slot-btn:hover {
+  .segmented-tabs {
+    display: inline-flex;
     background: #f1f5f9;
-    border-color: #94a3b8;
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    gap: 2px;
   }
-  .slot-btn.active {
-    background: #0d9488;
-    border-color: #0f766e;
-    color: #ffffff;
-    font-weight: 600;
-    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
-  }
-  .date-tab-btn {
-    background: #f1f5f9;
-    border: 1px solid #cbd5e1;
+  .segmented-tab {
+    background: transparent;
+    border: none;
     color: #475569;
     padding: 6px 14px;
     border-radius: 6px;
     font-size: 12.5px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
     outline: none;
   }
-  .date-tab-btn:hover {
-    background: #e2e8f0;
+  .segmented-tab:hover {
+    color: #1e293b;
   }
-  .date-tab-btn.active {
-    background: #0f766e;
-    color: #ffffff;
-    border-color: #0f766e;
+  .segmented-tab.active {
+    background: #ffffff;
+    color: #0f172a;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  .slot-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+    padding: 8px 10px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    outline: none;
+  }
+  .slot-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+  }
+  .slot-btn.active {
+    background: #f0fdfa;
+    border-color: #0d9488;
+    color: #0f766e;
+    box-shadow: 0 0 0 1.5px #0d9488;
+  }
+  .slot-sub {
+    font-size: 10.5px;
+    color: #64748b;
+    font-weight: 400;
+  }
+  .slot-btn.active .slot-sub {
+    color: #0d9488;
+    font-weight: 500;
   }
   .tube-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 4px 9px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #334155;
+  }
+  .tube-swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .lab-chip {
+    background: #f8fafc;
     border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+    outline: none;
+  }
+  .lab-chip:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+  }
+  .lab-chip.active {
+    background: #f0fdfa;
+    border-color: #0d9488;
+    color: #0f766e;
+    font-weight: 600;
+    box-shadow: 0 0 0 1px #0d9488;
+  }
+  .custom-chip-tag {
+    background: #f0f9ff;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 11.5px;
-    font-weight: 600;
-    color: #334155;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
+  .custom-chip-tag .tag-remove {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13px;
+    color: #0284c7;
+  }
+  .custom-chip-tag .tag-remove:hover {
+    color: #b91c1c;
+  }
+
 
 </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -2106,12 +2194,12 @@
     <button class="modal-close" onclick="closeModal('prescribeModal')">&times;</button>
     
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
-      <div style="width:42px; height:42px; border-radius:10px; background:linear-gradient(135deg, #0d9488, #059669); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; flex-shrink:0;">
-        📝
+      <div class="clinical-icon-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
       </div>
       <div>
-        <h2 style="font-size:18.5px; font-weight:700; color:var(--ink); margin:0 0 2px 0;">Doctor's Prescription & Diagnostic Order Pad</h2>
-        <p style="font-size:12.5px; color:var(--ink-soft); margin:0;" id="prescribePatientBanner">Loading patient consultation details...</p>
+        <h2 style="font-size:17.5px; font-weight:700; color:#0f172a; margin:0 0 2px 0;">Prescription & Diagnostic Orders</h2>
+        <p style="font-size:12px; color:#64748b; margin:0;" id="prescribePatientBanner">Loading patient consultation details...</p>
       </div>
     </div>
 
@@ -2119,85 +2207,65 @@
       <input type="hidden" id="prescribeReqId">
 
       <!-- Medicines & Instructions -->
-      <div class="form-group" style="margin-bottom:16px;">
-        <label style="font-weight:600; font-size:13px; display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-          <span>💊 Prescribed Medicines, Dosage & Clinical Advice *</span>
-          <span style="font-weight:400; font-size:11.5px; color:var(--ink-soft);">Groq AI parses schedules & timings</span>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label style="font-weight:600; font-size:12.5px; color:#334155; display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+          <span style="display:flex; align-items:center; gap:5px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+            Prescribed Medications & Clinical Notes *
+          </span>
+          <span style="font-weight:400; font-size:11px; color:#64748b;">AI extracts dosage schedules</span>
         </label>
-        <textarea id="prescribeNotes" rows="3" required placeholder="e.g. Tab. Paracetamol 650mg - 1 tab thrice daily after meals (3 days)&#10;Tab. Pantoprazole 40mg - 1 tab once daily before breakfast (5 days)&#10;Advised adequate hydration and warm water steam inhalation." style="font-size:13.5px; line-height:1.5;"></textarea>
+        <textarea id="prescribeNotes" rows="3" required placeholder="e.g. Tab. Paracetamol 650mg - 1 tab thrice daily after meals (3 days)&#10;Tab. Pantoprazole 40mg - 1 tab once daily before breakfast (5 days)&#10;Advised adequate hydration and warm fluids." style="font-size:13px; line-height:1.5;"></textarea>
       </div>
 
       <!-- Quick Select Lab Diagnostic Chips -->
-      <div class="form-group" style="margin-bottom:16px;">
-        <label style="font-weight:600; font-size:13px; display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-          <span style="display:flex; align-items:center; gap:6px;">
-            <span>🧪</span> Recommend Diagnostic Lab Tests (Quick-Select)
+      <div class="form-group" style="margin-bottom:14px;">
+        <label style="font-weight:600; font-size:12.5px; color:#334155; display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+          <span style="display:flex; align-items:center; gap:5px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31L4.66 18.2a2 2 0 0 0 1.71 2.8h11.26a2 2 0 0 0 1.71-2.8L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>
+            Recommended Diagnostic Tests
           </span>
-          <span id="selectedTestsCount" style="font-size:12px; color:var(--teal); font-weight:600;">0 tests selected</span>
+          <span id="selectedTestsCount" style="font-size:11.5px; color:#0d9488; font-weight:600;">0 tests selected</span>
         </label>
         
-        <div id="labTestChips" style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px;">
-          <button type="button" class="lab-chip" data-test="Complete Blood Count (CBC)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> CBC (Blood Count)
-          </button>
-          <button type="button" class="lab-chip" data-test="Fasting Blood Sugar (FBS)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> Fasting Blood Sugar
-          </button>
-          <button type="button" class="lab-chip" data-test="HbA1c (Glycated Hemoglobin)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> HbA1c (Diabetes 3-Mo)
-          </button>
-          <button type="button" class="lab-chip" data-test="Thyroid Profile (T3, T4, TSH)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> Thyroid (T3/T4/TSH)
-          </button>
-          <button type="button" class="lab-chip" data-test="Lipid Profile (Cholesterol Panel)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> Lipid Profile
-          </button>
-          <button type="button" class="lab-chip" data-test="Liver Function Test (LFT)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> Liver Panel (LFT)
-          </button>
-          <button type="button" class="lab-chip" data-test="Kidney Function Test (KFT/Creatinine)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> Kidney Panel (KFT)
-          </button>
-          <button type="button" class="lab-chip" data-test="Urine Routine & Microscopy" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> Urine Routine
-          </button>
-          <button type="button" class="lab-chip" data-test="Serum Electrolytes (Na, K, Cl)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> Serum Electrolytes
-          </button>
-          <button type="button" class="lab-chip" data-test="Vitamin D3 & B12 Panel" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> Vitamin D3 & B12
-          </button>
-          <button type="button" class="lab-chip" data-test="Dengue Serology (NS1/IgM/IgG)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> Dengue NS1
-          </button>
-          <button type="button" class="lab-chip" data-test="C-Reactive Protein (CRP Quantitative)" onclick="toggleLabChip(this)">
-            <span class="chip-icon">+</span> CRP (Inflammatory)
-          </button>
+        <div id="labTestChips" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+          <button type="button" class="lab-chip" data-test="Complete Blood Count (CBC)" onclick="toggleLabChip(this)">Complete Blood Count (CBC)</button>
+          <button type="button" class="lab-chip" data-test="Fasting Blood Sugar (FBS)" onclick="toggleLabChip(this)">Fasting Blood Sugar (FBS)</button>
+          <button type="button" class="lab-chip" data-test="HbA1c (Glycated Hemoglobin)" onclick="toggleLabChip(this)">HbA1c (Diabetes 3-Mo)</button>
+          <button type="button" class="lab-chip" data-test="Thyroid Profile (T3, T4, TSH)" onclick="toggleLabChip(this)">Thyroid Profile (T3/T4/TSH)</button>
+          <button type="button" class="lab-chip" data-test="Lipid Profile (Cholesterol Panel)" onclick="toggleLabChip(this)">Lipid Profile</button>
+          <button type="button" class="lab-chip" data-test="Liver Function Test (LFT)" onclick="toggleLabChip(this)">Liver Function Test (LFT)</button>
+          <button type="button" class="lab-chip" data-test="Kidney Function Test (KFT/Creatinine)" onclick="toggleLabChip(this)">Kidney Panel (KFT)</button>
+          <button type="button" class="lab-chip" data-test="Urine Routine & Microscopy" onclick="toggleLabChip(this)">Urine Routine</button>
+          <button type="button" class="lab-chip" data-test="Serum Electrolytes (Na, K, Cl)" onclick="toggleLabChip(this)">Serum Electrolytes</button>
+          <button type="button" class="lab-chip" data-test="Vitamin D3 & B12 Panel" onclick="toggleLabChip(this)">Vitamin D3 & B12</button>
+          <button type="button" class="lab-chip" data-test="Dengue Serology (NS1/IgM/IgG)" onclick="toggleLabChip(this)">Dengue Serology (NS1)</button>
+          <button type="button" class="lab-chip" data-test="C-Reactive Protein (CRP Quantitative)" onclick="toggleLabChip(this)">C-Reactive Protein (CRP)</button>
         </div>
 
         <!-- Custom Test Input Field -->
         <div style="display:flex; gap:8px; align-items:center;">
-          <input type="text" id="customLabTest" placeholder="Add other specific test (e.g. Troponin-I, Serum Ferritin, Widal)..." style="flex:1; font-size:13px; padding:7px 12px; border:1px solid #cbd5e1; border-radius:8px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomLabTest();}">
-          <button type="button" class="btn-sm" onclick="addCustomLabTest()" style="white-space:nowrap; padding:7px 14px; background:#f1f5f9; color:var(--ink); border:1px solid #cbd5e1; font-weight:600; border-radius:8px; cursor:pointer;">+ Add Test</button>
+          <input type="text" id="customLabTest" placeholder="Add other specific test (e.g. Serum Ferritin, Troponin-I)..." style="flex:1; font-size:12.5px; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomLabTest();}">
+          <button type="button" class="btn-sm" onclick="addCustomLabTest()" style="white-space:nowrap; padding:6px 12px; background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; font-weight:500; border-radius:6px; cursor:pointer;">+ Add</button>
         </div>
-        <div id="customChipsContainer" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;"></div>
+        <div id="customChipsContainer" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;"></div>
       </div>
 
       <!-- Auto-Dispatch to Lab Technicians Toggle -->
-      <div style="background:#f0fdfa; border:1px solid #99f6e4; border-radius:10px; padding:12px 14px; margin-bottom:18px; display:flex; align-items:flex-start; gap:10px;">
-        <input type="checkbox" id="dispatchLabToggle" checked onchange="updateSelectedTestsUI()" style="width:18px; height:18px; accent-color:var(--teal); margin-top:2px; cursor:pointer;">
-        <label for="dispatchLabToggle" style="cursor:pointer; font-size:13px; color:#134e4a; margin:0; line-height:1.4;">
-          <strong style="display:block; font-size:13.5px; color:#0f766e; margin-bottom:2px;">🔔 Dispatch to Lab Technicians for Home Sample Collection</strong>
-          Instantly alerts certified phlebotomists via WhatsApp broadcast and places this order in the technician queue for doorstep pickup.
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; margin-bottom:16px; display:flex; align-items:flex-start; gap:9px;">
+        <input type="checkbox" id="dispatchLabToggle" checked onchange="updateSelectedTestsUI()" style="width:16px; height:16px; accent-color:#0d9488; margin-top:2px; cursor:pointer;">
+        <label for="dispatchLabToggle" style="cursor:pointer; font-size:12px; color:#1e293b; margin:0; line-height:1.4;">
+          <strong>Dispatch Home Sample Collection to Lab Technicians</strong><br>
+          <span style="color:#64748b; font-size:11px;">Automatically notifies certified phlebotomists via WhatsApp broadcast and places order in the technician pickup queue.</span>
         </label>
       </div>
 
       <!-- Modal Footer Actions -->
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button type="button" class="btn-sm" onclick="closeModal('prescribeModal')" style="background:#f1f5f9; color:var(--ink-soft); border:1px solid #e2e8f0; padding:9px 18px; font-weight:600; border-radius:8px;">Cancel</button>
-        <button type="submit" class="btn-primary" id="prescribeBtn" style="padding:9px 20px; font-weight:600; border-radius:8px; display:flex; align-items:center; gap:8px;">
-          <span>Submit Prescription</span>
-          <span id="prescribeBtnBadge" style="background:rgba(255,255,255,0.25); padding:2px 7px; border-radius:12px; font-size:11px; display:none;">+ Lab Dispatched</span>
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button type="button" class="btn-sm" onclick="closeModal('prescribeModal')" style="background:#ffffff; color:#475569; border:1px solid #cbd5e1; padding:8px 16px; font-weight:500; border-radius:6px;">Cancel</button>
+        <button type="submit" class="btn-primary" id="prescribeBtn" style="padding:8px 20px; font-weight:600; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
+          <span>Submit Prescription & Orders</span>
+          <span id="prescribeBtnBadge" style="background:rgba(255,255,255,0.2); padding:2px 6px; border-radius:4px; font-size:11px; display:none;">+ Lab Dispatched</span>
         </button>
       </div>
     </form>
@@ -2209,146 +2277,159 @@
     <button class="modal-close" onclick="closeModal('scheduleModal')">&times;</button>
     
     <!-- Modal Header -->
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
-      <div style="width:42px; height:42px; border-radius:10px; background:linear-gradient(135deg, #0d9488, #059669); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; flex-shrink:0;">
-        🚚
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
+      <div class="clinical-icon-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><circle cx="7" cy="18" r="2"/><path d="M15 18H9"/><circle cx="17" cy="18" r="2"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14v10Z"/></svg>
       </div>
       <div>
-        <h2 style="font-size:18px; font-weight:700; color:var(--ink); margin:0 0 2px 0;">Home Sample Collection Dispatch Pad</h2>
-        <p style="font-size:12px; color:var(--ink-soft); margin:0;">Confirm arrival window, check vacutainer kit, and dispatch patient ETA.</p>
+        <h2 style="font-size:17.5px; font-weight:700; color:#0f172a; margin:0 0 2px 0; letter-spacing:-0.2px;">Sample Collection Dispatch & Phlebotomy Kit</h2>
+        <p style="font-size:12px; color:#64748b; margin:0;">Confirm arrival window, verify collection tube protocol, and dispatch patient ETA.</p>
       </div>
     </div>
 
     <!-- 1. Patient Navigation & Direct Contact Card -->
-    <div id="schedulePatientCard" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 14px; margin-bottom:12px;">
+    <div id="schedulePatientCard" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 14px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
         <div>
-          <div style="font-size:13.5px; font-weight:700; color:var(--ink);" id="schedulePatientName">Patient: Loading...</div>
-          <div style="font-size:12px; color:var(--ink-soft); margin-top:2px;" id="schedulePatientAddress">Address: Loading...</div>
+          <div style="font-size:13.5px; font-weight:600; color:#1e293b;" id="schedulePatientName">Patient: Loading...</div>
+          <div style="font-size:12px; color:#64748b; margin-top:2px; display:flex; align-items:center; gap:4px;" id="schedulePatientAddress">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> <span>Address: Loading...</span>
+          </div>
         </div>
         <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <a id="scheduleMapBtn" href="#" target="_blank" class="btn-sm" style="background:#0284c7; color:#fff; text-decoration:none; padding:4px 9px; font-size:11px; display:inline-flex; align-items:center; gap:3px;">
-            📍 Maps Route
+          <a id="scheduleMapBtn" href="#" target="_blank" class="btn-sm" style="background:#0284c7; color:#fff; text-decoration:none; padding:4px 10px; font-size:11.5px; display:inline-flex; align-items:center; gap:5px; border-radius:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> <span>Navigate</span>
           </a>
-          <a id="scheduleCallBtn" href="#" class="btn-sm" style="background:#f1f5f9; color:var(--ink); border:1px solid #cbd5e1; text-decoration:none; padding:4px 9px; font-size:11px; display:inline-flex; align-items:center; gap:3px;">
-            📞 Call
+          <a id="scheduleCallBtn" href="#" class="btn-sm" style="background:#ffffff; color:#334155; border:1px solid #cbd5e1; text-decoration:none; padding:4px 10px; font-size:11.5px; display:inline-flex; align-items:center; gap:5px; border-radius:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> <span>Call</span>
           </a>
-          <a id="scheduleWaBtn" href="#" target="_blank" class="btn-sm" style="background:#22c55e; color:#fff; text-decoration:none; padding:4px 9px; font-size:11px; display:inline-flex; align-items:center; gap:3px;">
-            💬 WhatsApp
+          <a id="scheduleWaBtn" href="#" target="_blank" class="btn-sm" style="background:#16a34a; color:#fff; text-decoration:none; padding:4px 10px; font-size:11.5px; display:inline-flex; align-items:center; gap:5px; border-radius:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> <span>WhatsApp</span>
           </a>
         </div>
       </div>
     </div>
 
     <!-- 2. Diagnostic Tests & Vacutainer Kit Checklist -->
-    <div style="background:#f0fdfa; border:1px solid #99f6e4; border-radius:10px; padding:10px 14px; margin-bottom:12px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
-        <span style="font-size:12.5px; font-weight:700; color:#0f766e; display:flex; align-items:center; gap:5px;">
-          <span>🧪</span> Ordered Tests & Required Phlebotomy Kit
+    <div style="background:#f0fdfa; border:1px solid #ccfbf1; border-radius:8px; padding:10px 14px; margin-bottom:14px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:600; color:#0f766e; display:flex; align-items:center; gap:5px; text-transform:uppercase; letter-spacing:0.3px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31L4.66 18.2a2 2 0 0 0 1.71 2.8h11.26a2 2 0 0 0 1.71-2.8L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg> Specimen Collection Protocol
         </span>
-        <span id="scheduleFastingPill" style="display:none; font-size:11px; background:#fef3c7; color:#92400e; border:1px solid #fde68a; padding:1px 7px; border-radius:12px; font-weight:600;">
-          ⚠️ 10-12h Fasting Required
+        <span id="scheduleFastingPill" style="display:none; font-size:11px; background:#fffbeb; color:#b45309; border:1px solid #fde68a; padding:1px 8px; border-radius:4px; font-weight:600;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Fasting Required (10–12 hrs)
         </span>
       </div>
-      <div id="scheduleTestsList" style="font-size:12px; color:#134e4a; font-weight:600; margin-bottom:6px;">
+      <div id="scheduleTestsList" style="font-size:12.5px; color:#134e4a; font-weight:600; margin-bottom:8px;">
         Loading tests...
       </div>
-      <div id="scheduleTubesGrid" style="display:flex; flex-wrap:wrap; gap:5px;">
-        <!-- Populated dynamically with vacutainer tube pills -->
+      <div id="scheduleTubesGrid" style="display:flex; flex-wrap:wrap; gap:6px;">
+        <!-- Populated dynamically with realistic tube swatches -->
       </div>
     </div>
 
     <form onsubmit="submitSchedule(event)">
       <input type="hidden" id="scheduleReqId">
       
-      <!-- 3. Date Selection Tabs -->
+      <!-- 3. Date Selection Segmented Control -->
       <div style="margin-bottom:12px;">
-        <label style="font-weight:600; font-size:12.5px; display:block; margin-bottom:5px;">
-          📅 Select Collection Date *
+        <label style="font-weight:600; font-size:12px; color:#334155; display:flex; align-items:center; gap:5px; margin-bottom:6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg> Collection Date
         </label>
-        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-          <button type="button" class="date-tab-btn active" id="dateTabToday" onclick="selectScheduleDate('today')">Today</button>
-          <button type="button" class="date-tab-btn" id="dateTabTomorrow" onclick="selectScheduleDate('tomorrow')">Tomorrow</button>
-          <button type="button" class="date-tab-btn" id="dateTabCustom" onclick="selectScheduleDate('custom')">Other Date...</button>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <div class="segmented-tabs">
+            <button type="button" class="segmented-tab active" id="dateTabToday" onclick="selectScheduleDate('today')">Today</button>
+            <button type="button" class="segmented-tab" id="dateTabTomorrow" onclick="selectScheduleDate('tomorrow')">Tomorrow</button>
+            <button type="button" class="segmented-tab" id="dateTabCustom" onclick="selectScheduleDate('custom')">Select Date</button>
+          </div>
           <input type="date" id="scheduleCustomDate" style="display:none; font-size:12px; padding:4px 8px; border:1px solid #cbd5e1; border-radius:6px;" onchange="updateScheduledTimeString()">
         </div>
       </div>
 
       <!-- 4. Interactive Time Slot Grid -->
       <div style="margin-bottom:12px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-          <label style="font-weight:600; font-size:12.5px; margin:0;">
-            ⏰ Select Arrival Window *
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <label style="font-weight:600; font-size:12px; color:#334155; display:flex; align-items:center; gap:5px; margin:0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Arrival Window
           </label>
-          <button type="button" onclick="toggleCustomTimeInput()" style="background:none; border:none; color:var(--teal); font-size:11.5px; cursor:pointer; text-decoration:underline;">
-            Type custom time
+          <button type="button" onclick="toggleCustomTimeInput()" style="background:none; border:none; color:#0d9488; font-size:11.5px; cursor:pointer; font-weight:500;">
+            Specify exact time
           </button>
         </div>
 
         <div id="quickSlotsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:6px;">
           <!-- Morning Fasting Slots -->
           <button type="button" class="slot-btn" data-slot="06:30 - 07:30 AM" onclick="selectTimeSlot(this)">
-            <span>🌅 06:30 - 07:30 AM</span>
+            <span>06:30 – 07:30 AM</span>
+            <span class="slot-sub">Fasting Window</span>
           </button>
           <button type="button" class="slot-btn active" data-slot="07:30 - 08:30 AM" onclick="selectTimeSlot(this)">
-            <span>🌅 07:30 - 08:30 AM</span>
+            <span>07:30 – 08:30 AM</span>
+            <span class="slot-sub">Fasting Window</span>
           </button>
           <button type="button" class="slot-btn" data-slot="08:30 - 09:30 AM" onclick="selectTimeSlot(this)">
-            <span>🌅 08:30 - 09:30 AM</span>
+            <span>08:30 – 09:30 AM</span>
+            <span class="slot-sub">Morning Routine</span>
           </button>
           
           <!-- Daytime Slots -->
           <button type="button" class="slot-btn" data-slot="09:30 - 10:30 AM" onclick="selectTimeSlot(this)">
-            <span>☀️ 09:30 - 10:30 AM</span>
+            <span>09:30 – 10:30 AM</span>
+            <span class="slot-sub">Post-Breakfast</span>
           </button>
           <button type="button" class="slot-btn" data-slot="11:00 AM - 12:00 PM" onclick="selectTimeSlot(this)">
-            <span>☀️ 11:00 AM - 12:00 PM</span>
+            <span>11:00 AM – 12:00 PM</span>
+            <span class="slot-sub">Mid-Day Window</span>
           </button>
           <button type="button" class="slot-btn" data-slot="02:30 - 03:30 PM" onclick="selectTimeSlot(this)">
-            <span>☀️ 02:30 - 03:30 PM</span>
+            <span>02:30 – 03:30 PM</span>
+            <span class="slot-sub">Afternoon Routine</span>
           </button>
 
           <!-- Evening Slots -->
           <button type="button" class="slot-btn" data-slot="04:30 - 05:30 PM" onclick="selectTimeSlot(this)">
-            <span>🌆 04:30 - 05:30 PM</span>
+            <span>04:30 – 05:30 PM</span>
+            <span class="slot-sub">Evening Window</span>
           </button>
           <button type="button" class="slot-btn" data-slot="06:00 - 07:00 PM" onclick="selectTimeSlot(this)">
-            <span>🌆 06:00 - 07:00 PM</span>
+            <span>06:00 – 07:00 PM</span>
+            <span class="slot-sub">Late Evening</span>
           </button>
 
           <!-- Express Urgent Slot -->
-          <button type="button" class="slot-btn" data-slot="Immediate (Within 30-45 Mins)" onclick="selectTimeSlot(this)" style="border-color:#fca5a5; background:#fff1f2; color:#991b1b;">
-            <span>⚡ In 30-45 Mins</span>
+          <button type="button" class="slot-btn" data-slot="Immediate (Within 30-45 Mins)" onclick="selectTimeSlot(this)" style="border-color:#fecaca; background:#fffaf0; color:#991b1b;">
+            <span style="display:flex; align-items:center; gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Express Dispatch</span>
+            <span class="slot-sub" style="color:#b91c1c;">Within 30–45 Mins</span>
           </button>
         </div>
 
         <!-- Custom time manual field (hidden by default) -->
         <div id="customTimeWrapper" style="display:none; margin-top:6px;">
-          <input type="text" id="scheduleCustomTimeInput" placeholder="e.g. Today at 4:15 PM or Tomorrow 8:00 AM" style="width:100%; font-size:12.5px; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px;" oninput="document.getElementById('scheduleTime').value = this.value; updatePreviewText(this.value);">
+          <input type="text" id="scheduleCustomTimeInput" placeholder="e.g. Tomorrow at 08:15 AM" style="width:100%; font-size:12.5px; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px;" oninput="document.getElementById('scheduleTime').value = this.value; updatePreviewText(this.value);">
         </div>
 
         <!-- Hidden input to hold final computed scheduled string -->
         <input type="hidden" id="scheduleTime" required value="Tomorrow (13 Sep), 07:30 - 08:30 AM">
         
-        <div id="selectedSlotPreview" style="margin-top:8px; font-size:12px; font-weight:600; color:#0f766e; background:#f0fdf4; border:1px solid #bbf7d0; padding:5px 10px; border-radius:6px;">
-          Selected Window: <span id="selectedSlotText">—</span>
+        <div id="selectedSlotPreview" style="margin-top:8px; font-size:12px; font-weight:500; color:#0f766e; background:#f0fdfa; border:1px solid #ccfbf1; padding:6px 10px; border-radius:6px;">
+          Selected Window: <strong id="selectedSlotText">—</strong>
         </div>
       </div>
 
       <!-- 5. Automated WhatsApp Advisory Toggle -->
-      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 12px; margin-bottom:16px; display:flex; align-items:flex-start; gap:9px;">
-        <input type="checkbox" id="sendWaAdvisory" checked style="width:17px; height:17px; accent-color:#0d9488; margin-top:2px; cursor:pointer;">
-        <label for="sendWaAdvisory" style="cursor:pointer; font-size:12px; color:var(--ink); margin:0; line-height:1.4;">
-          <strong>📲 Send Instant WhatsApp Confirmation to Patient</strong><br>
-          <span style="color:var(--ink-soft); font-size:11px;">Alerts patient with your arrival ETA, phlebotomist contact details, and fasting preparation protocol.</span>
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px; margin-bottom:16px; display:flex; align-items:flex-start; gap:9px;">
+        <input type="checkbox" id="sendWaAdvisory" checked style="width:16px; height:16px; accent-color:#0d9488; margin-top:2px; cursor:pointer;">
+        <label for="sendWaAdvisory" style="cursor:pointer; font-size:12px; color:#1e293b; margin:0; line-height:1.4;">
+          <strong>Dispatch WhatsApp confirmation to patient</strong><br>
+          <span style="color:#64748b; font-size:11px;">Notifies patient with assigned phlebotomist details, scheduled ETA, and fasting preparation protocol.</span>
         </label>
       </div>
 
       <!-- Modal Footer -->
       <div style="display:flex; justify-content:flex-end; gap:8px;">
-        <button type="button" class="btn-sm" onclick="closeModal('scheduleModal')" style="background:#f1f5f9; color:var(--ink-soft); border:1px solid #e2e8f0; padding:8px 16px; font-weight:600; border-radius:6px;">Cancel</button>
-        <button type="submit" class="btn-primary" id="scheduleSubmitBtn" style="padding:8px 20px; font-weight:600; border-radius:6px; display:flex; align-items:center; gap:6px;">
-          <span>Confirm & Dispatch Pickup 🚀</span>
+        <button type="button" class="btn-sm" onclick="closeModal('scheduleModal')" style="background:#ffffff; color:#475569; border:1px solid #cbd5e1; padding:8px 16px; font-weight:500; border-radius:6px;">Cancel</button>
+        <button type="submit" class="btn-primary" id="scheduleSubmitBtn" style="padding:8px 20px; font-weight:600; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span>Confirm Schedule & Dispatch</span>
         </button>
       </div>
     </form>
@@ -3801,28 +3882,28 @@
 
     // EDTA (Purple / Lavender cap)
     if (t.includes('cbc') || t.includes('blood count') || t.includes('dengue') || t.includes('platelet') || t.includes('hemoglobin') || t.includes('esr')) {
-      tubes.push({ cap: '🟣 Lavender/Purple (K2-EDTA)', test: 'CBC / Dengue / Hematology' });
+      tubes.push({ color: '#8b5cf6', cap: 'K2-EDTA (Lavender Top)', test: 'Whole Blood • CBC / Hematology' });
     }
 
     // Fluoride (Grey cap)
     if (t.includes('fasting') || t.includes('sugar') || t.includes('glucose') || t.includes('fbs') || t.includes('diabetes') || t.includes('hba1c')) {
       fastingRequired = true;
-      tubes.push({ cap: '⚪ Grey (Sodium Fluoride)', test: 'Fasting Glucose / Glycolysis Inhibitor' });
+      tubes.push({ color: '#94a3b8', cap: 'Sodium Fluoride (Grey Top)', test: 'Fasting Plasma • Glycolysis Inhibitor' });
     }
 
     // SST / Gel Clot Activator (Yellow / Gold cap)
     if (t.includes('thyroid') || t.includes('lipid') || t.includes('cholesterol') || t.includes('lft') || t.includes('liver') || t.includes('kft') || t.includes('kidney') || t.includes('creatinine') || t.includes('vitamin') || t.includes('crp') || t.includes('electrolyte')) {
       if (t.includes('lipid') || t.includes('cholesterol')) fastingRequired = true;
-      tubes.push({ cap: '🟡 Gold/Yellow (SST Gel Activator)', test: 'Biochemistry, Lipid, Liver & Thyroid' });
+      tubes.push({ color: '#eab308', cap: 'SST Gel Separator (Yellow Top)', test: 'Serum • Biochemistry & Hormones' });
     }
 
     // Fallback if none matched specifically
     if (tubes.length === 0) {
-      tubes.push({ cap: '🔴 Red Cap (Plain Silica)', test: 'General Diagnostic Serum Panel' });
+      tubes.push({ color: '#ef4444', cap: 'Plain Silica (Red Top)', test: 'General Diagnostic Serum Panel' });
     }
 
     // Cold chain pack
-    tubes.push({ cap: '🧊 Cold-Chain Gel Pack', test: 'Temperature Controlled Carrier (2-8°C)' });
+    tubes.push({ color: '#06b6d4', cap: 'Cold-Chain Gel Carrier', test: 'Insulated Transport (2°C–8°C)' });
 
     return { tubes, fastingRequired };
   }
@@ -3854,7 +3935,7 @@
 
       const tubesGrid = document.getElementById('scheduleTubesGrid');
       if (tubesGrid) {
-        tubesGrid.innerHTML = kit.tubes.map(tb => '<span class="tube-badge" title="' + tb.test + '">' + tb.cap + '</span>').join('');
+        tubesGrid.innerHTML = kit.tubes.map(tb => '<span class="tube-badge" title="' + tb.test + '"><span class="tube-swatch" style="background:' + tb.color + '"></span>' + tb.cap + '</span>').join('');
       }
     }
 
@@ -3878,7 +3959,7 @@
 
   function selectScheduleDate(mode) {
     currentSelectedDateMode = mode;
-    document.querySelectorAll('.date-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.segmented-tab').forEach(b => b.classList.remove('active'));
     const customInput = document.getElementById('scheduleCustomDate');
 
     if (mode === 'today') {
