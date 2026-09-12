@@ -516,22 +516,34 @@ router.get('/doctor/my-requests/:phone', async (req, res) => {
 });
 
 router.post('/doctor/submit-prescription', async (req, res) => {
-  const { request_id, doctor_phone, prescription_text, lab_tests } = req.body;
+  const { request_id, doctor_phone, prescription_text, lab_tests, dispatch_to_lab } = req.body;
   if (!request_id || !prescription_text) {
     return res.status(400).json({ error: 'request_id and prescription_text are required.' });
   }
 
   try {
-    // Parse using Groq AI if lab_tests not explicitly given
-    let tests = lab_tests;
-    let finalPrescription = prescription_text;
-    if (!tests) {
-      const parsed = await groq.parsePrescriptionMessage(prescription_text);
-      tests = (parsed.lab_tests || []).join(', ');
-      finalPrescription = parsed.prescription || prescription_text;
+    // Format lab tests if array or string
+    let tests = '';
+    if (Array.isArray(lab_tests)) {
+      tests = lab_tests.filter(t => t && String(t).trim().length > 0).map(t => String(t).trim()).join(', ');
+    } else if (typeof lab_tests === 'string') {
+      tests = lab_tests.trim();
     }
 
-    const newStatus = tests && tests.trim().length > 0 ? 'lab_requested' : 'completed';
+    let finalPrescription = prescription_text;
+    if (!tests) {
+      try {
+        const parsed = await groq.parsePrescriptionMessage(prescription_text);
+        tests = (parsed.lab_tests || []).join(', ');
+        finalPrescription = parsed.prescription || prescription_text;
+      } catch (e) {
+        console.warn('Groq parse error in submit-prescription:', e.message);
+      }
+    }
+
+    const hasTests = tests && tests.trim().length > 0;
+    const shouldDispatch = hasTests && (dispatch_to_lab !== false && dispatch_to_lab !== 'false');
+    const newStatus = shouldDispatch ? 'lab_requested' : 'completed';
 
     const { rows } = await db.query(
       `UPDATE requests 
@@ -540,10 +552,36 @@ router.post('/doctor/submit-prescription', async (req, res) => {
       [finalPrescription, tests || '', newStatus, request_id]
     );
 
+    const updatedRequest = rows[0];
+
+    // If lab tests ordered and dispatch active, broadcast to technicians
+    if (shouldDispatch && updatedRequest) {
+      try {
+        if (typeof requestService.broadcastToTechnicians === 'function') {
+          await requestService.broadcastToTechnicians(updatedRequest);
+        }
+      } catch (broadcastErr) {
+        console.warn('Technician broadcast error:', broadcastErr.message);
+      }
+    }
+
+    // Real-time WebSocket notifications
+    try {
+      realtime.broadcast('role:doctor', 'prescription:submitted', { request: updatedRequest });
+      realtime.broadcast('role:admin', 'doctor:prescribed', { request: updatedRequest });
+      if (updatedRequest && updatedRequest.patient_phone) {
+        realtime.broadcast(`user:${String(updatedRequest.patient_phone).replace(/[^0-9]/g, '')}`, 'prescription:ready', { request: updatedRequest });
+      }
+    } catch (realtimeErr) {
+      console.warn('Realtime broadcast error:', realtimeErr.message);
+    }
+
     res.json({
       success: true,
-      message: 'Prescription recorded successfully!',
-      request: rows[0]
+      message: shouldDispatch
+        ? 'Prescription submitted and lab collection dispatched to technicians!'
+        : 'Prescription recorded successfully!',
+      request: updatedRequest
     });
   } catch (err) {
     console.error('Prescription error:', err);

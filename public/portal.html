@@ -819,6 +819,69 @@
   .main-content { flex:1; min-width:0; }
   @media(max-width: 860px){ .sidebar-layout{ flex-direction:column; } .sidebar{ width:100%; position:static; display:flex; overflow-x:auto; gap:6px; } .sidebar a{ white-space:nowrap; } }
 
+
+  /* Clinical Prescription & Diagnostic Orders Modal */
+  #prescribeModal .modal-box {
+    max-width: 660px;
+    padding: 26px 30px;
+  }
+  .lab-chip {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+    outline: none;
+  }
+  .lab-chip:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+  }
+  .lab-chip.active {
+    background: #0d9488;
+    border-color: #0f766e;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
+  }
+  .lab-chip.active .chip-icon {
+    transform: rotate(45deg);
+  }
+  .chip-icon {
+    font-weight: 700;
+    font-size: 13px;
+    display: inline-block;
+    transition: transform 0.15s ease;
+  }
+  .custom-chip-tag {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .custom-chip-tag .tag-remove {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13px;
+    color: #0284c7;
+  }
+  .custom-chip-tag .tag-remove:hover {
+    color: #b91c1c;
+  }
+
 </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
@@ -1974,21 +2037,105 @@
 <div class="modal-overlay" id="prescribeModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('prescribeModal')">&times;</button>
-    <h2 style="font-size:20px; margin-bottom:8px;">Submit Prescription & Lab Order</h2>
-    <p style="font-size:13.5px; color:var(--ink-soft); margin-bottom:16px;">
-      Type your consultation notes below. Groq AI will automatically extract medicine schedules and ordered tests.
-    </p>
+    
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
+      <div style="width:42px; height:42px; border-radius:10px; background:linear-gradient(135deg, #0d9488, #059669); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; flex-shrink:0;">
+        📝
+      </div>
+      <div>
+        <h2 style="font-size:18.5px; font-weight:700; color:var(--ink); margin:0 0 2px 0;">Doctor's Prescription & Diagnostic Order Pad</h2>
+        <p style="font-size:12.5px; color:var(--ink-soft); margin:0;" id="prescribePatientBanner">Loading patient consultation details...</p>
+      </div>
+    </div>
+
     <form onsubmit="submitPrescription(event)">
       <input type="hidden" id="prescribeReqId">
-      <div class="form-group">
-        <label>Consultation Notes & Medicines *</label>
-        <textarea id="prescribeNotes" rows="4" required placeholder="e.g. Paracetamol 500mg twice daily for 3 days. Ordered Complete Blood Count (CBC) and Thyroid profile."></textarea>
+
+      <!-- Medicines & Instructions -->
+      <div class="form-group" style="margin-bottom:16px;">
+        <label style="font-weight:600; font-size:13px; display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+          <span>💊 Prescribed Medicines, Dosage & Clinical Advice *</span>
+          <span style="font-weight:400; font-size:11.5px; color:var(--ink-soft);">Groq AI parses schedules & timings</span>
+        </label>
+        <textarea id="prescribeNotes" rows="3" required placeholder="e.g. Tab. Paracetamol 650mg - 1 tab thrice daily after meals (3 days)&#10;Tab. Pantoprazole 40mg - 1 tab once daily before breakfast (5 days)&#10;Advised adequate hydration and warm water steam inhalation." style="font-size:13.5px; line-height:1.5;"></textarea>
       </div>
-      <button type="submit" class="btn-primary" id="prescribeBtn">Submit Prescription</button>
+
+      <!-- Quick Select Lab Diagnostic Chips -->
+      <div class="form-group" style="margin-bottom:16px;">
+        <label style="font-weight:600; font-size:13px; display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span>🧪</span> Recommend Diagnostic Lab Tests (Quick-Select)
+          </span>
+          <span id="selectedTestsCount" style="font-size:12px; color:var(--teal); font-weight:600;">0 tests selected</span>
+        </label>
+        
+        <div id="labTestChips" style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px;">
+          <button type="button" class="lab-chip" data-test="Complete Blood Count (CBC)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> CBC (Blood Count)
+          </button>
+          <button type="button" class="lab-chip" data-test="Fasting Blood Sugar (FBS)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> Fasting Blood Sugar
+          </button>
+          <button type="button" class="lab-chip" data-test="HbA1c (Glycated Hemoglobin)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> HbA1c (Diabetes 3-Mo)
+          </button>
+          <button type="button" class="lab-chip" data-test="Thyroid Profile (T3, T4, TSH)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> Thyroid (T3/T4/TSH)
+          </button>
+          <button type="button" class="lab-chip" data-test="Lipid Profile (Cholesterol Panel)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> Lipid Profile
+          </button>
+          <button type="button" class="lab-chip" data-test="Liver Function Test (LFT)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> Liver Panel (LFT)
+          </button>
+          <button type="button" class="lab-chip" data-test="Kidney Function Test (KFT/Creatinine)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> Kidney Panel (KFT)
+          </button>
+          <button type="button" class="lab-chip" data-test="Urine Routine & Microscopy" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> Urine Routine
+          </button>
+          <button type="button" class="lab-chip" data-test="Serum Electrolytes (Na, K, Cl)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> Serum Electrolytes
+          </button>
+          <button type="button" class="lab-chip" data-test="Vitamin D3 & B12 Panel" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> Vitamin D3 & B12
+          </button>
+          <button type="button" class="lab-chip" data-test="Dengue Serology (NS1/IgM/IgG)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> Dengue NS1
+          </button>
+          <button type="button" class="lab-chip" data-test="C-Reactive Protein (CRP Quantitative)" onclick="toggleLabChip(this)">
+            <span class="chip-icon">+</span> CRP (Inflammatory)
+          </button>
+        </div>
+
+        <!-- Custom Test Input Field -->
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="text" id="customLabTest" placeholder="Add other specific test (e.g. Troponin-I, Serum Ferritin, Widal)..." style="flex:1; font-size:13px; padding:7px 12px; border:1px solid #cbd5e1; border-radius:8px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomLabTest();}">
+          <button type="button" class="btn-sm" onclick="addCustomLabTest()" style="white-space:nowrap; padding:7px 14px; background:#f1f5f9; color:var(--ink); border:1px solid #cbd5e1; font-weight:600; border-radius:8px; cursor:pointer;">+ Add Test</button>
+        </div>
+        <div id="customChipsContainer" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;"></div>
+      </div>
+
+      <!-- Auto-Dispatch to Lab Technicians Toggle -->
+      <div style="background:#f0fdfa; border:1px solid #99f6e4; border-radius:10px; padding:12px 14px; margin-bottom:18px; display:flex; align-items:flex-start; gap:10px;">
+        <input type="checkbox" id="dispatchLabToggle" checked onchange="updateSelectedTestsUI()" style="width:18px; height:18px; accent-color:var(--teal); margin-top:2px; cursor:pointer;">
+        <label for="dispatchLabToggle" style="cursor:pointer; font-size:13px; color:#134e4a; margin:0; line-height:1.4;">
+          <strong style="display:block; font-size:13.5px; color:#0f766e; margin-bottom:2px;">🔔 Dispatch to Lab Technicians for Home Sample Collection</strong>
+          Instantly alerts certified phlebotomists via WhatsApp broadcast and places this order in the technician queue for doorstep pickup.
+        </label>
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="btn-sm" onclick="closeModal('prescribeModal')" style="background:#f1f5f9; color:var(--ink-soft); border:1px solid #e2e8f0; padding:9px 18px; font-weight:600; border-radius:8px;">Cancel</button>
+        <button type="submit" class="btn-primary" id="prescribeBtn" style="padding:9px 20px; font-weight:600; border-radius:8px; display:flex; align-items:center; gap:8px;">
+          <span>Submit Prescription</span>
+          <span id="prescribeBtnBadge" style="background:rgba(255,255,255,0.25); padding:2px 7px; border-radius:12px; font-size:11px; display:none;">+ Lab Dispatched</span>
+        </button>
+      </div>
     </form>
   </div>
 </div>
-
 <!-- Technician Schedule Modal -->
 <div class="modal-overlay" id="scheduleModal">
   <div class="modal-box">
@@ -2632,6 +2779,7 @@
       const tbody = document.getElementById('doctorRequestsTable');
       tbody.innerHTML = '';
       const list = data.requests || [];
+      currentDoctorRequests = list;
 
       // Update doctor metrics & badges
       const countAssigned = list.filter(r => r.status === 'doctor_assigned').length;
@@ -2785,15 +2933,20 @@
             <td><strong>#${t.id}</strong></td>
             <td>${t.patient_name}<br><small style="color:var(--ink-soft);">${t.patient_phone}</small></td>
             <td>${t.patient_address}</td>
-            <td>${t.notes || 'Routine Blood/Urine Analysis'}</td>
+            <td>
+              ${t.lab_tests_needed ? `<div style="background:#f0fdfa; border:1px solid #99f6e4; color:#0f766e; font-weight:600; font-size:12px; padding:3px 8px; border-radius:6px; margin-bottom:4px; display:inline-block;">🧪 ${t.lab_tests_needed}</div><br>` : ''}
+              <small style="color:var(--ink-soft);">${t.notes || 'Routine Blood/Urine Sample'}</small>
+            </td>
             <td>${t.scheduled_time || '<em style="color:var(--ink-soft);">Not Scheduled</em>'}</td>
             <td>${statusBadge(t.status)}</td>
             <td>
-              ${t.status === 'lab_assigned' ? 
-                `<button class="btn-sm" onclick="openScheduleModal(${t.id})">Set Arrival Time</button>` : 
-                (t.status === 'scheduled' ? 
-                  `<button class="btn-sm" onclick="openUploadModal(${t.id})">Upload Report</button>` : 
-                  '<span style="font-size:12px; color:var(--ink-soft);">Report Uploaded</span>')}
+              ${t.status === 'lab_requested' ?
+                `<button class="btn-sm" style="background:#0d9488; color:#fff; font-weight:600; padding:4px 10px;" onclick="openScheduleModal(${t.id})">Claim & Schedule Pickup</button>` :
+                (t.status === 'lab_assigned' ? 
+                  `<button class="btn-sm" onclick="openScheduleModal(${t.id})">Set Arrival Time</button>` : 
+                  (t.status === 'scheduled' ? 
+                    `<button class="btn-sm" onclick="openUploadModal(${t.id})">Upload Report</button>` : 
+                    '<span style="font-size:12px; color:var(--ink-soft);">Report Uploaded</span>'))}
             </td>
           `;
           tbody.appendChild(tr);
@@ -3243,6 +3396,7 @@
             <td>${r.preferred_time || 'Immediate'}</td>
             <td>
               ${statusBadge(r.status)}
+              ${r.lab_tests_needed ? `<div style="font-size:11.5px; color:#0d9488; font-weight:600; margin-top:4px; background:#f0fdfa; padding:2px 6px; border-radius:4px; border:1px solid #ccfbf1; display:inline-block;">🧪 Lab: ${r.lab_tests_needed}</div>` : ''}
               ${r.status === 'prescribed' || r.status === 'completed' ? `
                 <button class="btn-sm" style="background:#0284c7; border:none; padding:3px 8px; font-size:11px; margin-top:4px; display:block;" onclick="openPharmacyModal(${r.id}, '${r.doctor_name || ''}')">📦 Order Medicines</button>
               ` : ''}
@@ -3298,31 +3452,137 @@
   }
 
   // Prescription Submission
+  let currentDoctorRequests = [];
+
   function openPrescribeModal(reqId) {
     document.getElementById('prescribeReqId').value = reqId;
+    
+    // Populate patient banner
+    const banner = document.getElementById('prescribePatientBanner');
+    const req = (currentDoctorRequests || []).find(r => String(r.id) === String(reqId));
+    if (req && banner) {
+      banner.innerHTML = '<strong>Patient:</strong> ' + (req.patient_name || 'Patient') + ' • <strong>Case #' + req.id + '</strong>' + (req.patient_address ? ' • <span style="color:var(--ink-soft);">' + req.patient_address + '</span>' : '');
+    } else if (banner) {
+      banner.textContent = 'Case #' + reqId;
+    }
+
+    // Reset inputs
+    document.getElementById('prescribeNotes').value = '';
+    const customInput = document.getElementById('customLabTest');
+    if (customInput) customInput.value = '';
+    const customContainer = document.getElementById('customChipsContainer');
+    if (customContainer) customContainer.innerHTML = '';
+
+    // Deselect chips
+    document.querySelectorAll('#labTestChips .lab-chip').forEach(chip => chip.classList.remove('active'));
+
+    // Reset dispatch toggle
+    const dispatchToggle = document.getElementById('dispatchLabToggle');
+    if (dispatchToggle) dispatchToggle.checked = true;
+
+    updateSelectedTestsUI();
     document.getElementById('prescribeModal').classList.add('active');
   }
+
+  function toggleLabChip(btn) {
+    btn.classList.toggle('active');
+    updateSelectedTestsUI();
+  }
+
+  function addCustomLabTest() {
+    const input = document.getElementById('customLabTest');
+    if (!input) return;
+    const testName = input.value.trim();
+    if (!testName) return;
+
+    const container = document.getElementById('customChipsContainer');
+    if (!container) return;
+
+    const existing = Array.from(container.querySelectorAll('.custom-chip-tag')).some(el => el.dataset.test.toLowerCase() === testName.toLowerCase());
+    if (existing) {
+      input.value = '';
+      return;
+    }
+
+    const tag = document.createElement('span');
+    tag.className = 'custom-chip-tag';
+    tag.dataset.test = testName;
+    tag.innerHTML = '<span>🧪 ' + testName + '</span><span class="tag-remove" onclick="removeCustomLabTest(this)">&times;</span>';
+    container.appendChild(tag);
+    input.value = '';
+
+    updateSelectedTestsUI();
+  }
+
+  function removeCustomLabTest(btn) {
+    const tag = btn.closest('.custom-chip-tag');
+    if (tag) tag.remove();
+    updateSelectedTestsUI();
+  }
+
+  function getSelectedLabTests() {
+    const activeChips = Array.from(document.querySelectorAll('#labTestChips .lab-chip.active')).map(c => c.dataset.test);
+    const customTags = Array.from(document.querySelectorAll('#customChipsContainer .custom-chip-tag')).map(t => t.dataset.test);
+    return [...activeChips, ...customTags];
+  }
+
+  function updateSelectedTestsUI() {
+    const tests = getSelectedLabTests();
+    const countSpan = document.getElementById('selectedTestsCount');
+    const badge = document.getElementById('prescribeBtnBadge');
+    const dispatchToggle = document.getElementById('dispatchLabToggle');
+
+    if (countSpan) {
+      countSpan.textContent = tests.length === 1 ? '1 test selected' : tests.length + ' tests selected';
+      countSpan.style.color = tests.length > 0 ? '#0d9488' : 'var(--ink-soft)';
+    }
+
+    if (badge) {
+      if (tests.length > 0 && dispatchToggle && dispatchToggle.checked) {
+        badge.style.display = 'inline-block';
+        badge.textContent = '+ ' + tests.length + ' Lab Dispatched';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  }
+
   async function submitPrescription(e) {
     e.preventDefault();
     const reqId = document.getElementById('prescribeReqId').value;
     const text = document.getElementById('prescribeNotes').value.trim();
+    const selectedTests = getSelectedLabTests();
+    const dispatchToLab = document.getElementById('dispatchLabToggle') ? document.getElementById('dispatchLabToggle').checked : true;
+
     const btn = document.getElementById('prescribeBtn');
     btn.disabled = true;
-    btn.textContent = 'Processing with Groq AI...';
+    btn.innerHTML = '<span>Processing with Groq AI...</span>';
 
     try {
       const res = await fetch('/api/doctor/submit-prescription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ request_id: reqId, prescription_text: text })
+        body: JSON.stringify({
+          request_id: reqId,
+          prescription_text: text,
+          lab_tests: selectedTests,
+          dispatch_to_lab: dispatchToLab
+        })
       });
+      const data = await res.json();
       if (res.ok) {
         closeModal('prescribeModal');
         loadDoctorData();
+        alert(data.message || 'Prescription recorded successfully!');
+      } else {
+        alert(data.error || 'Failed to submit prescription');
       }
+    } catch (err) {
+      console.error('Submit prescription error:', err);
+      alert('An error occurred while submitting the prescription.');
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Submit Prescription';
+      btn.innerHTML = '<span>Submit Prescription</span><span id="prescribeBtnBadge" style="background:rgba(255,255,255,0.25); padding:2px 7px; border-radius:12px; font-size:11px; display:none;">+ Lab Dispatched</span>';
     }
   }
 

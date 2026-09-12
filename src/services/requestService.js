@@ -260,6 +260,7 @@ async function escalateStaleRequests() {
 }
 
 module.exports = {
+  broadcastToTechnicians,
   createRequest,
   handleDoctorAccept,
   handleDoctorPrescription,
